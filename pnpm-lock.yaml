@@ -14,9 +14,24 @@ importers:
       '@next/env':
         specifier: ^15.5.3
         version: 15.5.3
+      '@radix-ui/react-slot':
+        specifier: ^1.2.3
+        version: 1.2.3(@types/react@19.1.12)(react@19.1.0)
+      '@reduxjs/toolkit':
+        specifier: ^2.9.0
+        version: 2.9.0(react-redux@9.2.0(@types/react@19.1.12)(react@19.1.0)(redux@5.0.1))(react@19.1.0)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       drizzle-orm:
         specifier: ^0.44.5
         version: 0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
+      lucide-react:
+        specifier: ^0.544.0
+        version: 0.544.0(react@19.1.0)
       next:
         specifier: 15.5.3
         version: 15.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2230,9 +2245,15 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  tw-animate-css@1.3.8: {}
+
   typescript@5.9.2: {}
 
   undici-types@6.21.0: {}
+
+  use-sync-external-store@1.5.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   xtend@4.0.2: {}
 
