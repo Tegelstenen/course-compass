@@ -1,6 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Course } from "@/models/CourseModel";
-import { PayloadAction } from "@reduxjs/toolkit";
 
 type LoadingStatus = "idle" | "loading" | "succeeded" | "failed";
 interface SearchState {
@@ -29,10 +28,8 @@ const searchSlice = createSlice({
     setDepartmentFilter: (state, action: PayloadAction<string | null>) => {
       state.departmentFilter = action.payload;
     },
-  }
+  },
 });
-
-
 
 export const { setQuery, setDepartmentFilter } = searchSlice.actions;
 
