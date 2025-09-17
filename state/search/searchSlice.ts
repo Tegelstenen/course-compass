@@ -1,28 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { db } from "@/lib/db/db";
-import { courses } from "@/lib/db/schema";
+import type { Course } from "@/models/CourseModel";
+import { PayloadAction } from "@reduxjs/toolkit";
 
-interface searchState {
+type LoadingStatus = "idle" | "loading" | "succeeded" | "failed";
+interface SearchState {
   query: string;
   departmentFilter: string | null;
-  // courses: Course[];
-  // error: string | null;
-  // loading: boolean | null;
+  courses: Course[];
+  error: string | null;
+  status: LoadingStatus;
 }
 
-const initialState: searchState = {
+const initialState: SearchState = {
   query: "",
   departmentFilter: null,
+  courses: [],
+  error: null,
+  status: "idle",
 };
 
 const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
-    setQuery: (state, action) => {},
-    setDepartmentFilter: (state, action) => {},
-  },
+    setQuery: (state, action: PayloadAction<string>) => {
+      state.query = action.payload;
+    },
+    setDepartmentFilter: (state, action: PayloadAction<string | null>) => {
+      state.departmentFilter = action.payload;
+    },
+  }
 });
+
+
 
 export const { setQuery, setDepartmentFilter } = searchSlice.actions;
 
