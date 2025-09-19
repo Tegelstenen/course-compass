@@ -3098,7 +3098,6 @@ snapshots:
   tw-animate-css@1.3.8: {}
 
   type@2.7.3: {}
-
   typescript@5.9.2: {}
 
   undici-types@6.21.0: {}
@@ -3121,7 +3120,6 @@ snapshots:
   use-sync-external-store@1.5.0(react@19.1.0):
     dependencies:
       react: 19.1.0
-
   wordwrap@1.0.0: {}
 
   wrappy@1.0.2: {}
