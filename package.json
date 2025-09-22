@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
   "main": "index.js",
-  "workspaces": ["frontend", "backend-nest"],
+  "workspaces": [
+    "frontend",
+    "backend-nest"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
