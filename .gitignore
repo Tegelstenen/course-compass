@@ -1,7 +1,9 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# =================================
+# FRONTEND (Next.js)
+# =================================
 
 # dependencies
-/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -10,36 +12,103 @@
 !.yarn/releases
 !.yarn/versions
 
+# Next.js build output
+/frontend/.next/
+/frontend/out/
+/frontend/build
+
 # testing
-/coverage
+/frontend/coverage
+/frontend/.nyc_output
 
-# next.js
-/.next/
-/out/
+# logs
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/.pnpm-debug.log*
 
-# production
-/build
+# environment files
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Vercel
+/frontend/.vercel
+
+# TypeScript
+/frontend/next-env.d.ts
+/frontend/*.tsbuildinfo
 
 # misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env
-.env.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+/frontend/.DS_Store
+/frontend/*.pem
+/frontend/.temp
+/frontend/.tmp
 
 # history
-.history
+/frontend/.history
+
+# =================================
+# BACKEND (Nest.js)
+# =================================
+
+# compiled output
+/backend/dist
+/backend/node_modules
+/backend/build
+
+# logs
+/backend/logs
+/backend/*.log
+/backend/npm-debug.log*
+/backend/pnpm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/lerna-debug.log*
+
+# testing
+/backend/coverage
+/backend/.nyc_output
+
+# OS
+/backend/.DS_Store
+
+# IDEs and editors
+/backend/.idea
+/backend/.project
+/backend/.classpath
+/backend/.c9/
+/backend/*.launch
+/backend/.settings/
+/backend/*.sublime-workspace
+
+# IDE - VSCode
+/backend/.vscode/*
+!/backend/.vscode/settings.json
+!/backend/.vscode/tasks.json
+!/backend/.vscode/launch.json
+!/backend/.vscode/extensions.json
+
+# environment files
+/backend/.env
+/backend/.env.local
+/backend/.env.development.local
+/backend/.env.test.local
+/backend/.env.production.local
+
+# temp directory
+/backend/.temp
+/backend/.tmp
+
+# runtime data
+/backend/pids
+/backend/*.pid
+/backend/*.seed
+/backend/*.pid.lock
+
+# diagnostic reports
+/backend/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
