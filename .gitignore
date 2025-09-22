@@ -55,60 +55,60 @@
 # =================================
 
 # compiled output
-/backend/dist
-/backend/node_modules
-/backend/build
+/backend-nest/dist
+/backend-nest/node_modules
+/backend-nest/build
 
 # logs
-/backend/logs
-/backend/*.log
-/backend/npm-debug.log*
-/backend/pnpm-debug.log*
-/backend/yarn-debug.log*
-/backend/yarn-error.log*
-/backend/lerna-debug.log*
+/backend-nest/logs
+/backend-nest/*.log
+/backend-nest/npm-debug.log*
+/backend-nest/pnpm-debug.log*
+/backend-nest/yarn-debug.log*
+/backend-nest/yarn-error.log*
+/backend-nest/lerna-debug.log*
 
 # testing
-/backend/coverage
-/backend/.nyc_output
+/backend-nest/coverage
+/backend-nest/.nyc_output
 
 # OS
-/backend/.DS_Store
+/backend-nest/.DS_Store
 
 # IDEs and editors
-/backend/.idea
-/backend/.project
-/backend/.classpath
-/backend/.c9/
-/backend/*.launch
-/backend/.settings/
+/backend-nest/.idea
+/backend-nest/.project
+/backend-nest/.classpath
+/backend-nest/.c9/
+/backend-nest/*.launch
+/backend-nest/.settings/
 /backend/*.sublime-workspace
 
 # IDE - VSCode
-/backend/.vscode/*
-!/backend/.vscode/settings.json
-!/backend/.vscode/tasks.json
-!/backend/.vscode/launch.json
-!/backend/.vscode/extensions.json
+/backend-nest/.vscode/*
+!/backend-nest/.vscode/settings.json
+!/backend-nest/.vscode/tasks.json
+!/backend-nest/.vscode/launch.json
+!/backend-nest/.vscode/extensions.json
 
 # environment files
-/backend/.env
-/backend/.env.local
-/backend/.env.development.local
-/backend/.env.test.local
-/backend/.env.production.local
+/backend-nest/.env
+/backend-nest/.env.local
+/backend-nest/.env.development.local
+/backend-nest/.env.test.local
+/backend-nest/.env.production.local
 
 # temp directory
-/backend/.temp
-/backend/.tmp
+/backend-nest/.temp
+/backend-nest/.tmp
 
 # runtime data
-/backend/pids
-/backend/*.pid
-/backend/*.seed
-/backend/*.pid.lock
+/backend-nest/pids
+/backend-nest/*.pid
+/backend-nest/*.seed
+/backend-nest/*.pid.lock
 
 # diagnostic reports
-/backend/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+/backend-nest/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 
