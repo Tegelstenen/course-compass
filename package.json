@@ -8,7 +8,15 @@
     "backend-nest"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:fe": "npm run dev -C frontend",
+    "dev:be": "npm run start:dev -C backend-nest",
+    "add:fe": "npm -C frontend i",
+    "add:fe:dev": "npm -C frontend i -D",
+    "add:be": "npm -C backend-nest i",
+    "add:be:dev": "npm -C backend-nest i -D",
+    "rm:fe": "npm -C frontend un",
+    "rm:be": "npm -C backend-nest un"
   },
   "repository": {
     "type": "git",
@@ -23,8 +31,6 @@
   "homepage": "https://github.com/Tegelstenen/course-compass#readme",
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
-    "@biomejs/biome": "^2.2.4",
-    "eslint": "^9.36.0",
-    "prettier": "^3.6.2"
+    "@biomejs/biome": "^2.2.4"
   }
 }
