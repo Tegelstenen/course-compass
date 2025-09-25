@@ -1,7 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# =================================
+# ROOT
+# =================================
+node_modules/
+
+# =================================
+# FRONTEND (Next.js)
+# =================================
 
 # dependencies
-/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -10,36 +18,103 @@
 !.yarn/releases
 !.yarn/versions
 
+# Next.js build output
+/frontend/.next/
+/frontend/out/
+/frontend/build
+
 # testing
-/coverage
+/frontend/coverage
+/frontend/.nyc_output
 
-# next.js
-/.next/
-/out/
+# logs
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/.pnpm-debug.log*
 
-# production
-/build
+# environment files
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Vercel
+/frontend/.vercel
+
+# TypeScript
+/frontend/next-env.d.ts
+/frontend/*.tsbuildinfo
 
 # misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env
-.env.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+/frontend/.DS_Store
+/frontend/*.pem
+/frontend/.temp
+/frontend/.tmp
 
 # history
-.history
+/frontend/.history
+
+# =================================
+# BACKEND (Nest.js)
+# =================================
+
+# compiled output
+/backend-nest/dist
+/backend-nest/node_modules
+/backend-nest/build
+
+# logs
+/backend-nest/logs
+/backend-nest/*.log
+/backend-nest/npm-debug.log*
+/backend-nest/pnpm-debug.log*
+/backend-nest/yarn-debug.log*
+/backend-nest/yarn-error.log*
+/backend-nest/lerna-debug.log*
+
+# testing
+/backend-nest/coverage
+/backend-nest/.nyc_output
+
+# OS
+/backend-nest/.DS_Store
+
+# IDEs and editors
+/backend-nest/.idea
+/backend-nest/.project
+/backend-nest/.classpath
+/backend-nest/.c9/
+/backend-nest/*.launch
+/backend-nest/.settings/
+/backend/*.sublime-workspace
+
+# IDE - VSCode
+/backend-nest/.vscode/*
+!/backend-nest/.vscode/settings.json
+!/backend-nest/.vscode/tasks.json
+!/backend-nest/.vscode/launch.json
+!/backend-nest/.vscode/extensions.json
+
+# environment files
+/backend-nest/.env
+/backend-nest/.env.local
+/backend-nest/.env.development.local
+/backend-nest/.env.test.local
+/backend-nest/.env.production.local
+
+# temp directory
+/backend-nest/.temp
+/backend-nest/.tmp
+
+# runtime data
+/backend-nest/pids
+/backend-nest/*.pid
+/backend-nest/*.seed
+/backend-nest/*.pid.lock
+
+# diagnostic reports
+/backend-nest/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "@/state/store";
+import type { RootState } from "@/frontend/state/store";
 
 export default function SearchController() {
   // The query will be given by the user and displayed in the search bar (input field)
