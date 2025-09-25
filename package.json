@@ -32,5 +32,9 @@
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
     "@biomejs/biome": "^2.2.4"
+  },
+  "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "dotenv": "^17.2.2"
   }
 }
