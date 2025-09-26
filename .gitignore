@@ -117,4 +117,7 @@ node_modules/
 # diagnostic reports
 /backend-nest/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+/node_modules
 
+
+.env

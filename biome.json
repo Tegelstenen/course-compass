@@ -33,5 +33,26 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "backend-nest/src/**/*.service.ts",
+        "backend-nest/src/**/*.controller.ts",
+        "backend-nest/src/**/*.module.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ]
 }
