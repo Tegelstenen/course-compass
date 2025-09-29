@@ -1,3 +1,4 @@
+// frontend/views/AuthView.tsx
 import {
   AppleIcon,
   FacebookIcon,
@@ -38,6 +39,7 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                   <div className="flex flex-col gap-4">
                     <Button
                       variant="outline"
+                      type="button"
                       className="w-full"
                       onClick={() => onSubmit("apple")}
                     >
@@ -46,6 +48,7 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                     </Button>
                     <Button
                       variant="outline"
+                      type="button"
                       className="w-full"
                       onClick={() => onSubmit("google")}
                     >
@@ -54,6 +57,7 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                     </Button>
                     <Button
                       variant="outline"
+                      type="button"
                       className="w-full"
                       onClick={() => onSubmit("facebook")}
                     >
@@ -62,6 +66,7 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                     </Button>
                     <Button
                       variant="outline"
+                      type="button"
                       className="w-full"
                       onClick={() => onSubmit("github")}
                     >
@@ -70,6 +75,7 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                     </Button>
                     <Button
                       variant="outline"
+                      type="button"
                       className="w-full"
                       onClick={() => onSubmit("microsoft")}
                     >
