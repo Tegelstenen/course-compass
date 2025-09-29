@@ -121,3 +121,5 @@ node_modules/
 
 
 .env
+
+/elastic-start-local
