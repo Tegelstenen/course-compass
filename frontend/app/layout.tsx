@@ -31,7 +31,6 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <div className="flex">
-            <Navbar />
             {children}
           </div>
         </ReduxProvider>
