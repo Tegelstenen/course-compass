@@ -1,8 +1,9 @@
 import { Client } from "@elastic/elasticsearch";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-
-export const ES = Symbol("ES");
+import { ES } from "./search.constants.js";
+import { SearchController } from "./search.controller.js";
+import { SearchService } from "./search.service.js";
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
@@ -22,7 +23,6 @@ export const ES = Symbol("ES");
         return new Client({
           node: url,
           auth: { username, password },
-          // Force ES 8-compatible media-type headers (server rejects 9)
           headers: {
             accept: "application/vnd.elasticsearch+json; compatible-with=8",
             "content-type":
@@ -31,7 +31,9 @@ export const ES = Symbol("ES");
         });
       },
     },
+    SearchService,
   ],
-  exports: [ES],
+  controllers: [SearchController],
+  exports: [ES, SearchService],
 })
 export class ElasticSearchModule {}
