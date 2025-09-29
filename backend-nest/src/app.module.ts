@@ -5,7 +5,7 @@ import { AppService } from "./app.service";
 import { DrizzleModule } from "./database/drizzle.module";
 import { HealthModule } from "./health/health.module";
 import { IngestModule } from "./ingest/ingest.module";
-import { ElasticSearchModule } from "./search/elastic-search.module";
+import { ElasticSearchModule } from "./search/search.module";
 
 @Module({
   imports: [
