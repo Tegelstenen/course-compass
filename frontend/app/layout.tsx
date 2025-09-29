@@ -28,7 +28,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <div className="flex">
+            {children}
+          </div>
+        </ReduxProvider>
       </body>
     </html>
   );
