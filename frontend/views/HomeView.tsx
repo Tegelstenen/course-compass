@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function HomeView() {
   return (
     <div
-      className="flex flex-col w-full justify-left p-40 bg-secondary"
+      className="flex flex-col w-full justify-left p-40 text-secondary"
       style={{
         backgroundImage: 'url("course_map.jpg")',
         backgroundSize: "75%", // Set a specific size, e.g., 30% of the container
@@ -13,13 +13,13 @@ export default function HomeView() {
       }}
     >
       {/* Fades from transparent (left) over the image, to the background color (right) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 via-secondary/70 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent"></div>
 
       <div className="relative z-10 w-1/2 text-wrap">
         <h1 className="text-4xl font-extrabold tracking-wide leading-snug md:text-5xl">
           Explore, find and express your thoughts of all KTH courses!
         </h1>
-        <h2 className="text-xl pt-8">
+        <h2 className="text-xl pt-8 font-serif">
           A very short description of the app. Course Compass is built on
           student reviews to give an honest picture of the course contents.
         </h2>
