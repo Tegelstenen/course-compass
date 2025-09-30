@@ -6,6 +6,8 @@ import { DrizzleModule } from "./database/drizzle.module";
 import { HealthModule } from "./health/health.module";
 import { IngestModule } from "./ingest/ingest.module";
 import { ElasticSearchModule } from "./search/search.module";
+import { SupertokensModule } from "./supertokens/supertokens.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { ElasticSearchModule } from "./search/search.module";
     HealthModule,
     DrizzleModule,
     ElasticSearchModule,
+    UserModule,
+    SupertokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
