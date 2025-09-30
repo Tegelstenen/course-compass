@@ -1,9 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type {
-  Course,
-  SearchParams,
-  SearchResponse,
-} from "@/models/CourseModel";
+import type { Course, SearchResponse } from "@/models/CourseModel";
 
 interface SearchState {
   query: string;
