@@ -77,3 +77,23 @@ export function MicrosoftIcon() {
     </svg>
   );
 }
+
+export function ArrowRightIcon() {
+  return( 
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="ml-2 h-5 w-3"
+      aria-label="Forward arrow icon"
+    >
+      <title>Arrow icon</title>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
