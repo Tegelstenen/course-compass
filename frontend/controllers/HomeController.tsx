@@ -1,5 +1,11 @@
+import Topbar from "@/components/Topbar";
 import HomeView from "@/views/HomeView";
 
 export default function HomeController() {
-  return <HomeView />;
+  return (
+    <div>
+      <Topbar />
+      <HomeView />
+    </div>
+  );
 }

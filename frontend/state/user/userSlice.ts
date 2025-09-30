@@ -1,25 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { clearSession, getSession } from "../session/sessionSlice";
 
-interface userState {
-  value: string;
+interface UserState {
+  name: string;
+  email: string;
 }
 
-// Initializing the value
-const initialState: userState = {
-  value: "user",
+const initialState: UserState = {
+  name: "",
+  email: "",
 };
 
-// createSlice form redux toolkit sets up things behind the scenes
 const userSlice = createSlice({
   name: "user",
   initialState,
-  // Template action, just to show the syntax
   reducers: {
-    changeName: (state) => {
-      state.value = "newUser";
+    setUser: (state, action: PayloadAction<UserState>) => {
+      state.name = action.payload.name;
+      state.email = action.payload.email;
     },
+    clearUser: (state) => {
+      state.name = "";
+      state.email = "";
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getSession.rejected, (state) => {
+        state.name = "";
+        state.email = "";
+      })
+      .addCase(clearSession, (state) => {
+        state.name = "";
+        state.email = "";
+      });
   },
 });
 
-export const { changeName } = userSlice.actions;
+export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;
