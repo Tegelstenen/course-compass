@@ -12,7 +12,7 @@ import {
 export default function Navbar() {
   return (
     <div
-      className="flex items-left flex-col bg-gray-200 w-1/8 max-w-[15rem] 
+      className="flex items-left flex-col bg-gray-200 w-1/8 max-w-[25rem] 
         min-w-min h-screen gap-6 p-2.5"
     >
       <Link href="/">
