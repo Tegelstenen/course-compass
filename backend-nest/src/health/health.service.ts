@@ -5,7 +5,7 @@ import { sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { firstValueFrom } from "rxjs";
 import { DRIZZLE } from "../database/drizzle.module";
-import { ES } from "../search/elastic-search.module";
+import { ES } from "../search/search.constants.js";
 
 @Injectable()
 export class HealthService {
@@ -32,7 +32,7 @@ export class HealthService {
     const url = "https://api.kth.se/api/kopps/v2/courses?l=en";
     await firstValueFrom(
       this.http.get(url, {
-        timeout: 5000,
+        timeout: 10000,
         responseType: "json",
       }),
     );

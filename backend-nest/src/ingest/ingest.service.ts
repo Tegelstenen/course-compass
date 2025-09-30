@@ -17,7 +17,7 @@ import {
   type Document,
 } from "../../../types/ingest/schemas";
 import { DRIZZLE } from "../database/drizzle.module";
-import { ES } from "../search/elastic-search.module";
+import { ES } from "../search/search.constants.js";
 
 const INDEX = "courses";
 
