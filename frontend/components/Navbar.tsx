@@ -52,7 +52,12 @@ export default function Navbar() {
           <DropdownMenuSeparator />
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Subscriptions</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+
+          <Link href="/settings" passHref>
+            <DropdownMenuItem asChild>
+              <span>Settings</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
