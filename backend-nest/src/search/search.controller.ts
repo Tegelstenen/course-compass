@@ -15,4 +15,5 @@ export class SearchController {
     );
     return { results };
   }
+
 }
