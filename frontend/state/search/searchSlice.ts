@@ -14,6 +14,7 @@ interface SearchState {
 }
 
 const initialState: SearchState = {
+  // this is the initial state of the search slice
   query: "",
   results: [],
   total: 0,
@@ -27,28 +28,33 @@ const searchSlice = createSlice({
   name: "search",
   initialState,
   reducers: {
+    // reducers are the functions that modify the state
     queryChanged(state, action: PayloadAction<string>) {
       state.query = action.payload;
-      state.page = 1;
+      state.page = 1; // reset page number to 1
     },
     pageChanged(state, action: PayloadAction<number>) {
+      // page number changed
       state.page = action.payload;
     },
     filtersChanged(state, action: PayloadAction<SearchState["filters"]>) {
+      // filters changed
       state.filters = action.payload;
-      state.page = 1;
+      state.page = 1; // reset page number to 1
     },
     sortChanged(state, action: PayloadAction<string | undefined>) {
+      // sort-by logic changed
       state.sort = action.payload;
-      state.page = 1;
+      state.page = 1; // reset page number to 1
     },
     searchRequested(state) {
+      // search requested (start of search)
       state.isLoading = true;
       state.error = undefined;
     },
     searchSucceeded(state, action: PayloadAction<SearchResponse>) {
-      const { items, total, page, pageSize } = action.payload;
-      state.results = items;
+      const { results, total, page, pageSize } = action.payload;
+      state.results = results;
       state.total = total;
       state.page = page;
       state.pageSize = pageSize;

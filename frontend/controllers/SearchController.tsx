@@ -16,7 +16,7 @@ export default function SearchController() {
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
 
   const [localQuery] = useState(query); // setLocalQuery
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
     if (debounceRef.current) {
@@ -30,7 +30,8 @@ export default function SearchController() {
     }, 300);
     return () => {
       if (debounceRef.current) {
-        clearTimeout(debounceRef.current as NodeJS.Timeout);
+        // debounceRef is used to clear the timeout id
+        clearTimeout(debounceRef.current); // timeout is for debouncing the search (so double clicks don't trigger multiple searches)
       }
     };
   }, [localQuery, query, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -62,6 +63,7 @@ export default function SearchController() {
   // onSortChange
 
   return (
+    // controller will render the View in the future
     /*<div>
       <h1>Search</h1>
       <p>Query: {query}</p>
