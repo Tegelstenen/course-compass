@@ -1,7 +1,8 @@
 export interface Course {
+  // the course interface makes sure the course objects are consistent
   code: string; // cource code
   name: string; // title of course
-  description: string;
+  description: string; // make sure this exists in the backend
   department: string;
   rating?: number;
   credits?: number;
@@ -9,6 +10,7 @@ export interface Course {
 }
 
 export interface SearchParams {
+  // ensure this matches the backend in the future
   query: string;
   page: number;
   pageSize: number;
@@ -17,7 +19,7 @@ export interface SearchParams {
 }
 
 export interface SearchResponse {
-  items: Course[];
+  results: Course[]; // ensures the results are course objects (but this has to be updated to match backend logic)
   total: number;
   page: number;
   pageSize: number;
