@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
+  const pathname = usePathname();
   return (
     <div
       className="flex items-left flex-col bg-primary text-primary-foreground w-1/8 max-w-[25rem] 
@@ -54,7 +57,14 @@ export default function Navbar() {
           <DropdownMenuItem>Subscriptions</DropdownMenuItem>
 
           <Link href="/settings" passHref>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem
+              asChild
+              className={`${
+                pathname === "/settings"
+                  ? "bg-primary text-white font-semibold"
+                  : ""
+              }`}
+            >
               <span>Settings</span>
             </DropdownMenuItem>
           </Link>
