@@ -15,7 +15,7 @@ export default function SearchController() {
   const { query, filters } = useSelector((s: RootState) => s.search);
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
 
-  const [localQuery] = useState(query); // setLocalQuery
+  const [localQuery, setLocalQuery] = useState(query); // redux synced
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function SearchController() {
     };
   }, [localQuery, query, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const _onSubmit = useCallback(
+  const onSubmit = useCallback(
     (e?: React.FormEvent) => {
       e?.preventDefault?.();
       dispatch(queryChanged(localQuery));
@@ -44,6 +44,7 @@ export default function SearchController() {
     },
     [localQuery, dispatch], // eslint-disable-line react-hooks/exhaustive-deps
   );
+
   const _onPageChange = useCallback(
     (nextPage: number) => {
       dispatch(pageChanged(nextPage));
@@ -64,10 +65,17 @@ export default function SearchController() {
 
   return (
     // controller will render the View in the future
-    /*<div>
-      <h1>Search</h1>
-      <p>Query: {query}</p>
-    </div>*/
-    null // the View will handle the rendering
+    // the View will handle the rendering, so this is only temporary!!!
+    <form onSubmit={onSubmit}>
+      <input
+        type="text"
+        value={localQuery}
+        onChange={(e) => setLocalQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      <button type="submit">Search</button>
+      {/* Test output */}
+      <p>You searched for: {localQuery}</p>
+    </form>
   );
 }
