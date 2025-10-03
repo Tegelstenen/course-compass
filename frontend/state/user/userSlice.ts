@@ -20,7 +20,7 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserState>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
-      state.profilePicture = action.payload.profilePicture ?? null; 
+      state.profilePicture = action.payload.profilePicture ?? null;
     },
     setProfilePicture: (state, action: PayloadAction<string>) => {
       state.profilePicture = action.payload;

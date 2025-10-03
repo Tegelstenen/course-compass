@@ -1,5 +1,14 @@
 // src/app.controller.ts
-import { Controller, Get, Post, UseGuards, UploadedFile, UseInterceptors } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { profile } from "console";
 import {
   Session,
   SuperTokensAuthGuard,
@@ -7,8 +16,6 @@ import {
 } from "supertokens-nestjs";
 import type { SessionContainer } from "supertokens-node/recipe/session";
 import { UserService } from "./user.service";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { profile } from "console";
 
 @Controller("user")
 @UseGuards(SuperTokensAuthGuard)
@@ -36,7 +43,7 @@ export class UserController {
   ) {
     // For now, just logging file info:
     console.log("Uploaded file:", file);
-  
+
     // TODO: Save the file to storage
 
     // Returning a fake URL for testing
