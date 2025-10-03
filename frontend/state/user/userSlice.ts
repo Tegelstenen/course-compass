@@ -4,11 +4,13 @@ import { clearSession, getSession } from "../session/sessionSlice";
 interface UserState {
   name: string;
   email: string;
+  profilePicture: string | null;
 }
 
 const initialState: UserState = {
   name: "",
   email: "",
+  profilePicture: null,
 };
 
 const userSlice = createSlice({
@@ -18,10 +20,15 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserState>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
+      state.profilePicture = action.payload.profilePicture ?? null; 
+    },
+    setProfilePicture: (state, action: PayloadAction<string>) => {
+      state.profilePicture = action.payload;
     },
     clearUser: (state) => {
       state.name = "";
       state.email = "";
+      state.profilePicture = null;
     },
   },
   extraReducers: (builder) => {
@@ -29,13 +36,15 @@ const userSlice = createSlice({
       .addCase(getSession.rejected, (state) => {
         state.name = "";
         state.email = "";
+        state.profilePicture = null;
       })
       .addCase(clearSession, (state) => {
         state.name = "";
         state.email = "";
+        state.profilePicture = null;
       });
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, setProfilePicture, clearUser } = userSlice.actions;
 export default userSlice.reducer;
