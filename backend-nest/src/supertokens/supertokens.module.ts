@@ -1,4 +1,4 @@
-import { Logger, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { SuperTokensModule } from "supertokens-nestjs";
 import Session from "supertokens-node/recipe/session";
