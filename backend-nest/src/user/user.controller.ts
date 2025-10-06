@@ -2,11 +2,11 @@
 import {
   Controller,
   Get,
+  NotFoundException,
   Post,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  NotFoundException
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
@@ -24,7 +24,6 @@ export class UserController {
   @Get("/me")
   @VerifySession()
   async getMe(@Session() session: SessionContainer) {
-
     const userId = session.getUserId();
     const user = await this.userService.getUser(userId);
 
@@ -32,7 +31,9 @@ export class UserController {
 
     if (!user) {
       // Throw an exception if the user exists in SuperTokens but not in the database
-      throw new NotFoundException(`User with ID ${userId} not found in database.`);
+      throw new NotFoundException(
+        `User with ID ${userId} not found in database.`,
+      );
     } else {
       return {
         userId: session.getUserId(),

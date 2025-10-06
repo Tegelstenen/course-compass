@@ -9,9 +9,9 @@ import {
 } from "../../../types/database/schema";
 
 // Since we can't change the schema to have the userFAvorites, we need to define a new type,
-// that includes the userFavorites property. 
+// that includes the userFavorites property.
 export type UserWithFavorites = SelectUser & {
-    userFavorites: SelectUserFavorites[]; 
+  userFavorites: SelectUserFavorites[];
 };
 
 @Injectable()
