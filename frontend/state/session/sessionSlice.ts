@@ -29,7 +29,7 @@ export const getSession = createAsyncThunk(
         setUser({
           name: userData.name,
           email: userData.email,
-          userFavorites: [],
+          userFavorites: userData.userFavorites,
           profilePicture: null,
         }),
       );

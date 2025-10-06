@@ -1,10 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { clearSession, getSession } from "../session/sessionSlice";
+import { SelectUserFavorites } from "../../../types/database/schema";
 
 export interface UserState {
   name: string;
   email: string;
-  userFavorites: [];
+  userFavorites: SelectUserFavorites[];
   profilePicture: string | null;
 }
 
@@ -22,6 +23,7 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserState>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
+      state.userFavorites = action.payload.userFavorites;
       state.profilePicture = action.payload.profilePicture ?? null;
     },
     setProfilePicture: (state, action: PayloadAction<string>) => {
@@ -30,6 +32,7 @@ const userSlice = createSlice({
     clearUser: (state) => {
       state.name = "";
       state.email = "";
+      state.userFavorites = [];
       state.profilePicture = null;
     },
   },
@@ -38,11 +41,13 @@ const userSlice = createSlice({
       .addCase(getSession.rejected, (state) => {
         state.name = "";
         state.email = "";
+        state.userFavorites = [];
         state.profilePicture = null;
       })
       .addCase(clearSession, (state) => {
         state.name = "";
         state.email = "";
+        state.userFavorites = [];
         state.profilePicture = null;
       });
   },

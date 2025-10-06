@@ -10,7 +10,6 @@ export default function HomeController() {
 
   function onSubmit() {
     setIsLoggingIn(true);
-    console.log(isLoggingIn);
   }
 
   if (isLoggingIn) {

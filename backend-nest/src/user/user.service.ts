@@ -3,7 +3,16 @@ import { eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { DRIZZLE } from "src/database/drizzle.module";
 import * as schema from "../../../types/database/schema";
-import { SelectUser, SelectUserFavorites } from "../../../types/database/schema";
+import {
+  SelectUser,
+  SelectUserFavorites,
+} from "../../../types/database/schema";
+
+// Since we can't change the schema to have the userFAvorites, we need to define a new type,
+// that includes the userFavorites property. 
+export type UserWithFavorites = SelectUser & {
+    userFavorites: SelectUserFavorites[]; 
+};
 
 @Injectable()
 export class UserService {
@@ -37,7 +46,7 @@ export class UserService {
     return userFavorites;
   }
 
-  async getUser(id: string): Promise<SelectUser | undefined> {
+  async getUser(id: string): Promise<UserWithFavorites | undefined> {
     const users = await this.db
       .select()
       .from(schema.users)
@@ -45,16 +54,17 @@ export class UserService {
       .limit(1);
 
     const user = users[0];
-    
+
     if (!user) {
       return undefined;
     }
     const userFavorites = await this.getUserFavorites(id);
-    
+    console.log("User favs:", userFavorites);
+
     // Appends the user object with the user favorites, fetched from the separate junction table (above)
     return {
       ...user,
       userFavorites: userFavorites,
-    } as SelectUser;
+    } as UserWithFavorites;
   }
 }

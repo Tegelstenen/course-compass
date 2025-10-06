@@ -6,9 +6,9 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  NotFoundException
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { profile } from "console";
 import {
   Session,
   SuperTokensAuthGuard,
@@ -24,13 +24,24 @@ export class UserController {
   @Get("/me")
   @VerifySession()
   async getMe(@Session() session: SessionContainer) {
-    const user = await this.userService.getUser(session.getUserId());
-    return {
-      userId: session.getUserId(),
-      name: user.name,
-      email: user.email,
-      //profilePicture: user.profilePicture || null,
-    };
+
+    const userId = session.getUserId();
+    const user = await this.userService.getUser(userId);
+
+    console.log("In controller:", user);
+
+    if (!user) {
+      // Throw an exception if the user exists in SuperTokens but not in the database
+      throw new NotFoundException(`User with ID ${userId} not found in database.`);
+    } else {
+      return {
+        userId: session.getUserId(),
+        name: user.name,
+        email: user.email,
+        userFavorites: user.userFavorites,
+        //profilePicture: user.profilePicture || null,
+      };
+    }
   }
 
   // Upload profile picture
