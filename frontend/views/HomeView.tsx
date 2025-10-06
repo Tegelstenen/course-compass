@@ -3,8 +3,6 @@ import { ArrowRightIcon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 
 interface HomeViewProps {
-  // Define the prop name (onSubmit) and its type
-  // It's a function that takes no arguments and returns nothing (void)
   onSubmit: () => void;
 }
 

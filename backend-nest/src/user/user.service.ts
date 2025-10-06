@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { DRIZZLE } from "src/database/drizzle.module";
 import * as schema from "../../../types/database/schema";
-import { SelectUser } from "../../../types/database/schema";
+import { SelectUser, SelectUserFavorites } from "../../../types/database/schema";
 
 @Injectable()
 export class UserService {
@@ -29,12 +29,32 @@ export class UserService {
     }
   }
 
-  async getUser(id: string): Promise<SelectUser> {
-    const user = await this.db
+  async getUserFavorites(userId: string): Promise<SelectUserFavorites[]> {
+    const userFavorites = await this.db
+      .select()
+      .from(schema.user_favorites)
+      .where(eq(schema.user_favorites.userId, userId));
+    return userFavorites;
+  }
+
+  async getUser(id: string): Promise<SelectUser | undefined> {
+    const users = await this.db
       .select()
       .from(schema.users)
       .where(eq(schema.users.id, id))
       .limit(1);
-    return user[0];
+
+    const user = users[0];
+    
+    if (!user) {
+      return undefined;
+    }
+    const userFavorites = await this.getUserFavorites(id);
+    
+    // Appends the user object with the user favorites, fetched from the separate junction table (above)
+    return {
+      ...user,
+      userFavorites: userFavorites,
+    } as SelectUser;
   }
 }

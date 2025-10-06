@@ -1,20 +1,19 @@
 "use client";
 
-import { useSessionData } from "@/hooks/sessionHooks";
-import { useUserData } from "@/hooks/userHooks";
+import { UserState } from "@/state/user/userSlice";
 
-export default function UserView() {
-  const userData = useUserData();
-  const { isLoading, userId } = useSessionData();
+interface UserViewProps {
+  userData: UserState;
+}
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else {
+export default function UserView(props: UserViewProps) {
     return (
       <div>
-        <h1>The user page!</h1>
-        <p>Welcome, {userData && userData.name}</p>
+        <h1 className="text-secondary font-extrabold text-4xl">Welcome {props.userData && props.userData.name}!</h1>
+        <div>
+          <h2>Your favorite courses</h2>
+          
+        </div>
       </div>
     );
-  }
 }

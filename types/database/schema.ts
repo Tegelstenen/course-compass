@@ -49,11 +49,14 @@ export const user_favorites = pgTable(
       .references(() => courses.code, { onDelete: "cascade" }), // references a course code as foreign key
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
-      .notNull()
-  }, (table) => ({
+      .notNull(),
+  },
+  (table) => ({
     primaryKey: primaryKey({ columns: [table.userId, table.favoriteCourse] }),
   }),
 );
 
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
+export type InsertUserFavorite = typeof user_favorites.$inferInsert;
+export type SelectUserFavorites = typeof user_favorites.$inferSelect;
