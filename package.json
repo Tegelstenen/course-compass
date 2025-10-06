@@ -31,11 +31,15 @@
   "homepage": "https://github.com/Tegelstenen/course-compass#readme",
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
-    "@biomejs/biome": "^2.2.4"
+    "@biomejs/biome": "^2.2.4",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0"
   },
   "dependencies": {
     "@nestjs/config": "^4.0.2",
+    "@nestjs/platform-express": "^11.1.6",
     "dotenv": "^17.2.2",
-    "drizzle-kit": "^0.12.8"
+    "drizzle-kit": "^0.12.8",
+    "multer": "^2.0.2"
   }
 }

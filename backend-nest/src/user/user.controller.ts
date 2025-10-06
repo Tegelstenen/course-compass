@@ -1,5 +1,14 @@
 // src/app.controller.ts
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { profile } from "console";
 import {
   Session,
   SuperTokensAuthGuard,
@@ -20,6 +29,26 @@ export class UserController {
       userId: session.getUserId(),
       name: user.name,
       email: user.email,
+      //profilePicture: user.profilePicture || null,
+    };
+  }
+
+  // Upload profile picture
+  @Post("/profile-picture")
+  @VerifySession()
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadProfilePicture(
+    @Session() session: SessionContainer,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    // For now, just logging file info:
+    console.log("Uploaded file:", file);
+
+    // TODO: Save the file to storage
+
+    // Returning a fake URL for testing
+    return {
+      url: `http://localhost:8080/uploads/${file.originalname}`,
     };
   }
 }
