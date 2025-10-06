@@ -20,6 +20,7 @@ CREATE TABLE "users" (
 CREATE TABLE "user_favorites" (
 	"user_id" text NOT NULL, 
 	"fav_course_code" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 
 	PRIMARY KEY ("user_id", "fav_course_code"),
     

@@ -1,4 +1,10 @@
-import { pgEnum, pgTable, text, timestamp, primaryKey } from "drizzle-orm/pg-core";
+import {
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const courseState = pgEnum("course_state", [
   "CANCELLED",
@@ -28,20 +34,25 @@ export const users = pgTable("users", {
     .notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
-    .notNull()
+    .notNull(),
 });
 
 // junction table for mapping users to favorite courses
-export const user_favorites = pgTable("user_favorites", {
-  userId: text("id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade"}), // references a user in the user table as foreign key
-  favoriteCourse: text("fav_course_code")
-    .notNull()
-    .references( () => courses.code, { onDelete: "cascade"}) // references a course code as foreign key
-}, (table) => ({
-  pk: primaryKey({columns: [table.userId, table.favoriteCourse]})
-  })  
+export const user_favorites = pgTable(
+  "user_favorites",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }), // references a user in the user table as foreign key
+    favoriteCourse: text("fav_course_code")
+      .notNull()
+      .references(() => courses.code, { onDelete: "cascade" }), // references a course code as foreign key
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  }, (table) => ({
+    primaryKey: primaryKey({ columns: [table.userId, table.favoriteCourse] }),
+  }),
 );
 
 export type InsertUser = typeof users.$inferInsert;
