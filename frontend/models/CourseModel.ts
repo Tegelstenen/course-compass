@@ -1,12 +1,11 @@
 export interface Course {
-  // the course interface makes sure the course objects are consistent
-  code: string; // cource code
-  name: string; // title of course
-  description: string; // make sure this exists in the backend
+  _id: string;
+  course_code: string;
+  course_name: string;
+  description: string;
   department: string;
   rating?: number;
   credits?: number;
-  // add credits and description
 }
 
 export interface SearchParams {

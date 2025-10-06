@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator"
-import { Rating, RatingButton } from '@/components/ui/shadcn-io/rating';
+import { Separator } from "@/components/ui/separator";
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 
 type SearchItemProps = {
   courseName: string;
@@ -10,11 +10,11 @@ type SearchItemProps = {
 };
 
 export function SearchItem({
-  courseName="Calculus in Several Variables",
-  courseCode="SF1626",
-  rating=4,
-  semester="P1",
-  ects=7.5,
+  courseName = "Calculus in Several Variables",
+  courseCode = "SF1626",
+  rating = 4,
+  semester = "P1",
+  ects = 7.5,
 }: SearchItemProps) {
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
@@ -26,8 +26,11 @@ export function SearchItem({
       <div className="flex h-5 items-center space-x-4 text-sm">
         <div>
           <Rating value={rating} readOnly>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <RatingButton className="text-yellow-600" key={index} />
+            {(["one", "two", "three", "four", "five"] as const).map((starId) => (
+              <RatingButton
+                className="text-yellow-600"
+                key={`star-${courseCode}-${starId}`}
+              />
             ))}
           </Rating>
         </div>

@@ -1,4 +1,5 @@
 // src/app.controller.ts
+
 import {
   Controller,
   Get,
@@ -8,7 +9,6 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { profile } from "console";
 import {
   Session,
   SuperTokensAuthGuard,
@@ -38,7 +38,7 @@ export class UserController {
   @VerifySession()
   @UseInterceptors(FileInterceptor("file"))
   async uploadProfilePicture(
-    @Session() session: SessionContainer,
+    @Session() _session: SessionContainer,
     @UploadedFile() file: Express.Multer.File,
   ) {
     // For now, just logging file info:

@@ -16,14 +16,13 @@ export class SearchService {
 
   async searchCourses(query: string, size = 10): Promise<SearchResult[]> {
     if (!query || !query.trim()) return [];
-
     const res = await this.es.search<unknown, CourseMapping>({
       index: INDEX,
       size,
       query: {
         multi_match: {
           query,
-          fields: ["course_name^2", "goals", "content"],
+          fields: ["course_name^2", "course_code^2", "goals", "content"],
           fuzziness: "AUTO",
           type: "best_fields",
         },
