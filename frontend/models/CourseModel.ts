@@ -1,42 +1,28 @@
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db/db";
-import { courses, type SelectCourse } from "@/lib/db/schema";
-
 export interface Course {
-  code: string;
+  // the course interface makes sure the course objects are consistent
+  code: string; // cource code
   name: string; // title of course
+  description: string; // make sure this exists in the backend
   department: string;
+  rating?: number;
+  credits?: number;
   // add credits and description
 }
 
-// This logic might change a bit with Elasticsearch
-export class CourseModel {
-  static async getAllCourses(): Promise<SelectCourse[]> {
-    return await db.select().from(courses);
-  }
+export interface SearchParams {
+  // ensure this matches the backend in the future
+  query: string;
+  page: number;
+  pageSize: number;
+  sort?: string;
+  filters?: Record<string, string | string[]>;
+}
 
-  static async getCourseByName(name: string): Promise<SelectCourse[]> {
-    const course = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.name, name));
-
-    return course ?? [];
-  }
-
-  static async getByCode(code: string): Promise<SelectCourse | null> {
-    const [course] = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.code, code));
-
-    return course ?? null;
-  }
-
-  static async getAllActiveCourses(): Promise<SelectCourse[]> {
-    return await db
-      .select()
-      .from(courses)
-      .where(eq(courses.state, "ESTABLISHED"));
-  }
+export interface SearchResponse {
+  results: Course[]; // ensures the results are course objects (but this has to be updated to match backend logic)
+  total: number;
+  page: number;
+  pageSize: number;
+  timings?: { tookMs: number };
+  // could also include facets, i.e. filters ("get all courses over a certain rating")
 }

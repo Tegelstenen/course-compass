@@ -257,7 +257,7 @@ export class IngestService {
       if (count % 10 === 0) {
         this.logger.log(`Processed ${count} courses so far`);
       }
-      const plan = await this.getCourseDescription(course).catch((e) => {
+      const plan = await this.getCourseDescription(course).catch((_e) => {
         return null;
       });
       const doc = plan
