@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "biome check",
+    "lint": "biome check --fix",
     "format": "biome format --write",
     "dev:fe": "npm run dev -C frontend",
     "dev:be": "npm run start:dev -C backend-nest",
