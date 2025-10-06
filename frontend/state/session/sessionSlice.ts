@@ -25,7 +25,14 @@ export const getSession = createAsyncThunk(
         credentials: "include",
       }).then((res) => res.json());
 
-      dispatch(setUser({ name: userData.name, email: userData.email }));
+      dispatch(
+        setUser({
+          name: userData.name,
+          email: userData.email,
+          userFavorites: [],
+          profilePicture: null,
+        }),
+      );
 
       return {
         userId: userData.userId,

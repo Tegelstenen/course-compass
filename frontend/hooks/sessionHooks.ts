@@ -1,3 +1,5 @@
+"use client";
+
 import { type Dispatch, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "@/state/session/sessionSlice";

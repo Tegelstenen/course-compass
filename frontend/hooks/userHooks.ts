@@ -1,9 +1,13 @@
+"use client";
+
 import { useSelector } from "react-redux";
 import type { RootState } from "../state/store";
 
 // exports the full user data
 export function useUserData() {
-  return useSelector((state: RootState) => state.user);
+  const userState = useSelector((state: RootState) => state.user);
+  console.log("In hook", userState);
+  return userState;
 }
 
 // exports parts of the user data (not sure if needed, but good practice if only some parts of user data are needed)

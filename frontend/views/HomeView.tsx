@@ -2,7 +2,18 @@ import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 
-export default function HomeView() {
+interface HomeViewProps {
+  // Define the prop name (onSubmit) and its type
+  // It's a function that takes no arguments and returns nothing (void)
+  onSubmit: () => void;
+}
+
+export default function HomeView(props: HomeViewProps) {
+  const handleClick = () => {
+    console.log("clicked!");
+    props.onSubmit();
+  };
+
   return (
     <div
       className="flex flex-col w-full justify-left p-40 text-secondary"
@@ -26,11 +37,9 @@ export default function HomeView() {
         </h2>
       </div>
       <div className="flex relative z-10 w-full pt-8">
-        <Button size="larger" variant="default" asChild>
-          <Link href="/search" className="flex items-center">
-            Get started
-            <ArrowRightIcon />
-          </Link>
+        <Button size="larger" variant="default" onClick={handleClick}>
+          Get started
+          <ArrowRightIcon />
         </Button>
       </div>
     </div>

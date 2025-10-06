@@ -1,15 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { clearSession, getSession } from "../session/sessionSlice";
 
-interface UserState {
+export interface UserState {
   name: string;
   email: string;
+  userFavorites: [];
   profilePicture: string | null;
 }
 
 const initialState: UserState = {
   name: "",
   email: "",
+  userFavorites: [],
   profilePicture: null,
 };
 
