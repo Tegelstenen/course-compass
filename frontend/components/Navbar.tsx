@@ -1,7 +1,7 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,9 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { RootState } from "@/state/store";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const user = useSelector((s: RootState) => s.user);
 
   return (
     <div className="flex flex-col items-start h-full max-h-screen gap-6 p-2.5 max-w-[25rem] border-r bg-primary text-primary-foreground">
@@ -44,8 +46,19 @@ export default function Navbar() {
       </ul>
 
       <DropdownMenu>
-        <DropdownMenuTrigger className="w-full mt-auto mb-10 h-auto hover:bg-accent rounded-md text-sm font-medium transition-all justify-start p-2 whitespace-normal cursor-pointer">
-          Username
+        <DropdownMenuTrigger className="w-full mt-auto mb-10 h-auto hover:bg-accent rounded-md text-sm font-medium transition-all justify-start p-2 whitespace-normal cursor-pointer flex items-center gap-2 group hover:bg-accent">
+          {user.profilePicture ? (
+            <img
+              src={user.profilePicture}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-400" /> // placeholder
+          )}
+          <span className="transition-colors group-hover:text-black">
+            {user.name?.trim() || user.email?.split("@")[0] || "User"}
+          </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

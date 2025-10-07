@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
 import { initST } from "@/lib/supertokens.client";
 import type { Dispatch } from "@/state/store";
+import { clearUser } from "@/state/user/userSlice";
 import { getUser } from "@/state/user/userThunk";
 import OAuthCallbackView from "@/views/OAuthCallbackView";
 
@@ -23,10 +24,11 @@ export default function OAuthCallbackController() {
         router.replace("/signedInExample");
       } else {
         // Todo add a toaser to show the error to the user
+        dispatch(clearUser());
         router.replace("/login?error=oauth");
       }
     })();
-  }, [router]);
+  }, [router, dispatch]);
 
   return <OAuthCallbackView />;
 }
