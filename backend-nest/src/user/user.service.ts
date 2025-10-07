@@ -52,7 +52,6 @@ export class UserService {
       .from(schema.users)
       .where(eq(schema.users.id, id))
       .limit(1);
-
     const user = users[0];
 
     if (!user) {

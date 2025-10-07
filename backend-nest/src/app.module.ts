@@ -8,6 +8,7 @@ import { IngestModule } from "./ingest/ingest.module";
 import { ElasticSearchModule } from "./search/search.module";
 import { SupertokensModule } from "./supertokens/supertokens.module";
 import { UserModule } from "./user/user.module";
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from "./user/user.module";
     ElasticSearchModule,
     UserModule,
     SupertokensModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

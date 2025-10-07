@@ -6,7 +6,6 @@ import type { RootState } from "../state/store";
 // exports the full user data
 export function useUserData() {
   const userState = useSelector((state: RootState) => state.user);
-  console.log("In hook", userState);
   return userState;
 }
 
