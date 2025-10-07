@@ -1,5 +1,30 @@
 import type { Dispatch } from "@/state/store";
-import { clearUser, setProfilePicture } from "./userSlice";
+import { clearUser, setProfilePicture, setUser } from "./userSlice";
+
+export function getUser() {
+  return async (dispatch: Dispatch) => {
+    try {
+      const res = await fetch("http://localhost:8080/user/me", {
+        method: "GET",
+        credentials: "include", // include SuperTokens session cookies
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      dispatch(
+        setUser({
+          name: data.name,
+          email: data.email,
+          profilePicture: data.profilePicture ?? null,
+        }),
+      );
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      dispatch(clearUser());
+    }
+  };
+}
 
 // Uploading profile picture
 export function uploadProfilePicture(file: File) {
