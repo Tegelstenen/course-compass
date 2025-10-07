@@ -26,9 +26,14 @@ export function SearchItem({
       <div className="flex h-5 items-center space-x-4 text-sm">
         <div>
           <Rating value={rating} readOnly>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <RatingButton className="text-yellow-600" key={index} />
-            ))}
+            {(["one", "two", "three", "four", "five"] as const).map(
+              (starId) => (
+                <RatingButton
+                  className="text-yellow-600"
+                  key={`star-${courseCode}-${starId}`}
+                />
+              ),
+            )}
           </Rating>
         </div>
         <Separator orientation="vertical" />

@@ -1,5 +1,5 @@
-import type { Dispatch, RootState } from "@/state/store";
-import { clearUser, setProfilePicture, setUser } from "./userSlice";
+import type { Dispatch } from "@/state/store";
+import { clearUser, setProfilePicture } from "./userSlice";
 
 // Uploading profile picture
 export function uploadProfilePicture(file: File) {

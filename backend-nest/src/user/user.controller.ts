@@ -1,4 +1,5 @@
 // src/app.controller.ts
+
 import {
   Controller,
   Get,
@@ -50,7 +51,7 @@ export class UserController {
   @VerifySession()
   @UseInterceptors(FileInterceptor("file"))
   async uploadProfilePicture(
-    @Session() session: SessionContainer,
+    @Session() _session: SessionContainer,
     @UploadedFile() file: Express.Multer.File,
   ) {
     // For now, just logging file info:

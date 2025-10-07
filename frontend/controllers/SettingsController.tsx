@@ -3,11 +3,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
-import { deleteAccount, uploadProfilePicture } from "@/state/user/userThunk";
+import { deleteAccount } from "@/state/user/userThunk";
 import SettingsView from "@/views/SettingsView";
 
 export default function SettingsController() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<Dispatch>();
   const { profilePicture } = useSelector((state: RootState) => state.user);
 
   // Handle file upload
@@ -27,7 +27,7 @@ export default function SettingsController() {
         "Are you sure you want to delete your account? This can't be undone.",
       )
     ) {
-      dispatch(deleteAccount() as any);
+      dispatch(deleteAccount());
     }
   };
 

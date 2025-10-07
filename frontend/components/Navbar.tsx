@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,12 @@ export default function Navbar() {
     >
       <Link href="/">
         <Button variant="nav">
-          <img src="/compass-icon-1.png" width={50} alt="compass icon"></img>
+          <Image
+            src="/compass-icon-1.png"
+            width={50}
+            height={50}
+            alt="compass icon"
+          />
           <h1>Course Compass</h1>
         </Button>
       </Link>
@@ -28,11 +34,12 @@ export default function Navbar() {
         <li>
           <Link href="/search">
             <Button variant="nav">
-              <img
+              <Image
                 src="/search-icon-png-1.png"
                 width={15}
+                height={15}
                 alt="search icon"
-              ></img>
+              />
               <h1 className="ml-2">Explore</h1>
             </Button>
           </Link>
@@ -40,7 +47,12 @@ export default function Navbar() {
         <li>
           <Link href="/user">
             <Button variant="nav">
-              <img src="/star-icon.png" width={15} alt="star icon"></img>
+              <Image
+                src="/star-icon.png"
+                width={15}
+                height={15}
+                alt="star icon"
+              />
               <h1 className="ml-2">My Reviews</h1>
             </Button>
           </Link>
