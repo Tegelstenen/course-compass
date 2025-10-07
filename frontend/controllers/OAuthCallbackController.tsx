@@ -14,7 +14,7 @@ export default function OAuthCallbackController() {
       const result = await ThirdParty.signInAndUp();
       if (result.status === "OK") {
         await ThirdParty.getStateAndOtherInfoFromStorage();
-        router.replace("/signedInExample");
+        router.replace("/user");
       } else {
         // Todo add a toaser to show the error to the user
         router.replace("/login?error=oauth");

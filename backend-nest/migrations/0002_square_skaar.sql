@@ -16,3 +16,21 @@ CREATE TABLE "users" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
+
+CREATE TABLE "user_favorites" (
+	"user_id" text NOT NULL, 
+	"fav_course_code" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+
+	PRIMARY KEY ("user_id", "fav_course_code"),
+    
+    CONSTRAINT fk_user 
+        FOREIGN KEY ("user_id") 
+        REFERENCES "users" ("id") 
+        ON DELETE CASCADE,
+        
+    CONSTRAINT fk_course 
+        FOREIGN KEY ("fav_course_code")
+        REFERENCES "courses" ("code") 
+        ON DELETE CASCADE
+);
