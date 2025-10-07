@@ -12,7 +12,9 @@ import type { Dispatch, RootState } from "@/state/store";
 
 export default function SearchController() {
   // Access state
-  const { query, filters } = useSelector((s: RootState) => s.search);
+  const { query, filters, results, isLoading, error } = useSelector(
+    (s: RootState) => s.search,
+  );
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
 
   const [localQuery, setLocalQuery] = useState(query); // redux synced
@@ -76,6 +78,17 @@ export default function SearchController() {
       <button type="submit">Search</button>
       {/* Test output */}
       <p>You searched for: {localQuery}</p>
+
+      {isLoading && <p>Searching...</p>}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+      <ul>
+        {results.map((course) => (
+          <li key={course._id}>
+            <strong>{course.course_code}</strong>: {course.course_name}
+          </li>
+        ))}
+      </ul>
     </form>
   );
 }

@@ -24,7 +24,7 @@ const INDEX = "courses";
 @Injectable()
 export class IngestService {
   private readonly logger = new Logger(IngestService.name);
-  private fxp = new XMLParser({
+  private readonly fxp = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "@_",
     parseAttributeValue: true,
@@ -188,9 +188,13 @@ export class IngestService {
           },
         },
       });
-    } catch (e: any) {
-      const status = e?.meta?.statusCode;
-      const type = e?.meta?.body?.error?.type;
+    } catch (e: unknown) {
+      type EsError = {
+        meta?: { statusCode?: number; body?: { error?: { type?: string } } };
+      };
+      const err = e as EsError;
+      const status = err.meta?.statusCode;
+      const type = err.meta?.body?.error?.type;
       if (status === 400 && type === "resource_already_exists_exception")
         return;
       if (status === 403) {
@@ -201,7 +205,8 @@ export class IngestService {
   }
 
   private docsToBulkOperations(docs: Document[]) {
-    const ops: any[] = [];
+    type IndexOp = { index: { _index: string; _id: string } };
+    const ops: Array<IndexOp | Document> = [];
     for (const d of docs) {
       ops.push({ index: { _index: INDEX, _id: d.course_code } });
       ops.push(d);
@@ -222,21 +227,37 @@ export class IngestService {
       this.logger.log(`Bulk OK: ${res.items.length} indexed`);
       return;
     }
-    const failures = (res.items as any[])
-      .map((item, i) => {
-        const action = Object.keys(item)[0];
-        const r = (item as any)[action];
+    type BulkItem = Record<
+      string,
+      {
+        _id?: string;
+        status?: number;
+        error?: { type?: string; reason?: string; caused_by?: unknown };
+      }
+    >;
+    type Failure = {
+      pos: number;
+      id?: string;
+      status?: number;
+      type?: string;
+      reason?: string;
+      caused_by?: unknown;
+    };
+    const failures = (res.items as BulkItem[])
+      .map((item, i): Failure | null => {
+        const action = Object.keys(item)[0] as keyof typeof item;
+        const r = item[action];
         if (!r?.error) return null;
         return {
           pos: i,
           id: r._id,
           status: r.status,
-          type: r.error.type,
-          reason: r.error.reason,
-          caused_by: r.error.caused_by,
+          type: r.error?.type,
+          reason: r.error?.reason,
+          caused_by: r.error?.caused_by,
         };
       })
-      .filter(Boolean) as any[];
+      .filter((x): x is Failure => x !== null);
 
     this.logger.error(`Bulk had ${failures.length} failures`);
     const summary = failures

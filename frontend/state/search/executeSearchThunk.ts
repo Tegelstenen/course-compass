@@ -1,6 +1,6 @@
 // frontend/state/search/executeSearch.ts
 
-import type { Course, SearchResponse } from "@/models/CourseModel";
+import type { Course } from "@/models/CourseModel";
 import type { Dispatch, RootState } from "@/state/store";
 import { searchFailed, searchRequested, searchSucceeded } from "./searchSlice";
 
@@ -42,19 +42,25 @@ export function executeSearch() {
     });
 
     try {
-      const res = await fetch(`/api/search?${params.toString()}`); // fetch is used to access the search endpoint in backend with params query, page number, and number of results per page
+      // const res = await fetch(`/api/search?${params.toString()}`); // fetch is used to access the search endpoint in backend with params query, page number, and number of results per page
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/search?q=${encodeURIComponent(query)}`,
+      );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const raw = (await res.json()) as { results: Course[] };
-
-      const data: SearchResponse = {
-        results: raw.results,
-        total: raw.results.length, // we will use this to display the total number of results
-        page,
-        pageSize,
+      const raw = (await res.json()) as {
+        results: Course[];
+        total: number;
       };
 
-      dispatch(searchSucceeded(data));
+      dispatch(
+        searchSucceeded({
+          results: raw.results,
+          total: raw.total,
+          page: 1,
+          pageSize, // unchanged, but not used yet
+        }),
+      );
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Search failed";
       dispatch(searchFailed(message));

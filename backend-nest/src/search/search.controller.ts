@@ -13,6 +13,6 @@ export class SearchController {
       q ?? "",
       limit,
     );
-    return { results };
+    return { results, total: results.length };
   }
 }

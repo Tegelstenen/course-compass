@@ -48,10 +48,12 @@ export class HealthService {
 
     const [dbRes, esRes, kthRes] = results;
 
-    const format = (res: PromiseSettledResult<any>) =>
+    /*const format = (res: PromiseSettledResult<any>) =>
       res.status === "fulfilled"
         ? res.value
-        : { ok: false, error: res.reason?.message ?? String(res.reason) };
+        : { ok: false, error: res.reason?.message ?? String(res.reason) };*/
+    const format = (res: PromiseSettledResult<unknown>) =>
+      res.status === "fulfilled" ? res.value : res.reason;
 
     const db = format(dbRes);
     const elasticsearch = format(esRes);
