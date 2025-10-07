@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { CourseService } from './course.service';
-import { CourseController } from './course.controller';
+import { Module } from "@nestjs/common";
+import { CourseController } from "./course.controller";
+import { CourseService } from "./course.service";
+import { DrizzleModule } from '../database/drizzle.module'; 
 
 @Module({
+imports: [DrizzleModule],
   providers: [CourseService],
-  controllers: [CourseController]
+  controllers: [CourseController],
 })
 export class CourseModule {}
