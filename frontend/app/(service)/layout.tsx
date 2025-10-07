@@ -1,19 +1,20 @@
-// frontend/app/(service)/layout.tsx
 import type React from "react";
 import AuthProvider from "@/providers/AuthProvider";
 import Navbar from "../../components/Navbar";
 
-// This layout component wraps all pages in the (service) group
 export default function ServiceLayout({
   children,
 }: {
-  children: React.ReactNode; // 'children' is the content of the nested pages (e.g., the page.tsx file)
+  children: React.ReactNode;
 }) {
   return (
     <AuthProvider>
-      <div className="flex w-full">
-        <Navbar />
-        <main className="p-8">{children}</main>
+      <div className="min-h-screen">
+        <aside className="fixed inset-y-0 left-0 w-46">
+          <Navbar />
+        </aside>
+
+        <main className="ml-46 min-h-screen overflow-auto">{children}</main>
       </div>
     </AuthProvider>
   );
