@@ -8,21 +8,14 @@ import { initST } from "@/lib/supertokens.client";
 
 initST(); // ← runs immediately on module load (before render)
 
-import { type Dispatch, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
-import { getSession } from "@/state/session/sessionSlice";
-import type { RootState } from "@/state/store";
+import { useSessionData } from "@/hooks/sessionHooks";
+// Import hooks
+import { useUserData } from "@/hooks/userHooks";
 
 export default function ProtectedPage() {
-  const dispatch = useDispatch<Dispatch>();
-  const { userId, isLoading } = useSelector((s: RootState) => s.session);
-  const user = useSelector((s: RootState) => s.user);
-
-  useEffect(() => {
-    // (optional app logic)
-    dispatch(getSession());
-  }, [dispatch]);
+  const user = useUserData();
+  const { isLoading, userId } = useSessionData();
 
   return (
     <SessionAuth requireAuth>

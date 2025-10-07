@@ -57,7 +57,9 @@ export default function Navbar() {
             <div className="w-10 h-10 rounded-full bg-gray-400" /> // placeholder
           )}
           <span className="transition-colors group-hover:text-black">
-            {user.name?.trim() || user.email?.split("@")[0] || "User"}
+            {user.name?.trim() ||
+              user.email?.split("@")[0] ||
+              "Loading user..."}
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

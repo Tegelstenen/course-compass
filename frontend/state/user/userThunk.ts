@@ -17,6 +17,7 @@ export function getUser() {
           name: data.name,
           email: data.email,
           profilePicture: data.profilePicture ?? null,
+          userFavorites: data.userFavorites ?? [],
         }),
       );
     } catch (err) {
