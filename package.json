@@ -42,6 +42,7 @@
     "@nestjs/platform-express": "^11.1.6",
     "dotenv": "^17.2.2",
     "drizzle-kit": "^0.12.8",
+    "motion": "^12.23.22",
     "multer": "^2.0.2",
     "uuid": "^13.0.0"
   }
