@@ -28,8 +28,6 @@ export class UserController {
     const userId = session.getUserId();
     const user = await this.userService.getUser(userId);
 
-    console.log("In controller:", user);
-
     if (!user) {
       // Throw an exception if the user exists in SuperTokens but not in the database
       throw new NotFoundException(

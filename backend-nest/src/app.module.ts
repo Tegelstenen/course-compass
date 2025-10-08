@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { CourseModule } from "./course/course.module";
 import { DrizzleModule } from "./database/drizzle.module";
 import { HealthModule } from "./health/health.module";
 import { IngestModule } from "./ingest/ingest.module";
@@ -18,6 +19,7 @@ import { UserModule } from "./user/user.module";
     ElasticSearchModule,
     UserModule,
     SupertokensModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
