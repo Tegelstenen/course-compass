@@ -87,6 +87,7 @@ export default function SearchController() {
         {results.map((course) => (
           <li key={course._id}>
             <strong>{course.course_code}</strong>: {course.course_name}
+            <div>Department: {course.department}</div>
             <div>{parse(course.content)}</div>
             <div>Goals: {parse(course.goals)}</div>
           </li>
