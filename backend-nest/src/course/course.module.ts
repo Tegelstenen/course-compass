@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
+import { DrizzleModule } from "../database/drizzle.module";
 import { CourseController } from "./course.controller";
 import { CourseService } from "./course.service";
-import { DrizzleModule } from '../database/drizzle.module'; 
 
 @Module({
-imports: [DrizzleModule],
+  imports: [DrizzleModule],
   providers: [CourseService],
   controllers: [CourseController],
 })
