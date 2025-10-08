@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { executeSearch } from "@/state/search/executeSearchThunk";
@@ -10,7 +11,6 @@ import {
 } from "@/state/search/searchSlice";
 import type { Dispatch, RootState } from "@/state/store";
 import SearchView from "@/views/SearchView";
-import { Search } from "lucide-react";
 
 export default function SearchController() {
   // Access state
@@ -64,7 +64,6 @@ export default function SearchController() {
     },
     [dispatch], // eslint-disable-line react-hooks/exhaustive-deps
   );
-
   // onSortChange
 
   return (

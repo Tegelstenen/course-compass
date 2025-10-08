@@ -1,5 +1,11 @@
+"use client";
+
+import { SearchIcon } from "lucide-react";
 import { SearchItem } from "@/components/SearchItem";
-import { Course } from "@/models/CourseModel";
+import { SearchItemSkeleton } from "@/components/SearchItemSkeleton";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import type { Course } from "@/models/CourseModel";
 
 type SearchViewProps = {
   localQuery: string;
@@ -10,6 +16,8 @@ type SearchViewProps = {
   results: Course[];
 };
 
+const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
+
 export default function SearchView({
   localQuery,
   setLocalQuery,
@@ -19,27 +27,52 @@ export default function SearchView({
   results,
 }: SearchViewProps) {
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        value={localQuery}
-        onChange={(e) => setLocalQuery(e.target.value)}
-        placeholder="Search..."
-      />
-      <button type="submit">Search</button>
-      {/* Test output */}
-      <p>You searched for: {localQuery}</p>
+    <div>
+      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8">
+        Find Your Course
+      </p>
+      <div className="centered flex flex-col items-center gap-12 pb-12">
+        <form onSubmit={onSubmit} className="flex items-center gap-4">
+          <input
+            className="rounded-md outline p-2 w-64 text-center"
+            type="text"
+            value={localQuery}
+            onChange={(e) => setLocalQuery(e.target.value)}
+            placeholder="Search course..."
+          />
+          <Button variant="outline" className="h-10 w-10 p-0">
+            {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
+          </Button>
+        </form>
+        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        {isLoading && (
+          <div className="w-full max-w-3xl">
+            <ul className="flex flex-col gap-6">
+              {skeletonKeys.map((key) => (
+                <li key={key}>
+                  <SearchItemSkeleton />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {isLoading && <p>Searching...</p>}
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
-      <ul>
-        {results.map((course) => (
-          <li key={course._id}>
-            <strong>{course.course_code}</strong>: {course.course_name}
-          </li>
-        ))}
-      </ul>
-    </form>
+        <div className="w-full max-w-3xl">
+          <ul className="flex flex-col gap-6">
+            {results.map((course) => (
+              <li key={course._id}>
+                <SearchItem
+                  courseName={course.course_name}
+                  courseCode={course.course_code}
+                  rating={5}
+                  semester={"P1"}
+                  ects={7.5}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }
