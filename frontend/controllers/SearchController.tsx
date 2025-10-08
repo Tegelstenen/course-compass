@@ -1,5 +1,6 @@
 "use client";
 
+import parse from "html-react-parser"; // obs this will be dealt with in the SearchView
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { executeSearch } from "@/state/search/executeSearchThunk";
@@ -86,6 +87,8 @@ export default function SearchController() {
         {results.map((course) => (
           <li key={course._id}>
             <strong>{course.course_code}</strong>: {course.course_name}
+            <div>{parse(course.content)}</div>
+            <div>Goals: {parse(course.goals)}</div>
           </li>
         ))}
       </ul>
