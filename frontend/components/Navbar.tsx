@@ -77,7 +77,7 @@ export default function Navbar() {
               <span>Profile</span>
             </DropdownMenuItem>
           </Link>
-        <DropdownMenuItem>Subscriptions</DropdownMenuItem>
+          <DropdownMenuItem>Subscriptions</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

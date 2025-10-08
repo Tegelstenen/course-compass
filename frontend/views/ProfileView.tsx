@@ -21,13 +21,13 @@ export default function ProfileView({
       <main className="flex-1 p-6 ml-12">
         <h1 className="text-2xl font-bold mb-8">My Profile</h1>
 
-          {/* Profile picture section */}
-          <section className="space-y-4">
+        {/* Profile picture section */}
+        <section className="space-y-4">
           <h2 className="text-lg font-semibold">User information</h2>
-          
+
           <p className="text-sm text-gray-700 mb-6">
-          <strong className="font-medium">Name:</strong>{" "}
-          {name?.trim() || email?.split("@")[0] || "Loading user..."}
+            <strong className="font-medium">Name:</strong>{" "}
+            {name?.trim() || email?.split("@")[0] || "Loading user..."}
           </p>
         </section>
 

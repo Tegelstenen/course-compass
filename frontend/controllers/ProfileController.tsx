@@ -8,7 +8,9 @@ import ProfileView from "@/views/ProfileView";
 
 export default function ProfileController() {
   const dispatch = useDispatch<Dispatch>();
-  const { name, email, profilePicture } = useSelector((state: RootState) => state.user);
+  const { name, email, profilePicture } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   // Handle file upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
