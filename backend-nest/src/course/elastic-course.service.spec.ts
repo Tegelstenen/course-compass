@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ElasticCourseService } from './elastic-course.service';
+import { Test, type TestingModule } from "@nestjs/testing";
+import { ElasticCourseService } from "./elastic-course.service";
 
-describe('ElasticCourseService', () => {
+describe("ElasticCourseService", () => {
   let service: ElasticCourseService;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('ElasticCourseService', () => {
     service = module.get<ElasticCourseService>(ElasticCourseService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

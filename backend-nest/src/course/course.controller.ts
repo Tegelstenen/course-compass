@@ -6,8 +6,8 @@ import { ElasticCourseService } from "./elastic-course.service";
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
-    private readonly elasticCourseService: ElasticCourseService
-) {}
+    private readonly elasticCourseService: ElasticCourseService,
+  ) {}
 
   @Get("/neon/:course_code")
   async getNeonCourse(@Param("course_code") courseCode: string) {
@@ -35,7 +35,8 @@ export class CourseController {
   // Fetching from ElasticSearch
   @Get("/elastic/:course_code")
   async getElasticCourse(@Param("course_code") courseCode: string) {
-    const courseDocument = await this.elasticCourseService.getCourseByCode(courseCode);
+    const courseDocument =
+      await this.elasticCourseService.getCourseByCode(courseCode);
 
     if (!courseDocument) {
       // We throw an exception if the course code cannot be found in database
