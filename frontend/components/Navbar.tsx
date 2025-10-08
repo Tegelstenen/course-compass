@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,11 +11,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { RootState } from "@/state/store";
+import type { RootState, Dispatch } from "@/state/store";
+import { logout } from "@/state/session/sessionSlice";
+
 
 export default function Navbar() {
   const pathname = usePathname();
+  const dispatch = useDispatch<Dispatch>();
   const user = useSelector((s: RootState) => s.user);
+
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
 
   return (
     <div className="flex flex-col items-start h-full max-h-screen gap-6 p-2.5 max-w-[25rem] border-r bg-primary text-primary-foreground">
@@ -77,7 +86,9 @@ export default function Navbar() {
               <span>Profile</span>
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>Subscriptions</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
