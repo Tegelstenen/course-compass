@@ -65,21 +65,19 @@ export default function Navbar() {
         <DropdownMenuContent>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Subscriptions</DropdownMenuItem>
-
-          <Link href="/settings" passHref>
+          <Link href="/profile" passHref>
             <DropdownMenuItem
               asChild
               className={
-                pathname === "/settings"
+                pathname === "/profile"
                   ? "bg-primary text-white font-semibold"
                   : ""
               }
             >
-              <span>Settings</span>
+              <span>Profile</span>
             </DropdownMenuItem>
           </Link>
+        <DropdownMenuItem>Subscriptions</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
