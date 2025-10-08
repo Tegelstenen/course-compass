@@ -43,4 +43,23 @@ export class SearchService {
         return { ...src, _id: h._id, _score: h._score };
       });
   }
+
+  async getCourseByCode(
+    courseCode: string,
+  ): Promise<CourseMapping | undefined> {
+    const res = await this.es.search<CourseMapping>({
+      index: INDEX,
+      size: 1,
+      query: {
+        term: {
+          course_code: courseCode,
+        },
+      },
+    });
+    const hits = res.hits?.hits ?? []; // fallback on [] which triggers a return of "undefined"
+    if (hits.length > 0) {
+      return hits[0]._source;
+    }
+    return undefined;
+  }
 }
