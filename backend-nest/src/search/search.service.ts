@@ -14,30 +14,38 @@ export type SearchResult = CourseMapping & {
 export class SearchService {
   constructor(@Inject(ES) private readonly es: ESClient) {}
 
-  async searchCourses(query: string, size = 10, filters?: { department?: string; minRating?: number }): Promise<SearchResult[]> {
+  async searchCourses(
+    query: string,
+    size = 10,
+    filters?: { department?: string; minRating?: number },
+  ): Promise<SearchResult[]> {
     if (!query?.trim()) return [];
     const searchFilters: any[] = [];
-    if (filters?.department) searchFilters.push({ term: { department: filters.department } });
-    if (filters?.minRating) searchFilters.push({ range: { averageRating: { gte: filters.minRating } } });
+    if (filters?.department)
+      searchFilters.push({ term: { department: filters.department } });
+    if (filters?.minRating)
+      searchFilters.push({
+        range: { averageRating: { gte: filters.minRating } },
+      });
 
     const res = await this.es.search<unknown, CourseMapping>({
       index: INDEX,
       size,
-        query: {
-          bool: {
-            must: {
-              multi_match: {
-                query,
-                fields: ["course_name^2", "course_code^2", "goals", "content"],
-                fuzziness: "AUTO",
-                type: "best_fields",
-              },
+      query: {
+        bool: {
+          must: {
+            multi_match: {
+              query,
+              fields: ["course_name^2", "course_code^2", "goals", "content"],
+              fuzziness: "AUTO",
+              type: "best_fields",
             },
-            filter: searchFilters,
           },
+          filter: searchFilters,
         },
-        _source: ["course_name", "course_code", "department", "goals", "content"],
-      });
+      },
+      _source: ["course_name", "course_code", "department", "goals", "content"],
+    });
 
     const hits = (res.hits?.hits ?? []) as Array<{
       _id: string;
