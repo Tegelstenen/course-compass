@@ -1,29 +1,20 @@
-import { Client as ESClient } from "@elastic/elasticsearch";
 import { Inject, Injectable } from "@nestjs/common";
-import { ES } from "./search.constants.js";
-
-interface DepartmentsAgg {
-  departments: {
-    buckets: Array<{ key: string; count: number }>;
-  };
-}
+import { sql } from "drizzle-orm";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { DRIZZLE } from "src/database/drizzle.module";
+import * as schema from "../../../types/database/schema";
 
 @Injectable()
 export class DepartmentsService {
-  constructor(@Inject(ES) private readonly es: ESClient) {}
+  constructor(
+    @Inject(DRIZZLE) private readonly db: NeonHttpDatabase<typeof schema>,
+  ) {}
 
   async getDepartments(): Promise<string[]> {
-    const res = await this.es.search<unknown, DepartmentsAgg>({
-      index: "courses",
-      size: 0,
-      aggs: {
-        departments: { terms: { field: "department", size: 100 } },
-      },
-    });
-
-    return (res.aggregations?.departments?.buckets ?? []).map(
-      // This is used for retrieving all unique departments from the courses index
-      (b: DepartmentsAgg["departments"]["buckets"][0]) => b.key,
+    // Get all unique departments from the courses table and sort alphabetically
+    const result = await this.db.execute(
+      sql`SELECT DISTINCT department FROM ${schema.courses} ORDER BY department ASC`,
     );
+    return result.rows.map((r: any) => r.department);
   }
 }
