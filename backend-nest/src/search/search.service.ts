@@ -21,8 +21,13 @@ export class SearchService {
   ): Promise<SearchResult[]> {
     if (!query?.trim()) return [];
     const searchFilters: any[] = [];
-    if (filters?.department)
-      searchFilters.push({ term: { department: filters.department } });
+    if (filters?.department) {
+      const dept = filters.department;
+      console.log("Filtering by department:", JSON.stringify(dept));
+      searchFilters.push({
+        term: { department: dept },
+      });
+    }
     if (filters?.minRating)
       searchFilters.push({
         range: { averageRating: { gte: filters.minRating } },
