@@ -23,7 +23,6 @@ export default function HomeController() {
     dispatch(getSession());
   }, [dispatch]);
 
-
   function onSubmit() {
     // If already authenticated, go directly to search
     if (isAuthenticated) {
