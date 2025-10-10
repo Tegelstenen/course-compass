@@ -16,8 +16,20 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewsService.create(createReviewDto);
+  create(
+    @Body()
+    body: {
+      courseCode: string;
+      userId: string;
+      easyScore: number;
+      usefulScore: number;
+      interestingScore: number;
+      wouldRecommend: boolean;
+      content: string;
+    },
+  ) {
+    const { courseCode, userId, ...reviewData } = body;
+    return this.reviewsService.create(courseCode, userId, reviewData);
   }
 
   @Get()
@@ -27,16 +39,25 @@ export class ReviewsController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.reviewsService.findOne(+id);
+    return this.reviewsService.findOne(id);
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateReviewDto: UpdateReviewDto) {
-    return this.reviewsService.update(+id, updateReviewDto);
+  update(
+    @Param("id") id: string,
+    reviewData: {
+      easyScore: number;
+      usefulScore: number;
+      interestingScore: number;
+      wouldRecommend: boolean;
+      content: string;
+    },
+  ) {
+    return this.reviewsService.update(id, reviewData);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.reviewsService.remove(+id);
+    return this.reviewsService.remove(id);
   }
 }
