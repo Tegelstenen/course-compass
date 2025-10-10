@@ -1,7 +1,6 @@
+import { motion, type Variants } from "motion/react";
 import { ArrowRightIcon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
-import { motion, Variants} from "motion/react"
-
 
 interface LandingPageViewProps {
   onSubmit: () => void;
@@ -10,7 +9,8 @@ interface LandingPageViewProps {
 // Animation presets (avoid doing this inline of the div)
 const containerVariants: Variants = {
   hidden: { opacity: 0 }, // initial state
-  visible: { // final state
+  visible: {
+    // final state
     opacity: 1,
     transition: {
       staggerChildren: 0.015, // the delay between each child
@@ -18,7 +18,8 @@ const containerVariants: Variants = {
   },
 };
 const childVariants: Variants = {
-  hidden: { // initial
+  hidden: {
+    // initial
     opacity: 0,
     y: 20, // sets the text 20px down
   },
@@ -33,10 +34,10 @@ const childVariants: Variants = {
   },
 };
 
-const textToAnimate = "Explore, find and express your thoughts of all KTH courses!";
+const textToAnimate =
+  "Explore, find and express your thoughts of all KTH courses!";
 
 export default function LandingPageView(props: LandingPageViewProps) {
-
   const handleClick = () => {
     console.log("clicked!");
     props.onSubmit();
@@ -48,7 +49,6 @@ export default function LandingPageView(props: LandingPageViewProps) {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-
       className="flex flex-col w-full justify-left p-40 text-secondary"
       style={{
         backgroundImage: 'url("course_map.jpg")',
@@ -60,17 +60,16 @@ export default function LandingPageView(props: LandingPageViewProps) {
       {/* Fades from transparent (left) over the image, to the background color (right) */}
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent"></div>
 
-      <div
-        className="relative z-10 w-1/2 text-wrap">
+      <div className="relative z-10 w-1/2 text-wrap">
         <h1 className="text-5xl font-extrabold tracking-wide leading-snug md:text-5xl">
           {characters.map((char, index) => {
             return (
-              <motion.span 
+              <motion.span
                 variants={childVariants}
                 key={index}
-                style={{ display: 'inline-block' }} 
-                >
-                  {char === " " ? "\u00A0" : char}
+                style={{ display: "inline-block" }}
+              >
+                {char === " " ? "\u00A0" : char}
               </motion.span>
             );
           })}
