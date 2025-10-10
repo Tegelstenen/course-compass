@@ -6,6 +6,8 @@ import { CourseModule } from "./course/course.module";
 import { DrizzleModule } from "./database/drizzle.module";
 import { HealthModule } from "./health/health.module";
 import { IngestModule } from "./ingest/ingest.module";
+import { DepartmentsController } from "./search/departments.controller";
+import { DepartmentsService } from "./search/departments.service";
 import { ElasticSearchModule } from "./search/search.module";
 import { SupertokensModule } from "./supertokens/supertokens.module";
 import { UserModule } from "./user/user.module";
@@ -21,7 +23,7 @@ import { UserModule } from "./user/user.module";
     SupertokensModule,
     CourseModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, DepartmentsController],
+  providers: [AppService, DepartmentsService],
 })
 export class AppModule {}

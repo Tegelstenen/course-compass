@@ -2,7 +2,8 @@ export interface Course {
   _id: string;
   course_code: string;
   course_name: string;
-  description: string;
+  content: string;
+  goals: string;
   department: string;
   rating?: number;
   credits?: number;

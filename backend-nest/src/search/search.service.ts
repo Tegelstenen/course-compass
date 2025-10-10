@@ -14,17 +14,39 @@ export type SearchResult = CourseMapping & {
 export class SearchService {
   constructor(@Inject(ES) private readonly es: ESClient) {}
 
-  async searchCourses(query: string, size = 10): Promise<SearchResult[]> {
-    if (!query || !query.trim()) return [];
+  async searchCourses(
+    query: string,
+    size = 10,
+    filters?: { department?: string; minRating?: number },
+  ): Promise<SearchResult[]> {
+    if (!query?.trim()) return [];
+    const searchFilters: any[] = [];
+    if (filters?.department) {
+      const dept = filters.department;
+      console.log("Filtering by department:", JSON.stringify(dept));
+      searchFilters.push({
+        term: { department: dept },
+      });
+    }
+    if (filters?.minRating)
+      searchFilters.push({
+        range: { averageRating: { gte: filters.minRating } },
+      });
+
     const res = await this.es.search<unknown, CourseMapping>({
       index: INDEX,
       size,
       query: {
-        multi_match: {
-          query,
-          fields: ["course_name^2", "course_code^2", "goals", "content"],
-          fuzziness: "AUTO",
-          type: "best_fields",
+        bool: {
+          must: {
+            multi_match: {
+              query,
+              fields: ["course_name^2", "course_code^2", "goals", "content"],
+              fuzziness: "AUTO",
+              type: "best_fields",
+            },
+          },
+          filter: searchFilters,
         },
       },
       _source: ["course_name", "course_code", "department", "goals", "content"],
