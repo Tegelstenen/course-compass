@@ -8,6 +8,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Delete
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
@@ -42,6 +43,15 @@ export class UserController {
         //profilePicture: user.profilePicture || null,
       };
     }
+  }
+
+  // Delete account
+  @Delete("/")
+  @VerifySession()
+  async deleteAccount(@Session() session: SessionContainer) {
+    const userId = session.getUserId();
+    await this.userService.deleteUser(userId);
+    return { success: true };
   }
 
   // Upload profile picture
