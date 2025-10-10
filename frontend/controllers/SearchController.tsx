@@ -1,6 +1,6 @@
 "use client";
 
-import parse from "html-react-parser"; // obs this will be dealt with in the SearchView
+import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { executeSearch } from "@/state/search/executeSearchThunk";
@@ -10,6 +10,7 @@ import {
   queryChanged,
 } from "@/state/search/searchSlice";
 import type { Dispatch, RootState } from "@/state/store";
+import SearchView from "@/views/SearchView";
 
 export default function SearchController() {
   // Access state
@@ -63,36 +64,16 @@ export default function SearchController() {
     },
     [dispatch], // eslint-disable-line react-hooks/exhaustive-deps
   );
-
   // onSortChange
 
   return (
-    // controller will render the View in the future
-    // the View will handle the rendering, so this is only temporary!!!
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        value={localQuery}
-        onChange={(e) => setLocalQuery(e.target.value)}
-        placeholder="Search..."
-      />
-      <button type="submit">Search</button>
-      {/* Test output */}
-      <p>You searched for: {localQuery}</p>
-
-      {isLoading && <p>Searching...</p>}
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
-      <ul>
-        {results.map((course) => (
-          <li key={course._id}>
-            <strong>{course.course_code}</strong>: {course.course_name}
-            <div>Department: {course.department}</div>
-            <div>{parse(course.content)}</div>
-            <div>Goals: {parse(course.goals)}</div>
-          </li>
-        ))}
-      </ul>
-    </form>
+    <SearchView
+      localQuery={localQuery}
+      setLocalQuery={setLocalQuery}
+      onSubmit={onSubmit}
+      isLoading={isLoading}
+      error={error}
+      results={results}
+    />
   );
 }

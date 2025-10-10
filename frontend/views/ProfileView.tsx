@@ -2,12 +2,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 type SettingsViewProps = {
+  name: string;
+  email: string;
   preview: string | null;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDeleteAccount: () => void;
 };
 
-export default function SettingsView({
+export default function ProfileView({
+  name,
+  email,
   preview,
   handleFileChange,
   handleDeleteAccount,
@@ -15,7 +19,17 @@ export default function SettingsView({
   return (
     <div className="flex">
       <main className="flex-1 p-6 ml-12">
-        <h1 className="text-2xl font-bold mb-8">Account Settings</h1>
+        <h1 className="text-2xl font-bold mb-8">My Profile</h1>
+
+        {/* Profile picture section */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold">User information</h2>
+
+          <p className="text-sm text-gray-700 mb-6">
+            <strong className="font-medium">Name:</strong>{" "}
+            {name?.trim() || email?.split("@")[0] || "Loading user..."}
+          </p>
+        </section>
 
         {/* Profile picture section */}
         <section className="space-y-4">
