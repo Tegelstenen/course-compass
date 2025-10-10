@@ -1,6 +1,6 @@
 import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
-import { CourseService } from "./course.service";
 import { SearchService } from "../search/search.service";
+import { CourseService } from "./course.service";
 
 @Controller("course")
 export class CourseController {
