@@ -1,4 +1,6 @@
-import { motion, type Variants } from "motion/react";
+/* biome-disable suspicious/noArrayIndexKey */
+
+import { motion, type Variants } from "framer-motion";
 import { ArrowRightIcon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 
@@ -13,7 +15,14 @@ const containerVariants: Variants = {
     // final state
     opacity: 1,
     transition: {
-      staggerChildren: 0.015, // the delay between each child
+      staggerChildren: 0.05, // the delay between each child
+    },
+  },
+  visibleSub: {
+    opacity: 1,
+    transition: {
+      delayChildren: 1,
+      staggerChildren: 0.05,
     },
   },
 };
@@ -21,7 +30,7 @@ const childVariants: Variants = {
   hidden: {
     // initial
     opacity: 0,
-    y: 20, // sets the text 20px down
+    y: 40, // sets the text 20px down
   },
   visible: {
     opacity: 1,
@@ -32,23 +41,32 @@ const childVariants: Variants = {
       stiffness: 50,
     },
   },
+  visibleSub: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      damping: 10,
+      stiffness: 50,
+    },
+  },
 };
 
-const textToAnimate =
-  "Explore, find and express your thoughts of all KTH courses!";
+const titleText = "Explore, find and express your thoughts of all KTH courses!";
+const subTitleText =
+  "A very short description of the app. Course Compass is built on \
+  student reviews to give an honest picture of the course contents";
 
 export default function LandingPageView(props: LandingPageViewProps) {
   const handleClick = () => {
     console.log("clicked!");
     props.onSubmit();
   };
-  const characters = Array.from(textToAnimate);
+  const titleWords = titleText.split(" ");
+  const subTitleWords = subTitleText.split(" ");
 
   return (
     <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col w-full justify-left p-40 text-secondary"
       style={{
         backgroundImage: 'url("course_map.jpg")',
@@ -61,30 +79,73 @@ export default function LandingPageView(props: LandingPageViewProps) {
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent"></div>
 
       <div className="relative z-10 w-1/2 text-wrap">
-        <h1 className="text-5xl font-extrabold tracking-wide leading-snug md:text-5xl">
-          {characters.map((char, index) => {
+        <motion.h1
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-7xl font-extrabold tracking-wide leading-snug md:text-6xl"
+        >
+          {titleWords.map((word, id) => {
+            const key = `${word}-${id}`;
             return (
               <motion.span
                 variants={childVariants}
-                key={index}
+                key={key}
                 style={{ display: "inline-block" }}
               >
-                {char === " " ? "\u00A0" : char}
+                {word}
+                {"\u00A0"}
               </motion.span>
             );
           })}
-        </h1>
-        <h2 className="text-xl pt-8 font-serif">
-          A very short description of the app. Course Compass is built on
-          student reviews to give an honest picture of the course contents.
-        </h2>
+        </motion.h1>
+        <motion.h2
+          variants={containerVariants}
+          initial="hidden"
+          animate="visibleSub"
+          transition={{ delay: 2 }}
+          className="text-xl pt-8 font-serif"
+        >
+          {subTitleWords.map((word, id) => {
+            const key = `${word}-${id}`;
+            return (
+              <motion.span
+                variants={childVariants}
+                key={key}
+                style={{ display: "inline-block" }}
+              >
+                {word}
+                {"\u00A0"}
+              </motion.span>
+            );
+          })}
+        </motion.h2>
       </div>
-      <div className="flex relative z-10 w-full pt-8">
-        <Button size="larger" variant="default" onClick={handleClick}>
-          Get started
-          <ArrowRightIcon />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          type: "tween",
+          duration: 0.3,
+          ease: "easeOut",
+          delay: 3.5,
+        }}
+        className="flex relative z-10 w-full pt-8"
+      >
+        <Button asChild size="larger" variant="default" onClick={handleClick}>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative inline-block px-8 py-4 font-bold text-white rounded-lg overflow-hidden cursor-pointer"
+          >
+            <span className="absolute inset-0 bg-gradient-to-l from-primary to-secondary bg-[length:125%_100%] bg-[100%_10%] transition-all duration-500 ease-out hover:bg-[length:200%_100%] hover:bg-[0%_0%]"></span>
+            <span className="relative z-10 flex items-center gap-2">
+              Get started
+              <ArrowRightIcon />
+            </span>
+          </motion.button>
         </Button>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
