@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Topbar from "@/components/Topbar";
-import HomeView from "@/views/HomeView";
+import LandingPageView from "@/views/LandingPageView";
 import AuthController from "./AuthController";
 
 export default function HomeController() {
@@ -18,7 +18,7 @@ export default function HomeController() {
     return (
       <div>
         <Topbar />
-        <HomeView onSubmit={onSubmit} />
+        <LandingPageView onSubmit={onSubmit} />
       </div>
     );
   }
