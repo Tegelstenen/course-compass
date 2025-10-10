@@ -4,8 +4,16 @@ import { SearchIcon } from "lucide-react";
 import { SearchItem } from "@/components/SearchItem";
 import { SearchItemSkeleton } from "@/components/SearchItemSkeleton";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import type { Course } from "@/models/CourseModel";
+
 
 type SearchViewProps = {
   localQuery: string;
@@ -45,6 +53,7 @@ export default function SearchView({
           <Button variant="outline" className="h-10 w-10 p-0">
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>
+          
         </form>
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
         {isLoading && (
@@ -60,6 +69,15 @@ export default function SearchView({
         )}
 
         <div className="w-full max-w-3xl">
+          Filter by:
+          <Select onValueChange={(value) => console.log(value)}>
+            <SelectTrigger className=" w-[140px]">
+              <SelectValue placeholder="Department..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="no filter">No filter</SelectItem>
+            </SelectContent>
+          </Select>
           <ul className="flex flex-col gap-6">
             {results.map((course) => (
               <li key={course._id}>
