@@ -20,6 +20,7 @@ export default function CourseView(props: CourseViewProps) {
         courseName={props.courseName}
         courseRating={props.courseRating}
         credits={props.credits}
+        syllabus={props.syllabus}
         percentageWouldRecommend={props.percentageWouldRecommend}
         onAddReview={props.onAddReview}
         onReadCourseSyllabus={props.onReadCourseSyllabus}

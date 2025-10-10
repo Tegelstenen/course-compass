@@ -14,6 +14,7 @@ type SearchViewProps = {
   isLoading: boolean;
   error: string | undefined;
   results: Course[];
+  onSeeReviews: (courseCode: string) => void;
 };
 
 const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
@@ -25,6 +26,7 @@ export default function SearchView({
   isLoading,
   error,
   results,
+  onSeeReviews,
 }: SearchViewProps) {
   return (
     <div>
@@ -67,6 +69,7 @@ export default function SearchView({
                   rating={5}
                   semester={"P1"}
                   ects={7.5}
+                  onSeeReviews={() => onSeeReviews(course.course_code)}
                 />
               </li>
             ))}

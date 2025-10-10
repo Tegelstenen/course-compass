@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { executeSearch } from "@/state/search/executeSearchThunk";
@@ -18,7 +18,7 @@ export default function SearchController() {
     (s: RootState) => s.search,
   );
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
-
+  const router = useRouter();
   const [localQuery, setLocalQuery] = useState(query); // redux synced
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
@@ -66,6 +66,13 @@ export default function SearchController() {
   );
   // onSortChange
 
+  const onSeeReviews = useCallback(
+    (courseCode: string) => {
+      router.push(`/course/${courseCode}`);
+    },
+    [router],
+  );
+
   return (
     <SearchView
       localQuery={localQuery}
@@ -74,6 +81,7 @@ export default function SearchController() {
       isLoading={isLoading}
       error={error}
       results={results}
+      onSeeReviews={onSeeReviews}
     />
   );
 }

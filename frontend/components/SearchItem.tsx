@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
+import { Button } from "./ui/button";
 
 type SearchItemProps = {
   courseName: string;
@@ -7,6 +8,7 @@ type SearchItemProps = {
   rating: number;
   semester: string;
   ects: number;
+  onSeeReviews: () => void;
 };
 
 export function SearchItem({
@@ -15,6 +17,7 @@ export function SearchItem({
   rating = 4,
   semester = "P1",
   ects = 7.5,
+  onSeeReviews,
 }: SearchItemProps) {
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
@@ -40,6 +43,15 @@ export function SearchItem({
         <div>{semester}</div>
         <Separator orientation="vertical" />
         <div>{ects} ECTS</div>
+        <Separator orientation="vertical" />
+        <div className="flex space-x-2 ml-auto">
+          <Button
+            className="w-32 px-3 py-1 bg-primary text-white rounded hover:bg-primary/90 transition-colors text-xs flex justify-center"
+            onClick={onSeeReviews}
+          >
+            See Reviews
+          </Button>
+        </div>
       </div>
     </div>
   );
