@@ -71,10 +71,7 @@ export class UserService {
     await this.db
       .delete(schema.user_favorites)
       .where(eq(schema.user_favorites.userId, id));
-  
-    await this.db
-      .delete(schema.users)
-      .where(eq(schema.users.id, id));
-  }
 
+    await this.db.delete(schema.users).where(eq(schema.users.id, id));
+  }
 }
