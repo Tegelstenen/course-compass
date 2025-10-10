@@ -4,11 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
 import { deleteAccount } from "@/state/user/userThunk";
-import SettingsView from "@/views/SettingsView";
+import ProfileView from "@/views/ProfileView";
+import { useRouter } from "next/navigation";
+import Session from "supertokens-auth-react/recipe/session";
 
-export default function SettingsController() {
+
+export default function ProfileController() {
+  const router = useRouter();
   const dispatch = useDispatch<Dispatch>();
-  const { profilePicture } = useSelector((state: RootState) => state.user);
+  const { name, email, profilePicture } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   // Handle file upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,18 +27,22 @@ export default function SettingsController() {
   };
 
   // Handle account deletion
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (
       confirm(
         "Are you sure you want to delete your account? This can't be undone.",
       )
     ) {
-      dispatch(deleteAccount());
+      await dispatch(deleteAccount());
+      await Session.signOut();
+      router.push("/");
     }
   };
 
   return (
-    <SettingsView
+    <ProfileView
+      name={name}
+      email={email}
       preview={profilePicture}
       handleFileChange={handleFileChange}
       handleDeleteAccount={handleDeleteAccount}

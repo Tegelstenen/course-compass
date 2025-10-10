@@ -1,8 +1,8 @@
 "use client";
 import CourseController from "@/controllers/CourseController";
 
-const tempCourseView = () => {
+const CourseView = () => {
   return <CourseController />;
 };
 
-export default tempCourseView;
+export default CourseView;

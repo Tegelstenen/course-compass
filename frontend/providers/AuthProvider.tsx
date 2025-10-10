@@ -9,7 +9,6 @@ import { initST } from "@/lib/supertokens.client";
 initST(); // ← runs immediately on module load (before render)
 
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function AuthProvider({
   children,
@@ -17,10 +16,5 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   // SessionAuth and ReduxProvider must be in a client component
-  return (
-    <SessionAuth requireAuth>
-      {children}
-      <Toaster />
-    </SessionAuth>
-  );
+  return <SessionAuth requireAuth>{children}</SessionAuth>;
 }

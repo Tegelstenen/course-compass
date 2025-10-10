@@ -7,11 +7,16 @@ export class SearchController {
 
   @Get()
   //   Extend with more filters when needed, start simple now
-  async search(@Query("q") q?: string, @Query("size") size?: string) {
+  async search(
+    @Query("q") q?: string,
+    @Query("size") size?: string,
+    @Query("department") department?: string,
+  ) {
     const limit = Number.isFinite(Number(size)) ? Number(size) : 10;
     const results: SearchResult[] = await this.searchService.searchCourses(
       q ?? "",
       limit,
+      { department },
     );
     return { results, total: results.length };
   }
