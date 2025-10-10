@@ -48,6 +48,25 @@ export const getSession = createAsyncThunk(
   },
 );
 
+
+export const logout = createAsyncThunk(
+  "session/logout",
+  async (_, { dispatch }) => {
+    await Session.signOut();
+    dispatch(clearSession());
+    // Clear user data as well
+    dispatch(setUser({
+      name: "",
+      email: "",
+      userFavorites: [],
+      profilePicture: null,
+    }));
+    // Redirect to home page
+    window.location.href = "/";
+  },
+);
+
+
 export const sessionSlice = createSlice({
   name: "session",
   initialState,

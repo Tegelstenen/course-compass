@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
 import { deleteAccount } from "@/state/user/userThunk";
-import SettingsView from "@/views/SettingsView";
+import ProfileView from "@/views/ProfileView";
 
-export default function SettingsController() {
+export default function ProfileController() {
   const dispatch = useDispatch<Dispatch>();
-  const { profilePicture } = useSelector((state: RootState) => state.user);
+  const { name, email, profilePicture } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   // Handle file upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +34,9 @@ export default function SettingsController() {
   };
 
   return (
-    <SettingsView
+    <ProfileView
+      name={name}
+      email={email}
       preview={profilePicture}
       handleFileChange={handleFileChange}
       handleDeleteAccount={handleDeleteAccount}
