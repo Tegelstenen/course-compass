@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { UpdateReviewDto } from "./dto/update-review.dto";
@@ -17,8 +18,7 @@ export class ReviewsController {
 
   @Post()
   create(
-    @Body()
-    body: {
+    @Body() body: {
       courseCode: string;
       userId: string;
       easyScore: number;
@@ -33,8 +33,8 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  findAll(@Query("courseCode") courseCode?: string) {
+    return this.reviewsService.findAll(courseCode);
   }
 
   @Get(":id")
@@ -45,7 +45,7 @@ export class ReviewsController {
   @Patch(":id")
   update(
     @Param("id") id: string,
-    reviewData: {
+    @Body() reviewData: {
       easyScore: number;
       usefulScore: number;
       interestingScore: number;
