@@ -41,7 +41,7 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/platform-express": "^11.1.6",
     "dotenv": "^17.2.2",
-    "drizzle-kit": "^0.12.8",
+    "drizzle-kit": "^0.30.0",
     "multer": "^2.0.2",
     "uuid": "^13.0.0"
   }

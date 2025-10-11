@@ -85,12 +85,8 @@
           "name": "user_favorites_user_id_users_id_fk",
           "tableFrom": "user_favorites",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -98,12 +94,8 @@
           "name": "user_favorites_fav_course_code_courses_code_fk",
           "tableFrom": "user_favorites",
           "tableTo": "courses",
-          "columnsFrom": [
-            "fav_course_code"
-          ],
-          "columnsTo": [
-            "code"
-          ],
+          "columnsFrom": ["fav_course_code"],
+          "columnsTo": ["code"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -111,10 +103,7 @@
       "compositePrimaryKeys": {
         "user_favorites_user_id_fav_course_code_pk": {
           "name": "user_favorites_user_id_fav_course_code_pk",
-          "columns": [
-            "user_id",
-            "fav_course_code"
-          ]
+          "columns": ["user_id", "fav_course_code"]
         }
       },
       "uniqueConstraints": {},
@@ -172,9 +161,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -186,11 +173,7 @@
     "public.course_state": {
       "name": "course_state",
       "schema": "public",
-      "values": [
-        "CANCELLED",
-        "ESTABLISHED",
-        "DEACTIVATED"
-      ]
+      "values": ["CANCELLED", "ESTABLISHED", "DEACTIVATED"]
     }
   },
   "schemas": {},
