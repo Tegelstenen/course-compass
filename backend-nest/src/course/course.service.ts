@@ -22,4 +22,13 @@ export class CourseService {
       .limit(1);
     return courseObject[0]; // [0] beacuse we technically have a 1 element array from the database
   }
+
+  async courseCodeExists(courseCode: string): Promise<boolean> {
+    const courseObject = await this.db
+      .select()
+      .from(courses)
+      .where(eq(courses.code, courseCode))
+      .limit(1);
+    return courseObject.length > 0;
+  }
 }
