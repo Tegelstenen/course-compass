@@ -1,7 +1,10 @@
+"use client";
 import { LoremIpsum } from "lorem-ipsum";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { PostProps } from "@/components/Post";
+import { checkIfCourseCodeExists } from "@/lib/courses";
 import CourseView from "@/views/CourseView";
 
 const lorem = new LoremIpsum({
@@ -95,10 +98,6 @@ const addReview = (courseCode: string) => {
   toast(`Review not implemented`);
 };
 
-const readCourseSyllabus = (syllabus: string) => {
-  toast(`Open syllabus not implemented`);
-};
-
 const getCourseHeader = (courseCode: string) => {
   return mockCourseHeader;
 };
@@ -107,23 +106,39 @@ const getCoursePosts = (courseCode: string) => {
   return mockPosts;
 };
 
-const getAllCourseCodes = () => {
-  const mockCourseCodes = ["DD1420", "DD1421", "DD1422", "DD1423", "DD1424"];
-  return mockCourseCodes;
-};
-
 export default function CourseController() {
   const params = useParams<{ courseCode: string }>();
   const router = useRouter();
-  const allCourseCodes = getAllCourseCodes();
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    if (!params.courseCode) {
+      router.push("/search");
+      return;
+    }
+
+    setIsChecking(true);
+    checkIfCourseCodeExists(params.courseCode)
+      .then((exists) => {
+        if (!exists) {
+          toast("Course not found");
+          router.push("/search");
+        }
+      })
+      .catch((e) => {
+        console.error("Failed to load course codes", e);
+        toast("Failed to load course codes");
+        router.push("/search");
+      })
+      .finally(() => setIsChecking(false));
+  }, [params.courseCode, router]);
+
+  if (!params.courseCode || isChecking) {
+    return null; // or a skeleton/loader
+  }
+
   const posts = getCoursePosts(params.courseCode);
   const courseHeader = getCourseHeader(params.courseCode);
-
-  if (params.courseCode && !allCourseCodes.includes(params.courseCode)) {
-    toast(`Course not found`);
-    router.push("/search");
-    return null;
-  }
 
   return (
     <CourseView
@@ -134,7 +149,6 @@ export default function CourseController() {
       percentageWouldRecommend={getPercentageWouldRecommend(posts)}
       courseRating={getAverageRating(posts)}
       onAddReview={addReview}
-      onReadCourseSyllabus={readCourseSyllabus}
       posts={posts}
       onPostLike={mockOnPostLike}
       onPostDislike={mockOnPostDislike}
