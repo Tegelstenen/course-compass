@@ -98,10 +98,6 @@ const addReview = (courseCode: string) => {
   toast(`Review not implemented`);
 };
 
-const readCourseSyllabus = (syllabus: string) => {
-  toast(`Open syllabus not implemented`);
-};
-
 const getCourseHeader = (courseCode: string) => {
   return mockCourseHeader;
 };
@@ -153,7 +149,6 @@ export default function CourseController() {
       percentageWouldRecommend={getPercentageWouldRecommend(posts)}
       courseRating={getAverageRating(posts)}
       onAddReview={addReview}
-      onReadCourseSyllabus={readCourseSyllabus}
       posts={posts}
       onPostLike={mockOnPostLike}
       onPostDislike={mockOnPostDislike}

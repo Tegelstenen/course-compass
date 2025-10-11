@@ -1,15 +1,8 @@
 "use client";
-import { MessageCircle, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 
 const MAX_COLLAPSED_CHARS = 280;
 

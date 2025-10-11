@@ -1,6 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export type CourseHeaderProps = {
   courseCode: string;
@@ -10,7 +18,6 @@ export type CourseHeaderProps = {
   syllabus: string;
   percentageWouldRecommend: number;
   onAddReview: (courseCode: string) => void;
-  onReadCourseSyllabus: (courseCode: string) => void;
 };
 
 export default function CourseHeader({
@@ -21,7 +28,6 @@ export default function CourseHeader({
   syllabus,
   percentageWouldRecommend,
   onAddReview,
-  onReadCourseSyllabus,
 }: Readonly<CourseHeaderProps>) {
   const rating = Math.min(5, Math.max(0, courseRating));
   const ratingLabel = `Avg: ${rating.toFixed(1)}/5.0`;
@@ -61,14 +67,23 @@ export default function CourseHeader({
           >
             Add Review
           </Button>
-          <Button
-            className="flex-1"
-            onClick={() => onReadCourseSyllabus(courseCode)}
-            type="button"
-            aria-label="Read course syllabus"
-          >
-            Read course syllabus
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="flex-1"
+                type="button"
+                aria-label="Read course syllabus"
+              >
+                Read course syllabus
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Course Syllabus</DialogTitle>
+                <DialogDescription>{syllabus}</DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
