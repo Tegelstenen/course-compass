@@ -23,7 +23,6 @@ export default function CourseView(props: CourseViewProps) {
         syllabus={props.syllabus}
         percentageWouldRecommend={props.percentageWouldRecommend}
         onAddReview={props.onAddReview}
-        onReadCourseSyllabus={props.onReadCourseSyllabus}
       />
       <div className="flex flex-col gap-6 items-center">
         {props.posts.map((post) => (
