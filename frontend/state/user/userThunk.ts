@@ -1,10 +1,13 @@
 import type { Dispatch } from "@/state/store";
 import { clearUser, setProfilePicture, setUser } from "./userSlice";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_DOMAIN || "http://localhost:8080";
+
 export function getUser() {
   return async (dispatch: Dispatch) => {
     try {
-      const res = await fetch("http://localhost:8080/user/me", {
+      const res = await fetch(`${API_URL}/user/me`, {
         method: "GET",
         credentials: "include", // include SuperTokens session cookies
       });
@@ -55,12 +58,15 @@ export function uploadProfilePicture(file: File) {
 export function deleteAccount() {
   return async (dispatch: Dispatch) => {
     try {
-      const res = await fetch("/api/user", { method: "DELETE" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await fetch(`${API_URL}/user`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       dispatch(clearUser());
     } catch (err) {
-      console.error("Delete failed:", err);
+      console.error("Deletion failed:", err);
     }
   };
 }

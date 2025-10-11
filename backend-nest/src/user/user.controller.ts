@@ -2,6 +2,7 @@
 
 import {
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Post,
@@ -42,6 +43,15 @@ export class UserController {
         //profilePicture: user.profilePicture || null,
       };
     }
+  }
+
+  // Delete account
+  @Delete("/")
+  @VerifySession()
+  async deleteAccount(@Session() session: SessionContainer) {
+    const userId = session.getUserId();
+    await this.userService.deleteUser(userId);
+    return { success: true };
   }
 
   // Upload profile picture

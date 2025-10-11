@@ -31,6 +31,7 @@ export const users = pgTable("users", {
   id: text("id").primaryKey(), // This will be the SuperTokens user ID
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
+  profilePicture: text("profile_picture"), // URL to profile picture
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

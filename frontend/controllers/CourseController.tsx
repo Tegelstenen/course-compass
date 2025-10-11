@@ -1,4 +1,6 @@
 import { LoremIpsum } from "lorem-ipsum";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { PostProps } from "@/components/Post";
 import CourseView from "@/views/CourseView";
 
@@ -52,12 +54,7 @@ const mockCourseHeader = {
   courseCode: "DD1420",
   courseName: "Foundations of Machine Learning",
   credits: 7.5,
-  onAddReview: () => {
-    console.log("implement add review");
-  },
-  onReadCourseSyllabus: () => {
-    console.log("implement read course syllabus");
-  },
+  syllabus: lorem.generateParagraphs(10),
 };
 
 const getAverageRating = (posts: PostProps[]) => {
@@ -87,24 +84,58 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
 };
 
 const mockOnPostLike = (postId: string) => {
-  console.log("tried to like post", postId);
+  toast(`Like not implemented`);
 };
 
 const mockOnPostDislike = (postId: string) => {
-  console.log("tried to dislike post", postId);
+  toast(`Dislike not implemented`);
+};
+
+const addReview = (courseCode: string) => {
+  toast(`Review not implemented`);
+};
+
+const readCourseSyllabus = (syllabus: string) => {
+  toast(`Open syllabus not implemented`);
+};
+
+const getCourseHeader = (courseCode: string) => {
+  return mockCourseHeader;
+};
+
+const getCoursePosts = (courseCode: string) => {
+  return mockPosts;
+};
+
+const getAllCourseCodes = () => {
+  const mockCourseCodes = ["DD1420", "DD1421", "DD1422", "DD1423", "DD1424"];
+  return mockCourseCodes;
 };
 
 export default function CourseController() {
+  const params = useParams<{ courseCode: string }>();
+  const router = useRouter();
+  const allCourseCodes = getAllCourseCodes();
+  const posts = getCoursePosts(params.courseCode);
+  const courseHeader = getCourseHeader(params.courseCode);
+
+  if (params.courseCode && !allCourseCodes.includes(params.courseCode)) {
+    toast(`Course not found`);
+    router.push("/search");
+    return null;
+  }
+
   return (
     <CourseView
-      courseCode={mockCourseHeader.courseCode}
-      courseName={mockCourseHeader.courseName}
-      credits={mockCourseHeader.credits}
-      percentageWouldRecommend={getPercentageWouldRecommend(mockPosts)}
-      courseRating={getAverageRating(mockPosts)}
-      onAddReview={mockCourseHeader.onAddReview}
-      onReadCourseSyllabus={mockCourseHeader.onReadCourseSyllabus}
-      posts={mockPosts}
+      courseCode={courseHeader.courseCode}
+      courseName={courseHeader.courseName}
+      credits={courseHeader.credits}
+      syllabus={courseHeader.syllabus}
+      percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+      courseRating={getAverageRating(posts)}
+      onAddReview={addReview}
+      onReadCourseSyllabus={readCourseSyllabus}
+      posts={posts}
       onPostLike={mockOnPostLike}
       onPostDislike={mockOnPostDislike}
     />

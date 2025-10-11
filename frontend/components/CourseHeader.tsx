@@ -7,9 +7,10 @@ export type CourseHeaderProps = {
   courseName: string;
   courseRating: number;
   credits: number;
+  syllabus: string;
   percentageWouldRecommend: number;
-  onAddReview: () => void;
-  onReadCourseSyllabus: () => void;
+  onAddReview: (courseCode: string) => void;
+  onReadCourseSyllabus: (courseCode: string) => void;
 };
 
 export default function CourseHeader({
@@ -17,6 +18,7 @@ export default function CourseHeader({
   courseName,
   courseRating,
   credits,
+  syllabus,
   percentageWouldRecommend,
   onAddReview,
   onReadCourseSyllabus,
@@ -53,7 +55,7 @@ export default function CourseHeader({
         <div className="flex gap-2">
           <Button
             className="flex-1"
-            onClick={onAddReview}
+            onClick={() => onAddReview(courseCode)}
             type="button"
             aria-label="Add review"
           >
@@ -61,7 +63,7 @@ export default function CourseHeader({
           </Button>
           <Button
             className="flex-1"
-            onClick={onReadCourseSyllabus}
+            onClick={() => onReadCourseSyllabus(courseCode)}
             type="button"
             aria-label="Read course syllabus"
           >

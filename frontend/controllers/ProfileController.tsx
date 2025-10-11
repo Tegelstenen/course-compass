@@ -1,12 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import Session from "supertokens-auth-react/recipe/session";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
 import { deleteAccount } from "@/state/user/userThunk";
 import ProfileView from "@/views/ProfileView";
 
 export default function ProfileController() {
+  const router = useRouter();
   const dispatch = useDispatch<Dispatch>();
   const { name, email, profilePicture } = useSelector(
     (state: RootState) => state.user,
@@ -23,13 +26,15 @@ export default function ProfileController() {
   };
 
   // Handle account deletion
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (
       confirm(
         "Are you sure you want to delete your account? This can't be undone.",
       )
     ) {
-      dispatch(deleteAccount());
+      await dispatch(deleteAccount());
+      await Session.signOut();
+      router.push("/");
     }
   };
 
