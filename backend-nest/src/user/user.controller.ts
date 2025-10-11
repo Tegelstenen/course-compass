@@ -2,13 +2,13 @@
 
 import {
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Post,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Delete
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
