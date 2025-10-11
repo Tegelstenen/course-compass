@@ -23,7 +23,7 @@ export type CourseHeaderProps = {
     courseCode: string,
     userId: string,
     reviewForm: ReviewFormData,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };
 
 export default function CourseHeader({

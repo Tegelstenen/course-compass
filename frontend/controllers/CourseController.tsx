@@ -2,6 +2,7 @@
 
 import { LoremIpsum } from "lorem-ipsum";
 import { useParams, useRouter } from "next/navigation";
+import profoundWords from "profane-words";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { PostProps } from "@/components/Post";
@@ -101,11 +102,28 @@ const addReview = async (
   courseCode: string,
   userId: string,
   reviewForm: ReviewFormData,
-) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  toast(`Review not implemented`, {
-    description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
-  });
+): Promise<boolean> => {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const profoundMatches = profoundWords
+      .filter(Boolean)
+      .filter((badWord) => new RegExp(badWord, "i").test(reviewForm.content));
+    if (profoundMatches.length > 0) {
+      toast(`Please refrain from using profane language`, {
+        description: `Dissaproved words: ${profoundMatches.join(", ")}`,
+      });
+      return false;
+    }
+    toast(`Review not implemented`, {
+      description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to add review", error);
+    toast.error("Failed to add review");
+    return false;
+  }
 };
 
 const getCourseHeader = (courseCode: string) => {
