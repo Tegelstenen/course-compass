@@ -2,7 +2,7 @@
 
 import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
-import type { ReviewFormData } from "@/components/Review";
+import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
 import { createReview } from "@/lib/reviews";
