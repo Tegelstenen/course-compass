@@ -24,15 +24,13 @@ export class SearchService {
     if (filters?.department) {
       const dept = filters.department;
       console.log("Filtering by department:", JSON.stringify(dept));
-      const departments = ['EECS', 'ABE', 'CBH', 'ITM', 'SCI'];
-      const matchingDepts = departments.find(abbr =>
-        dept.includes(abbr)
-      )
+      const departments = ["EECS", "ABE", "CBH", "ITM", "SCI"];
+      const matchingDepts = departments.find((abbr) => dept.includes(abbr));
       if (matchingDepts) {
         const wildcardFilter = {
           wildcard: {
-            department: `*${matchingDepts}*`
-          }
+            department: `*${matchingDepts}*`,
+          },
         };
         searchFilters.push(wildcardFilter);
       } else {
