@@ -1,6 +1,7 @@
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
+import { RichTextEditor } from "./RichEditor";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -14,7 +15,6 @@ import {
 } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
-import { Textarea } from "./ui/textarea";
 
 export type ReviewFormData = {
   wouldRecommend: boolean;
@@ -42,11 +42,13 @@ export function Review(props: Readonly<ReviewProps>) {
     usefulScore: 0,
     interestingScore: 0,
   });
+
   const [isSubmittingReviewForm, setIsSubmittingReviewForm] = useState(false);
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   const isFormInvalid =
-    reviewForm.content.length === 0 ||
+    !reviewForm.content ||
+    reviewForm.content.replace(/<[^>]*>/g, "").trim() === "" ||
     reviewForm.easyScore === 0 ||
     reviewForm.usefulScore === 0 ||
     reviewForm.interestingScore === 0;
@@ -78,7 +80,7 @@ export function Review(props: Readonly<ReviewProps>) {
           Add Review
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl min-w-3xl max-h-[100vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Share Your Experience</DialogTitle>
           <DialogDescription>
@@ -167,7 +169,7 @@ export function Review(props: Readonly<ReviewProps>) {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Your Review</h3>
             <div className="space-y-2">
-              <Textarea
+              {/* <Textarea
                 id="review-content"
                 placeholder="Share your experience, what you learned, and any tips for future students..."
                 value={reviewForm.content}
@@ -178,10 +180,19 @@ export function Review(props: Readonly<ReviewProps>) {
                   })
                 }
                 className="min-h-[120px] resize-none"
-              />
+              /> */}
+              <div>
+                <RichTextEditor
+                  onContentChange={(content) =>
+                    setReviewForm({
+                      ...reviewForm,
+                      content: content,
+                    })
+                  }
+                />
+              </div>
               <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <span>Be constructive and respectful</span>
-                <span>{reviewForm.content.length} characters</span>
               </div>
             </div>
           </div>

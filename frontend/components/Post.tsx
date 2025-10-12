@@ -7,9 +7,9 @@ import { Card, CardContent } from "./ui/card";
 const MAX_COLLAPSED_CHARS = 280;
 
 type RatingScaleEntry = {
-  min: number; // inclusive
+  min: number;
   label: string;
-  className: string; // background + text fallback if needed
+  className: string;
 };
 
 const RATING_SCALE: RatingScaleEntry[] = [
@@ -21,11 +21,72 @@ const RATING_SCALE: RatingScaleEntry[] = [
   { min: 0, label: "Terrible", className: "bg-rose-700 text-white" },
 ];
 
-function truncateAtWord(str: string, max: number) {
-  if (str.length <= max) return str;
-  const slice = str.slice(0, max);
+function truncateHtmlAtWord(html: string, max: number) {
+  if (html.length <= max) return html;
+
+  // Create a temporary DOM element to parse HTML
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+
+  // Get text content to find the truncation point
+  const textContent = tempDiv.textContent || "";
+  if (textContent.length <= max) return html;
+
+  const slice = textContent.slice(0, max);
   const lastSpace = slice.lastIndexOf(" ");
-  return lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
+  const truncateAt = lastSpace > 0 ? lastSpace : max;
+
+  // Now we need to truncate the HTML while preserving structure
+  let currentLength = 0;
+  let result = "";
+
+  function processNode(node: Node): boolean {
+    if (currentLength >= truncateAt) return false;
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || "";
+      if (currentLength + text.length <= truncateAt) {
+        result += text;
+        currentLength += text.length;
+        return true;
+      } else {
+        const remaining = truncateAt - currentLength;
+        result += text.slice(0, remaining);
+        currentLength = truncateAt;
+        return false;
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as Element;
+      const tagName = element.tagName.toLowerCase();
+      result += `<${tagName}`;
+
+      // Add attributes
+      for (const attr of Array.from(element.attributes)) {
+        result += ` ${attr.name}="${attr.value}"`;
+      }
+      result += ">";
+
+      // Process children
+      for (const child of Array.from(element.childNodes)) {
+        if (!processNode(child)) {
+          break;
+        }
+      }
+
+      result += `</${tagName}>`;
+      return currentLength < truncateAt;
+    }
+
+    return true;
+  }
+
+  for (const child of Array.from(tempDiv.childNodes)) {
+    if (!processNode(child)) {
+      break;
+    }
+  }
+
+  return result;
 }
 
 function normalizeRating(r: number | undefined | null) {
@@ -50,7 +111,7 @@ type RatingPillProps = {
 
 function RatingPill({ name, rating }: Readonly<RatingPillProps>) {
   const style = ratingToStyle(rating);
-  const value = rating ?? "–";
+  const value = rating ?? "-";
   const aria =
     rating === null
       ? `${name}: not available`
@@ -113,10 +174,10 @@ export default function Post(props: Readonly<PostProps>) {
   const [expanded, setExpanded] = useState(false);
   const content = props.content ?? "";
   const isLong = content.length > MAX_COLLAPSED_CHARS;
-  const displayText =
+  const displayContent =
     expanded || !isLong
       ? content
-      : `${truncateAtWord(content, MAX_COLLAPSED_CHARS)}…`;
+      : `${truncateHtmlAtWord(content, MAX_COLLAPSED_CHARS)}…`;
 
   return (
     <Card className={cn("w-[48rem] max-w-full")}>
@@ -131,19 +192,18 @@ export default function Post(props: Readonly<PostProps>) {
         <div className="h-px bg-border/60" />
 
         <div className="prose prose-sm md:prose-base max-w-none">
-          <p>
-            {displayText}{" "}
-            {isLong ? (
-              <Button
-                variant="link"
-                className="inline text-sm text-primary hover:underline"
-                onClick={() => setExpanded((v) => !v)}
-                aria-expanded={expanded}
-              >
-                {expanded ? "Show less" : "Read more"}
-              </Button>
-            ) : null}
-          </p>
+          {/** biome-ignore lint/security/noDangerouslySetInnerHtml: not dangerous, just comments */}
+          <div dangerouslySetInnerHTML={{ __html: displayContent }} />
+          {isLong && (
+            <Button
+              variant="link"
+              className="inline text-sm text-primary hover:underline"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+            >
+              {expanded ? "Show less" : "Read more"}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
