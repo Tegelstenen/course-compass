@@ -3,13 +3,12 @@ import CourseHeader, {
   type CourseHeaderProps,
 } from "@/components/CourseHeader";
 import Post, { type PostProps } from "@/components/Post";
-
 import PostActionBar from "@/components/PostActionBar";
 
 export type CourseViewProps = CourseHeaderProps & {
   posts: (PostProps & { postId: string })[];
-  onPostLike: (postId: string) => void;
-  onPostDislike: (postId: string) => void;
+  onLikePost: (postId: string) => void;
+  onDislikePost: (postId: string) => void;
 };
 
 export default function CourseView(props: CourseViewProps) {
@@ -23,6 +22,7 @@ export default function CourseView(props: CourseViewProps) {
         syllabus={props.syllabus}
         percentageWouldRecommend={props.percentageWouldRecommend}
         onAddReview={props.onAddReview}
+        userId={props.userId}
       />
       <div className="flex flex-col gap-6 items-center">
         {props.posts.map((post) => (
@@ -36,8 +36,8 @@ export default function CourseView(props: CourseViewProps) {
             />
             <PostActionBar
               postId={post.postId}
-              onPostLike={props.onPostLike}
-              onPostDislike={props.onPostDislike}
+              onPostLike={props.onLikePost}
+              onPostDislike={props.onDislikePost}
             />
           </div>
         ))}
