@@ -1,6 +1,6 @@
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { RichTextEditor } from "./RichEditor";
 import { Button } from "./ui/button";
 import {
