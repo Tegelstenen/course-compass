@@ -25,22 +25,28 @@ export default function CourseView(props: CourseViewProps) {
         userId={props.userId}
       />
       <div className="flex flex-col gap-6 items-center">
-        {props.posts.map((post) => (
-          <div key={post.postId}>
-            <Post
-              wouldRecommend={post.wouldRecommend}
-              content={post.content}
-              easyScore={post.easyScore}
-              usefulScore={post.usefulScore}
-              interestingScore={post.interestingScore}
-            />
-            <PostActionBar
-              postId={post.postId}
-              onPostLike={props.onLikePost}
-              onPostDislike={props.onDislikePost}
-            />
+        {props.posts && props.posts.length > 0 ? (
+          props.posts.map((post) => (
+            <div key={post.postId}>
+              <Post
+                wouldRecommend={post.wouldRecommend}
+                content={post.content}
+                easyScore={post.easyScore}
+                usefulScore={post.usefulScore}
+                interestingScore={post.interestingScore}
+              />
+              <PostActionBar
+                postId={post.postId}
+                onPostLike={props.onLikePost}
+                onPostDislike={props.onDislikePost}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="mt-12 text-center text-muted-foreground text-lg">
+            No reviews yet. Be the first to add a review for this course!
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

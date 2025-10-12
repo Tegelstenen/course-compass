@@ -1,64 +1,17 @@
 "use client";
 
+import { redirect, useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
-import { createReview } from "@/lib/reviews";
+import { createReview, findAllReviews } from "@/lib/reviews";
 import CourseView from "@/views/CourseView";
-import { LoremIpsum } from "lorem-ipsum";
-import { redirect, useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 import SuspenseView from "@/views/SuspenseView";
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 5,
-    min: 1,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
-});
-
-const mockPosts = [
-  {
-    postId: "1",
-    wouldRecommend: true,
-    content: `<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl" style="text-align: center;"><span style="white-space: pre-wrap;">Excellent Course Experience</span></h1><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">This course was absolutely fantastic! The professor explained complex machine learning concepts in a way that was easy to understand. The assignments were challenging but fair, and the projects really helped solidify my understanding.</span></p><p class="leading-7 [&:not(:first-child)]:mt-6" style="text-align: right;"><b><strong class="font-bold" style="white-space: pre-wrap;">I would definitely recommend this course to anyone interested in ML. The hands-on approach and real-world examples made learning enjoyable.</strong></b></p><blockquote class="mt-6 border-l-2 pl-6 italic" style="text-align: left;"><span style="white-space: pre-wrap;">"The best course I've taken this semester!"</span></blockquote>`,
-    easyScore: 5,
-    usefulScore: 5,
-    interestingScore: 5,
-  },
-  {
-    postId: "2",
-    wouldRecommend: false,
-    content: `<h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">Mixed Feelings About This Course</h2><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">The course content was interesting and the professor was knowledgeable, but the workload was quite heavy. There were multiple assignments due each week, and the final project was particularly challenging.</span></p><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">The lectures were well-structured, but I felt like some topics were rushed. The group projects were helpful for understanding the material, but coordinating with teammates was sometimes difficult.</span></p><ul class="my-6 ml-6 list-disc [&>li]:mt-2"><li class="mt-2">Heavy workload</li><li class="mt-2">Fast-paced lectures</li><li class="mt-2">Group work challenges</li></ul>`,
-    easyScore: 4,
-    usefulScore: 4,
-    interestingScore: 4,
-  },
-  {
-    postId: "3",
-    wouldRecommend: false,
-    content: `<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Not What I Expected</h3><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">This course was much more difficult than I anticipated. The prerequisites weren't clearly communicated, and I felt lost from the beginning. The professor moved through material very quickly without checking if students understood.</span></p><p class="leading-7 [&:not(:first-child)]:mt-6" style="text-align: center;"><em><span style="white-space: pre-wrap;">The assignments were poorly explained and the grading was inconsistent.</span></em></p><blockquote class="mt-6 border-l-2 pl-6 italic" style="text-align: left;"><span style="white-space: pre-wrap;">"I wish I had taken a different course instead."</span></blockquote><p class="leading-7 [&:not(:first-child)]:mt-6"><br></p>`,
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-  {
-    postId: "4",
-    wouldRecommend: false,
-    content: `<h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">Disappointing Experience</h2><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">The course structure was confusing and the professor was often unavailable for help. The textbook was outdated and didn't match the lecture content. Many students struggled to understand the material.</span></p><ol class="my-7 ml-6 list-decimal [&>li]:mt-2"><li class="mt-2">Poor course organization</li><li class="mt-2">Unhelpful professor</li><li class="mt-2">Outdated materials</li><li class="mt-2">Lack of support</li></ol><p class="leading-7 [&:not(:first-child)]:mt-6"><span style="white-space: pre-wrap;">I would not recommend this course to other students. The experience was frustrating and didn't provide the learning outcomes I was hoping for.</span></p>`,
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-];
 
 const getAverageRating = (posts: PostProps[]) => {
   const totalScores = posts.reduce(
@@ -141,8 +94,15 @@ const getCourseHeader = async (
 };
 
 const getCoursePosts = async (courseCode: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return mockPosts;
+  const posts = await findAllReviews(courseCode);
+  return posts?.map((post) => ({
+    postId: post.id,
+    wouldRecommend: post.wouldRecommend,
+    content: post.content,
+    easyScore: post.easyScore,
+    usefulScore: post.usefulScore,
+    interestingScore: post.interestingScore,
+  })) as (PostProps & { postId: string })[];
 };
 
 const getPageData = async (courseCode: string, userId: string) => {
@@ -160,7 +120,36 @@ export default function CourseController() {
   const [courseHeader, setCourseHeader] = useState<CourseHeaderProps | null>(
     null,
   );
-  const [posts, setPosts] = useState<PostProps[] | null>(null);
+  const [posts, setPosts] = useState<(PostProps & { postId: string })[] | null>(
+    null,
+  );
+
+  const handleAddReview = async (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ) => {
+    try {
+      await createReview(courseCode, userId, reviewForm);
+      toast.success("Review added successfully!");
+
+      // refresh the posts and course header data
+      const updatedPosts = await getCoursePosts(courseCode);
+      const updatedCourseHeader = await getCourseHeader(
+        courseCode,
+        userId,
+        updatedPosts,
+      );
+
+      setPosts(updatedPosts);
+      setCourseHeader(updatedCourseHeader);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review", {
+        description: "Try again later",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!params.courseCode) {
@@ -198,7 +187,7 @@ export default function CourseController() {
         percentageWouldRecommend={getPercentageWouldRecommend(posts)}
         courseRating={getAverageRating(posts)}
         userId={userId}
-        onAddReview={addReview}
+        onAddReview={handleAddReview}
         posts={posts}
         onLikePost={likePost}
         onDislikePost={dislikePost}
