@@ -1,4 +1,4 @@
-import type { ReviewFormData } from "@/components/review";
+import type { ReviewFormData } from "@/components/Review";
 
 export async function createReview(
   courseCode: string,
