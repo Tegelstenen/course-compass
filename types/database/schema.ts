@@ -3,6 +3,8 @@ import {
   pgTable,
   primaryKey,
   text,
+  integer,
+  boolean,
   timestamp,
 } from "drizzle-orm/pg-core";
 
@@ -37,6 +39,35 @@ export const users = pgTable("users", {
     .defaultNow()
     .notNull(),
 });
+
+// table for reviews that references users (posters) and courses (reviewed)
+export const reviews = pgTable("reviews", {
+  id: text("id").primaryKey(),        // review id
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),  // foreign key to users table
+  courseCode: text("course_code")
+    .notNull()
+    .references(() => courses.code, { onDelete: "cascade" }),  // foreign key to courses table
+
+  // scores
+  easyScore: integer("easy_score").notNull().default(0), // 1-5
+  usefulScore: integer("useful_score").notNull().default(0), // 1-5
+  interestingScore: integer("interesting_score").notNull().default(0), // 1-5
+
+  wouldRecommend: boolean("would_recommend").notNull().default(false),
+  content: text("content").notNull(),
+
+  // timestamps
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+export type InsertReview = typeof reviews.$inferInsert;
+export type SelectReview = typeof reviews.$inferSelect;
 
 // junction table for mapping users to favorite courses
 export const user_favorites = pgTable(

@@ -1,4 +1,5 @@
 "use client";
+import { Review, type ReviewFormData } from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -17,7 +18,12 @@ export type CourseHeaderProps = {
   credits: number;
   syllabus: string;
   percentageWouldRecommend: number;
-  onAddReview: (courseCode: string) => void;
+  userId: string;
+  onAddReview: (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ) => Promise<void>;
 };
 
 export default function CourseHeader({
@@ -27,6 +33,7 @@ export default function CourseHeader({
   credits,
   syllabus,
   percentageWouldRecommend,
+  userId,
   onAddReview,
 }: Readonly<CourseHeaderProps>) {
   const rating = Math.min(5, Math.max(0, courseRating));
@@ -59,14 +66,11 @@ export default function CourseHeader({
         </div>
 
         <div className="flex gap-2">
-          <Button
-            className="flex-1"
-            onClick={() => onAddReview(courseCode)}
-            type="button"
-            aria-label="Add review"
-          >
-            Add Review
-          </Button>
+          <Review
+            courseCode={courseCode}
+            userId={userId}
+            onAddReview={onAddReview}
+          />
           <Dialog>
             <DialogTrigger asChild>
               <Button

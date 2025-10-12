@@ -1,9 +1,12 @@
 "use client";
+
 import { LoremIpsum } from "lorem-ipsum";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { PostProps } from "@/components/Post";
+import type { ReviewFormData } from "@/components/review";
+import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists } from "@/lib/courses";
 import CourseView from "@/views/CourseView";
 
@@ -86,16 +89,23 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
   );
 };
 
-const mockOnPostLike = (postId: string) => {
+const likePost = (postId: string) => {
   toast(`Like not implemented`);
 };
 
-const mockOnPostDislike = (postId: string) => {
+const dislikePost = (postId: string) => {
   toast(`Dislike not implemented`);
 };
 
-const addReview = (courseCode: string) => {
-  toast(`Review not implemented`);
+const addReview = async (
+  courseCode: string,
+  userId: string,
+  reviewForm: ReviewFormData,
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  toast(`Review not implemented`, {
+    description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
+  });
 };
 
 const getCourseHeader = (courseCode: string) => {
@@ -110,7 +120,7 @@ export default function CourseController() {
   const params = useParams<{ courseCode: string }>();
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
-
+  const { userId, isLoading: isLoadingUserId } = useSessionData();
   useEffect(() => {
     if (!params.courseCode) {
       router.push("/search");
@@ -148,10 +158,11 @@ export default function CourseController() {
       syllabus={courseHeader.syllabus}
       percentageWouldRecommend={getPercentageWouldRecommend(posts)}
       courseRating={getAverageRating(posts)}
+      userId={userId}
       onAddReview={addReview}
       posts={posts}
-      onPostLike={mockOnPostLike}
-      onPostDislike={mockOnPostDislike}
+      onLikePost={likePost}
+      onDislikePost={dislikePost}
     />
   );
 }
