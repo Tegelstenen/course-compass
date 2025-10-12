@@ -39,4 +39,3 @@ export async function findAllReviews(
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();
 }
-
