@@ -1,14 +1,15 @@
 "use client";
 
-import { LoremIpsum } from "lorem-ipsum";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists } from "@/lib/courses";
+import { createReview } from "@/lib/reviews";
 import CourseView from "@/views/CourseView";
+import { LoremIpsum } from "lorem-ipsum";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -102,10 +103,15 @@ const addReview = async (
   userId: string,
   reviewForm: ReviewFormData,
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  toast(`Review not implemented`, {
-    description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
-  });
+  try {
+    await createReview(courseCode, userId, reviewForm);
+    toast.success("Review added successfully!");
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to add review", {
+      description: "Try again later",
+    });
+  }
 };
 
 const getCourseHeader = (courseCode: string) => {
