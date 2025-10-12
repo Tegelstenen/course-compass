@@ -22,6 +22,8 @@ type SearchViewProps = {
   isLoading: boolean;
   error: string | undefined;
   results: Course[];
+  filters: Record<string, string | string[]>;
+  onFiltersChange: (filters: Record<string, string | string[]>) => void;
   onSeeReviews: (courseCode: string) => void;
 };
 
@@ -34,6 +36,8 @@ export default function SearchView({
   isLoading,
   error,
   results,
+  filters,
+  onFiltersChange,
   onSeeReviews,
 }: SearchViewProps) {
   return (
@@ -56,28 +60,56 @@ export default function SearchView({
           
         </form>
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
-        {isLoading && (
-          <div className="w-full max-w-3xl">
-            <ul className="flex flex-col gap-6">
+
+        <div className="w-full max-w-3xl">
+          <div className="flex items-center gap-4 mb-6">
+            <span className="text-sm font-medium">Filter by:</span>
+            <Select 
+              value={filters.department as string || "no-filter"} 
+              onValueChange={(value) => {
+                const newFilters = { ...filters };
+                if (value === "no-filter") {
+                  delete newFilters.department;
+                } else {
+                  newFilters.department = value;
+                }
+                onFiltersChange(newFilters);
+              }}
+            >
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Department..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="no-filter">No filter</SelectItem>
+                <SelectItem value="EECS">EECS</SelectItem>
+                <SelectItem value="ABE">ABE</SelectItem>
+                <SelectItem value="CBH">CBH</SelectItem>
+                <SelectItem value="ITM">ITM</SelectItem>
+                <SelectItem value="SCI">SCI</SelectItem>
+              </SelectContent>
+            </Select> 
+
+            {(Object.keys(filters).length > 0) && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onFiltersChange({})}
+                className="text-sm"
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+          {isLoading && (
+          <ul className="flex flex-col gap-6">
               {skeletonKeys.map((key) => (
                 <li key={key}>
                   <SearchItemSkeleton />
                 </li>
               ))}
-            </ul>
-          </div>
+          </ul>
         )}
 
-        <div className="w-full max-w-3xl">
-          Filter by:
-          <Select onValueChange={(value) => console.log(value)}>
-            <SelectTrigger className=" w-[140px]">
-              <SelectValue placeholder="Department..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="no filter">No filter</SelectItem>
-            </SelectContent>
-          </Select>
           <ul className="flex flex-col gap-6">
             {results.map((course) => (
               <li key={course._id}>
