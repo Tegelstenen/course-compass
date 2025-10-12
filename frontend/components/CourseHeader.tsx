@@ -14,10 +14,10 @@ import {
 export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
-  courseRating: number;
+  courseRating: number | null;
   credits: number;
   syllabus: string;
-  percentageWouldRecommend: number;
+  percentageWouldRecommend: number | null;
   userId: string;
   onAddReview: (
     courseCode: string,
@@ -26,21 +26,16 @@ export type CourseHeaderProps = {
   ) => Promise<void>;
 };
 
-export default function CourseHeader({
-  courseCode,
-  courseName,
-  courseRating,
-  credits,
-  syllabus,
-  percentageWouldRecommend,
-  userId,
-  onAddReview,
-}: Readonly<CourseHeaderProps>) {
-  const rating = Math.min(5, Math.max(0, courseRating));
-  const ratingLabel = `Avg: ${rating.toFixed(1)}/5.0`;
-  const creditsLabel = `${credits} credits`;
-  const recommendPct = Math.min(100, Math.max(0, percentageWouldRecommend));
-  const recommendLabel = `${recommendPct}% would recommend`;
+export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
+  const rating = props.courseRating
+    ? Math.min(5, Math.max(0, props.courseRating))
+    : null;
+  const ratingLabel = `Avg: ${rating ? rating.toFixed(1) : "__ "}/5.0`;
+  const creditsLabel = `${props.credits} credits`;
+  const recommendPct = props.percentageWouldRecommend
+    ? Math.min(100, Math.max(0, props.percentageWouldRecommend))
+    : null;
+  const recommendLabel = `${recommendPct ? `${recommendPct.toFixed(0)}%` : "__"} would recommend`;
 
   return (
     <Card className="w-full p-4 md:p-6 grid gap-4 md:grid-cols-2">
@@ -48,8 +43,8 @@ export default function CourseHeader({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1 min-w-0">
-            <h1 className="text-2xl">{courseCode}</h1>
-            <h2 className="text-xl truncate">{courseName}</h2>
+            <h1 className="text-2xl">{props.courseCode}</h1>
+            <h2 className="text-xl truncate">{props.courseName}</h2>
           </div>
           <div className="text-2xl font-bold shrink-0 w-36 h-24 grid place-items-center rounded-md">
             {ratingLabel}
@@ -67,9 +62,9 @@ export default function CourseHeader({
 
         <div className="flex gap-2">
           <Review
-            courseCode={courseCode}
-            userId={userId}
-            onAddReview={onAddReview}
+            courseCode={props.courseCode}
+            userId={props.userId}
+            onAddReview={props.onAddReview}
           />
           <Dialog>
             <DialogTrigger asChild>
@@ -84,7 +79,7 @@ export default function CourseHeader({
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Course Syllabus</DialogTitle>
-                <DialogDescription>{syllabus}</DialogDescription>
+                <DialogDescription>{props.syllabus}</DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>

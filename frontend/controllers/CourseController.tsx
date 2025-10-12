@@ -1,6 +1,5 @@
 "use client";
 
-import { LoremIpsum } from "lorem-ipsum";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,54 +8,9 @@ import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
+import { createReview, findAllReviews } from "@/lib/reviews";
 import CourseView from "@/views/CourseView";
 import SuspenseView from "@/views/SuspenseView";
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 5,
-    min: 1,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
-});
-
-const mockPosts = [
-  {
-    postId: "1",
-    wouldRecommend: true,
-    content: lorem.generateSentences(1),
-    easyScore: 5,
-    usefulScore: 5,
-    interestingScore: 5,
-  },
-  {
-    postId: "2",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 4,
-    usefulScore: 4,
-    interestingScore: 4,
-  },
-  {
-    postId: "3",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-  {
-    postId: "4",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-];
 
 const getAverageRating = (posts: PostProps[]) => {
   const totalScores = posts.reduce(
@@ -97,10 +51,15 @@ const addReview = async (
   userId: string,
   reviewForm: ReviewFormData,
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  toast(`Review not implemented`, {
-    description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
-  });
+  try {
+    await createReview(courseCode, userId, reviewForm);
+    toast.success("Review added successfully!");
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to add review", {
+      description: "Try again later",
+    });
+  }
 };
 
 const getCourseHeader = async (
@@ -134,8 +93,15 @@ const getCourseHeader = async (
 };
 
 const getCoursePosts = async (courseCode: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return mockPosts;
+  const posts = await findAllReviews(courseCode);
+  return posts?.map((post) => ({
+    postId: post.id,
+    wouldRecommend: post.wouldRecommend,
+    content: post.content,
+    easyScore: post.easyScore,
+    usefulScore: post.usefulScore,
+    interestingScore: post.interestingScore,
+  })) as (PostProps & { postId: string })[];
 };
 
 const getPageData = async (courseCode: string, userId: string) => {
@@ -153,7 +119,36 @@ export default function CourseController() {
   const [courseHeader, setCourseHeader] = useState<CourseHeaderProps | null>(
     null,
   );
-  const [posts, setPosts] = useState<PostProps[] | null>(null);
+  const [posts, setPosts] = useState<(PostProps & { postId: string })[] | null>(
+    null,
+  );
+
+  const handleAddReview = async (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ) => {
+    try {
+      await createReview(courseCode, userId, reviewForm);
+      toast.success("Review added successfully!");
+
+      // refresh the posts and course header data
+      const updatedPosts = await getCoursePosts(courseCode);
+      const updatedCourseHeader = await getCourseHeader(
+        courseCode,
+        userId,
+        updatedPosts,
+      );
+
+      setPosts(updatedPosts);
+      setCourseHeader(updatedCourseHeader);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review", {
+        description: "Try again later",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!params.courseCode) {
@@ -191,7 +186,7 @@ export default function CourseController() {
         percentageWouldRecommend={getPercentageWouldRecommend(posts)}
         courseRating={getAverageRating(posts)}
         userId={userId}
-        onAddReview={addReview}
+        onAddReview={handleAddReview}
         posts={posts}
         onLikePost={likePost}
         onDislikePost={dislikePost}
