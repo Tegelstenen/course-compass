@@ -1,8 +1,5 @@
 "use client";
 
-import { redirect, useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
@@ -10,6 +7,10 @@ import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
 import { createReview, findAllReviews } from "@/lib/reviews";
 import CourseView from "@/views/CourseView";
+import { redirect, useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
 import SuspenseView from "@/views/SuspenseView";
 
 const getAverageRating = (posts: PostProps[]) => {
