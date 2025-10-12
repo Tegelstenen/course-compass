@@ -1,5 +1,5 @@
 "use client";
-import { Review, type ReviewFormData } from "@/components/Review";
+import { Review, type ReviewFormData } from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
