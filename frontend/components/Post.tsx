@@ -97,6 +97,7 @@ function RecommendChip(props: Readonly<RecommendChipProps>) {
 }
 
 export type PostProps = {
+  postId: string;
   easyScore: number;
   usefulScore: number;
   interestingScore: number;
