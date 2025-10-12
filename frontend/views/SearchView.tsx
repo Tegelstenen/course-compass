@@ -65,22 +65,17 @@ export default function SearchView({
           <div className="flex items-center gap-4 mb-6">
             <span className="text-sm font-medium">Filter by:</span>
             <Select 
-              value={filters.department as string || "no-filter"} 
+              value={filters.department as string || ""}
               onValueChange={(value) => {
                 const newFilters = { ...filters };
-                if (value === "no-filter") {
-                  delete newFilters.department;
-                } else {
-                  newFilters.department = value;
-                }
+                newFilters.department = value;
                 onFiltersChange(newFilters);
               }}
             >
               <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Department..." />
+                <SelectValue placeholder="School..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="no-filter">No filter</SelectItem>
                 <SelectItem value="EECS">EECS</SelectItem>
                 <SelectItem value="ABE">ABE</SelectItem>
                 <SelectItem value="CBH">CBH</SelectItem>
