@@ -8,6 +8,7 @@ import Navigation from "@/components/Topbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sendFeedback } from "@/lib/feedback";
 
 const Contact = () => {
   return (
@@ -87,12 +88,17 @@ const Contact = () => {
                   errors.message = "Message is required";
                 return errors;
               }}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
-                setTimeout(() => {
+              onSubmit={async (values, { setSubmitting, resetForm }) => {
+                try {
+                  await sendFeedback(values);
                   toast.success("Message sent successfully!");
                   resetForm();
+                } catch (error) {
+                  console.error(error);
+                  toast.error("Failed to send message.");
+                } finally {
                   setSubmitting(false);
-                }, 500);
+                }
               }}
             >
               {({ isSubmitting }) => (

@@ -92,3 +92,16 @@ export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
 export type InsertUserFavorite = typeof user_favorites.$inferInsert;
 export type SelectUserFavorites = typeof user_favorites.$inferSelect;
+
+export const feedback_form = pgTable("feedback_form", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+  .defaultNow()
+  .notNull(),
+  });
+
+export type InsertFeedbackForm = typeof feedback_form.$inferInsert; 
+export type SelectFeedbackMessage = typeof feedback_form.$inferSelect; 
