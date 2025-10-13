@@ -1,68 +1,18 @@
 "use client";
 
-import { LoremIpsum } from "lorem-ipsum";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import profoundWords from "profane-words";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
-import { checkIfCourseCodeExists } from "@/lib/courses";
+import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
+import { createReview, findAllReviews } from "@/lib/reviews";
 import CourseView from "@/views/CourseView";
 
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 5,
-    min: 1,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
-});
-
-const mockPosts = [
-  {
-    postId: "1",
-    wouldRecommend: true,
-    content: lorem.generateSentences(1),
-    easyScore: 5,
-    usefulScore: 5,
-    interestingScore: 5,
-  },
-  {
-    postId: "2",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 4,
-    usefulScore: 4,
-    interestingScore: 4,
-  },
-  {
-    postId: "3",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-  {
-    postId: "4",
-    wouldRecommend: false,
-    content: lorem.generateParagraphs(3),
-    easyScore: 1,
-    usefulScore: 1,
-    interestingScore: 1,
-  },
-];
-
-const mockCourseHeader = {
-  courseCode: "DD1420",
-  courseName: "Foundations of Machine Learning",
-  credits: 7.5,
-  syllabus: lorem.generateParagraphs(10),
-};
+import SuspenseView from "@/views/SuspenseView";
 
 const getAverageRating = (posts: PostProps[]) => {
   const totalScores = posts.reduce(
@@ -90,11 +40,11 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
   );
 };
 
-const likePost = (postId: string) => {
+const likePost = (_postId: string) => {
   toast(`Like not implemented`);
 };
 
-const dislikePost = (postId: string) => {
+const dislikePost = (_postId: string) => {
   toast(`Dislike not implemented`);
 };
 
@@ -103,42 +53,123 @@ const addReview = async (
   userId: string,
   reviewForm: ReviewFormData,
 ): Promise<boolean> => {
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    const profoundMatches = profoundWords
-      .filter(Boolean)
-      .filter((badWord) => new RegExp(badWord, "i").test(reviewForm.content));
-    if (profoundMatches.length > 0) {
-      toast(`Please refrain from using profane language`, {
-        description: `Dissaproved words: ${profoundMatches.join(", ")}`,
+  const plainText = reviewForm.content.replace(/<[^>]*>/g, " ");
+  const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const profoundMatches = profoundWords
+    .filter(Boolean)
+    .filter((badWord) =>
+      new RegExp(`\\b${escapeRegex(String(badWord))}\\b`, "i").test(plainText),
+    );
+  if (profoundMatches.length > 0) {
+    toast(`Please refrain from using profane language`, {
+      description: `Dissaproved words: ${profoundMatches.join(", ")}`,
+    });
+    return false;
+  } else {
+    try {
+      await createReview(courseCode, userId, reviewForm);
+      toast.success("Review added successfully!");
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review", {
+        description: "Try again later",
       });
       return false;
     }
-    toast(`Review not implemented`, {
-      description: `Review for ${courseCode} by ${userId} with ${reviewForm.content}`,
-    });
-    return true;
-  } catch (error) {
-    console.error("Failed to add review", error);
-    toast.error("Failed to add review");
-    return false;
   }
 };
 
-const getCourseHeader = (courseCode: string) => {
-  return mockCourseHeader;
+const getCourseHeader = async (
+  courseCode: string,
+  userId: string,
+  posts: PostProps[],
+) => {
+  try {
+    const courseInfo = await getCourseInfo(courseCode);
+    return {
+      courseCode: courseInfo.course_code,
+      courseName: courseInfo.course_name,
+      credits: 0,
+      syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
+      courseRating: getAverageRating(posts),
+      percentageWouldRecommend: getPercentageWouldRecommend(posts),
+      userId,
+      onAddReview: addReview,
+    };
+  } catch (e) {
+    console.error("Failed to load course info", e);
+
+    if (e instanceof Error && e.message.includes("not found")) {
+      toast.error(`Course ${courseCode} not found`);
+    } else {
+      toast.error("Failed to load course information");
+    }
+
+    redirect("/search");
+  }
 };
 
-const getCoursePosts = (courseCode: string) => {
-  return mockPosts;
+const getCoursePosts = async (courseCode: string) => {
+  const posts = await findAllReviews(courseCode);
+  return posts?.map((post) => ({
+    postId: post.id,
+    wouldRecommend: post.wouldRecommend,
+    content: post.content,
+    easyScore: post.easyScore,
+    usefulScore: post.usefulScore,
+    interestingScore: post.interestingScore,
+  })) as (PostProps & { postId: string })[];
+};
+
+const getPageData = async (courseCode: string, userId: string) => {
+  const exists = await checkIfCourseCodeExists(courseCode);
+  const posts = await getCoursePosts(courseCode);
+  const courseHeader = await getCourseHeader(courseCode, userId, posts);
+  return { exists, courseHeader, posts };
 };
 
 export default function CourseController() {
   const params = useParams<{ courseCode: string }>();
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
-  const { userId, isLoading: isLoadingUserId } = useSessionData();
+  const { userId } = useSessionData();
+  const [courseHeader, setCourseHeader] = useState<CourseHeaderProps | null>(
+    null,
+  );
+  const [posts, setPosts] = useState<(PostProps & { postId: string })[] | null>(
+    null,
+  );
+
+  const handleAddReview = async (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ): Promise<boolean> => {
+    try {
+      const created = await addReview(courseCode, userId, reviewForm);
+      if (!created) return false;
+
+      // refresh the posts and course header data
+      const updatedPosts = await getCoursePosts(courseCode);
+      const updatedCourseHeader = await getCourseHeader(
+        courseCode,
+        userId,
+        updatedPosts,
+      );
+
+      setPosts(updatedPosts);
+      setCourseHeader(updatedCourseHeader);
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review", {
+        description: "Try again later",
+      });
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!params.courseCode) {
       router.push("/search");
@@ -146,12 +177,14 @@ export default function CourseController() {
     }
 
     setIsChecking(true);
-    checkIfCourseCodeExists(params.courseCode)
-      .then((exists) => {
+    getPageData(params.courseCode, userId)
+      .then(({ exists, courseHeader, posts }) => {
         if (!exists) {
           toast("Course not found");
           router.push("/search");
         }
+        setCourseHeader(courseHeader);
+        setPosts(posts);
       })
       .catch((e) => {
         console.error("Failed to load course codes", e);
@@ -159,28 +192,25 @@ export default function CourseController() {
         router.push("/search");
       })
       .finally(() => setIsChecking(false));
-  }, [params.courseCode, router]);
+  }, [params.courseCode, router, userId]);
 
-  if (!params.courseCode || isChecking) {
-    return null; // or a skeleton/loader
+  if (!params.courseCode || isChecking || !courseHeader || !posts) {
+    return <SuspenseView />;
+  } else {
+    return (
+      <CourseView
+        courseCode={courseHeader.courseCode}
+        courseName={courseHeader.courseName}
+        credits={courseHeader.credits}
+        syllabus={courseHeader.syllabus}
+        percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+        courseRating={getAverageRating(posts)}
+        userId={userId}
+        onAddReview={handleAddReview}
+        posts={posts}
+        onLikePost={likePost}
+        onDislikePost={dislikePost}
+      />
+    );
   }
-
-  const posts = getCoursePosts(params.courseCode);
-  const courseHeader = getCourseHeader(params.courseCode);
-
-  return (
-    <CourseView
-      courseCode={courseHeader.courseCode}
-      courseName={courseHeader.courseName}
-      credits={courseHeader.credits}
-      syllabus={courseHeader.syllabus}
-      percentageWouldRecommend={getPercentageWouldRecommend(posts)}
-      courseRating={getAverageRating(posts)}
-      userId={userId}
-      onAddReview={addReview}
-      posts={posts}
-      onLikePost={likePost}
-      onDislikePost={dislikePost}
-    />
-  );
 }

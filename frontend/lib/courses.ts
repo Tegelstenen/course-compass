@@ -1,3 +1,4 @@
+import type { CourseMapping } from "../../types/search/elastic.mappings";
 export async function checkIfCourseCodeExists(
   courseCode: string,
 ): Promise<boolean> {
@@ -14,4 +15,31 @@ export async function checkIfCourseCodeExists(
 
   const data = (await res.json()) as { exists: boolean };
   return data.exists;
+}
+
+export async function getCourseInfo(
+  courseCode: string,
+): Promise<CourseMapping> {
+  const backend = process.env.NEXT_PUBLIC_BACKEND_DOMAIN;
+  if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_DOMAIN is not set");
+
+  const res = await fetch(`${backend}/search/${courseCode}`, {
+    cache: "no-store",
+  });
+
+  if (res.status === 404) {
+    throw new Error(`Course ${courseCode} not found`);
+  }
+
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+  }
+
+  const data = (await res.json()) as CourseMapping;
+
+  if (!data) {
+    throw new Error(`Course ${courseCode} data is empty`);
+  }
+
+  return data;
 }

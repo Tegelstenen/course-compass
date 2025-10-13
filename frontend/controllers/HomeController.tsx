@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Topbar from "@/components/Topbar";
 import { getSession } from "@/state/session/sessionSlice";
 import type { Dispatch, RootState } from "@/state/store";
-import HomeView from "@/views/HomeView";
+import LandingPageView from "@/views/LandingPageView";
 import AuthController from "./AuthController";
 
 export default function HomeController() {
@@ -48,7 +48,7 @@ export default function HomeController() {
     return (
       <div>
         <Topbar />
-        <HomeView onSubmit={onSubmit} />
+        <LandingPageView onSubmit={onSubmit} />
       </div>
     );
   }
