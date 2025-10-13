@@ -31,7 +31,7 @@ type ReviewProps = {
     courseCode: string,
     userId: string,
     reviewForm: ReviewFormData,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };
 
 export function Review(props: Readonly<ReviewProps>) {
@@ -60,7 +60,10 @@ export function Review(props: Readonly<ReviewProps>) {
   ) => {
     setIsSubmittingReviewForm(true);
     try {
-      await props.onAddReview(courseCode, userId, reviewForm);
+      const success = await props.onAddReview(courseCode, userId, reviewForm);
+      if (success) {
+        setDialogIsOpen(false);
+      }
     } catch (error) {
       console.error(error);
       toast.error("Failed to add review", {
@@ -69,7 +72,6 @@ export function Review(props: Readonly<ReviewProps>) {
       setIsSubmittingReviewForm(false);
     } finally {
       setIsSubmittingReviewForm(false);
-      setDialogIsOpen(false);
     }
   };
 
