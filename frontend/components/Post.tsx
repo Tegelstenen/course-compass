@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import PostActionBar from "./PostActionBar";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 
@@ -163,6 +164,12 @@ export type PostProps = {
   interestingScore: number;
   wouldRecommend: boolean;
   content: string;
+  likeCount?: number;
+  dislikeCount?: number;
+  userVote?: "like" | "dislike" | null;
+  postId?: string;
+  onPostLike?: (postId: string) => void;
+  onPostDislike?: (postId: string) => void;
 };
 
 export default function Post(props: Readonly<PostProps>) {
@@ -204,6 +211,17 @@ export default function Post(props: Readonly<PostProps>) {
             </Button>
           )}
         </div>
+
+        {props.postId && props.onPostLike && props.onPostDislike && (
+          <PostActionBar
+            postId={props.postId}
+            likeCount={props.likeCount || 0}
+            dislikeCount={props.dislikeCount || 0}
+            userVote={props.userVote || null}
+            onPostLike={props.onPostLike}
+            onPostDislike={props.onPostDislike}
+          />
+        )}
       </CardContent>
     </Card>
   );

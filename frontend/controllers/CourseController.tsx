@@ -9,7 +9,29 @@ import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
-import { createReview, findAllReviews } from "@/lib/reviews";
+import {
+  createReview,
+  dislikeReview,
+  findAllReviews,
+  likeReview,
+} from "@/lib/reviews";
+
+type Review = {
+  id: string;
+  userId: string;
+  courseCode: string;
+  easyScore: number;
+  usefulScore: number;
+  interestingScore: number;
+  wouldRecommend: boolean;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  likeCount: number;
+  dislikeCount: number;
+  userVote: string | null;
+};
+
 import CourseView from "@/views/CourseView";
 
 import SuspenseView from "@/views/SuspenseView";
@@ -40,12 +62,22 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
   );
 };
 
-const likePost = (_postId: string) => {
-  toast(`Like not implemented`);
+const likePost = async (postId: string, userId: string) => {
+  try {
+    await likeReview(postId, userId);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to like review");
+  }
 };
 
-const dislikePost = (_postId: string) => {
-  toast(`Dislike not implemented`);
+const dislikePost = async (postId: string, userId: string) => {
+  try {
+    await dislikeReview(postId, userId);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to dislike review");
+  }
 };
 
 const addReview = async (
@@ -110,8 +142,8 @@ const getCourseHeader = async (
   }
 };
 
-const getCoursePosts = async (courseCode: string) => {
-  const posts = await findAllReviews(courseCode);
+const getCoursePosts = async (courseCode: string, userId?: string) => {
+  const posts = (await findAllReviews(courseCode, userId)) as Review[];
   return posts?.map((post) => ({
     postId: post.id,
     wouldRecommend: post.wouldRecommend,
@@ -119,12 +151,15 @@ const getCoursePosts = async (courseCode: string) => {
     easyScore: post.easyScore,
     usefulScore: post.usefulScore,
     interestingScore: post.interestingScore,
+    likeCount: post.likeCount || 0,
+    dislikeCount: post.dislikeCount || 0,
+    userVote: post.userVote || null,
   })) as (PostProps & { postId: string })[];
 };
 
 const getPageData = async (courseCode: string, userId: string) => {
   const exists = await checkIfCourseCodeExists(courseCode);
-  const posts = await getCoursePosts(courseCode);
+  const posts = await getCoursePosts(courseCode, userId);
   const courseHeader = await getCourseHeader(courseCode, userId, posts);
   return { exists, courseHeader, posts };
 };
@@ -151,7 +186,7 @@ export default function CourseController() {
       if (!created) return false;
 
       // refresh the posts and course header data
-      const updatedPosts = await getCoursePosts(courseCode);
+      const updatedPosts = await getCoursePosts(courseCode, userId);
       const updatedCourseHeader = await getCourseHeader(
         courseCode,
         userId,
@@ -168,6 +203,24 @@ export default function CourseController() {
       });
       return false;
     }
+  };
+
+  const handleLikePost = async (postId: string) => {
+    if (!userId) return;
+    await likePost(postId, userId);
+
+    // Refresh posts to get updated like counts
+    const updatedPosts = await getCoursePosts(params.courseCode, userId);
+    setPosts(updatedPosts);
+  };
+
+  const handleDislikePost = async (postId: string) => {
+    if (!userId) return;
+    await dislikePost(postId, userId);
+
+    // Refresh posts to get updated like counts
+    const updatedPosts = await getCoursePosts(params.courseCode, userId);
+    setPosts(updatedPosts);
   };
 
   useEffect(() => {
@@ -208,8 +261,8 @@ export default function CourseController() {
         userId={userId}
         onAddReview={handleAddReview}
         posts={posts}
-        onLikePost={likePost}
-        onDislikePost={dislikePost}
+        onLikePost={handleLikePost}
+        onDislikePost={handleDislikePost}
       />
     );
   }
