@@ -43,7 +43,6 @@ export default function SearchView({
   return (
     <div>
       <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8">
-        Find Your Course
       </p>
       <div className="centered flex flex-col items-center gap-12 pb-12">
         <form onSubmit={onSubmit} className="flex items-center gap-4">
