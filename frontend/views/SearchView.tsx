@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { SearchItem } from "@/components/SearchItem";
+import { CourseItem } from "@/components/CourseItem";
 import { SearchItemSkeleton } from "@/components/SearchItemSkeleton";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,7 +106,7 @@ export default function SearchView({
           <ul className="flex flex-col gap-6">
             {results.map((course) => (
               <li key={course._id}>
-                <SearchItem
+                <CourseItem
                   courseName={course.course_name}
                   courseCode={course.course_code}
                   rating={5}

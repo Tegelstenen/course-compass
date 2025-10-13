@@ -67,9 +67,9 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link href="/user">
+          <Link href="/favorites">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/user" ? (
+              {pathname === "/favorites" ? (
                 <RiHeartFill className="text-white !w-4 !h-4" />
               ) : (
                 <RiHeartLine className="text-white !w-4 !h-4" />
