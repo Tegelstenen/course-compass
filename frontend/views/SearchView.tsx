@@ -98,24 +98,26 @@ export default function SearchView({
                 <SelectValue placeholder="Minimum Rating..." />
               </SelectTrigger>
               <SelectContent>
-                
-                {Array.from({ length: 5 }).map((_, ratingValue) => (
-                  <SelectItem
-                    key={`selectitem-${ratingValue}`}
-                    value={(ratingValue + 1).toString()}
-                  >
-                    <Rating value={ratingValue + 1} readOnly>
-                      {(["one", "two", "three", "four", "five"] as const).map(
-                        (starId) => (
-                          <RatingButton
-                            className="text-yellow-600"
-                            key={`star-${ratingValue + 1}-${starId}`}
-                          />
-                        ),
-                      )}
-                    </Rating>
-                  </SelectItem>
-                ))}
+                {Array.from({ length: 5 }).map((_, ratingValue) => {
+                  const value = ratingValue + 1;
+                  return (
+                    <SelectItem
+                      key={`selectitem-${value}`}
+                      value={value.toString()}
+                    >
+                      <Rating value={value} readOnly>
+                        {(["one", "two", "three", "four", "five"] as const).map(
+                          (starId) => (
+                            <RatingButton
+                              key={`star-${value}-${starId}`}
+                              className="text-yellow-600"
+                            />
+                          ),
+                        )}
+                      </Rating>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
 
