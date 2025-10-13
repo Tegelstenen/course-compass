@@ -94,7 +94,7 @@ export function Review(props: Readonly<ReviewProps>) {
             <h3 className="text-lg font-semibold">Rate the Course</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">Difficulty</Label>
+                <Label className="text-sm font-medium">Effortlessness </Label>
                 <Rating
                   value={reviewForm.easyScore}
                   onValueChange={(value) =>
