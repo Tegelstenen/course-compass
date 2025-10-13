@@ -10,10 +10,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import type { Course } from "@/models/CourseModel";
-
 
 type SearchViewProps = {
   localQuery: string;
@@ -57,15 +56,14 @@ export default function SearchView({
           <Button variant="outline" className="h-10 w-10 p-0">
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>
-          
         </form>
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
         <div className="w-full max-w-3xl">
           <div className="flex items-center gap-4 mb-6">
             <span className="text-sm font-medium">Filter by:</span>
-            <Select 
-              value={filters.department as string || ""}
+            <Select
+              value={(filters.department as string) || ""}
               onValueChange={(value) => {
                 const newFilters = { ...filters };
                 newFilters.department = value;
@@ -82,11 +80,11 @@ export default function SearchView({
                 <SelectItem value="ITM">ITM</SelectItem>
                 <SelectItem value="SCI">SCI</SelectItem>
               </SelectContent>
-            </Select> 
+            </Select>
 
-            {(Object.keys(filters).length > 0) && (
-              <Button 
-                variant="outline" 
+            {Object.keys(filters).length > 0 && (
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => onFiltersChange({})}
                 className="text-sm"
@@ -96,14 +94,14 @@ export default function SearchView({
             )}
           </div>
           {isLoading && (
-          <ul className="flex flex-col gap-6">
+            <ul className="flex flex-col gap-6">
               {skeletonKeys.map((key) => (
                 <li key={key}>
                   <SearchItemSkeleton />
                 </li>
               ))}
-          </ul>
-        )}
+            </ul>
+          )}
 
           <ul className="flex flex-col gap-6">
             {results.map((course) => (

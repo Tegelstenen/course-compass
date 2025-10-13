@@ -1,3 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,12 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -79,7 +75,9 @@ export default function ProfileView({
                     />
                   </label>
                 </div>
-                <p className="text-xs text-muted-foreground">Max 2MB. JPG, PNG, or GIF.</p>
+                <p className="text-xs text-muted-foreground">
+                  Max 2MB. JPG, PNG, or GIF.
+                </p>
               </div>
             </div>
 
@@ -93,9 +91,7 @@ export default function ProfileView({
                 className="max-w-md bg-muted cursor-not-allowed"
               />
             </div>
-            <Button className="w-full sm:w-auto">
-                Save Changes
-            </Button>
+            <Button className="w-full sm:w-auto">Save Changes</Button>
           </CardContent>
         </Card>
 

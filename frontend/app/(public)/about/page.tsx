@@ -3,8 +3,6 @@ import Topbar from "@/components/Topbar";
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Topbar />
-
       <main className="container mx-auto px-6 py-12 pt-32">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">

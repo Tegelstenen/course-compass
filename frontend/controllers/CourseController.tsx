@@ -1,6 +1,7 @@
 "use client";
 
 import { redirect, useParams, useRouter } from "next/navigation";
+import profoundWords from "profane-words";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { CourseHeaderProps } from "@/components/CourseHeader";
@@ -52,11 +53,11 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
   );
 };
 
-const likePost = (postId: string) => {
+const likePost = (_postId: string) => {
   toast(`Like not implemented`);
 };
 
-const dislikePost = (postId: string) => {
+const dislikePost = (_postId: string) => {
   toast(`Dislike not implemented`);
 };
 
@@ -64,15 +65,31 @@ const addReview = async (
   courseCode: string,
   userId: string,
   reviewForm: ReviewFormData,
-) => {
-  try {
-    await createReview(courseCode, userId, reviewForm);
-    toast.success("Review added successfully!");
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to add review", {
-      description: "Try again later",
+): Promise<boolean> => {
+  const plainText = reviewForm.content.replace(/<[^>]*>/g, " ");
+  const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const profoundMatches = profoundWords
+    .filter(Boolean)
+    .filter((badWord) =>
+      new RegExp(`\\b${escapeRegex(String(badWord))}\\b`, "i").test(plainText),
+    );
+  if (profoundMatches.length > 0) {
+    toast(`Please refrain from using profane language`, {
+      description: `Dissaproved words: ${profoundMatches.join(", ")}`,
     });
+    return false;
+  } else {
+    try {
+      await createReview(courseCode, userId, reviewForm);
+      toast.success("Review added successfully!");
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review", {
+        description: "Try again later",
+      });
+      return false;
+    }
   }
 };
 
@@ -142,10 +159,10 @@ export default function CourseController() {
     courseCode: string,
     userId: string,
     reviewForm: ReviewFormData,
-  ) => {
+  ): Promise<boolean> => {
     try {
-      await createReview(courseCode, userId, reviewForm);
-      toast.success("Review added successfully!");
+      const created = await addReview(courseCode, userId, reviewForm);
+      if (!created) return false;
 
       // refresh the posts and course header data
       const updatedPosts = await getCoursePosts(courseCode);
@@ -157,11 +174,13 @@ export default function CourseController() {
 
       setPosts(updatedPosts);
       setCourseHeader(updatedCourseHeader);
+      return true;
     } catch (error) {
       console.error(error);
       toast.error("Failed to add review", {
         description: "Try again later",
       });
+      return false;
     }
   };
 
