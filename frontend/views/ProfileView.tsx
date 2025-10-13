@@ -1,7 +1,20 @@
-import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-type SettingsViewProps = {
+type ProfileViewProps = {
   name: string;
   email: string;
   preview: string | null;
@@ -15,76 +28,101 @@ export default function ProfileView({
   preview,
   handleFileChange,
   handleDeleteAccount,
-}: SettingsViewProps) {
+}: ProfileViewProps) {
+  const getInitials = (name: string) =>
+    name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+
   return (
-    <div className="flex">
-      <main className="flex-1 p-6 ml-12">
-        <h1 className="text-2xl font-bold mb-8">My Profile</h1>
+    <main className="container mx-auto px-4 py-12 max-w-4xl">
+      <h1 className="text-4xl font-bold text-foreground mb-6">My Profile</h1>
+      <p className="text-muted-foreground mb-10">
+        Manage your account settings and preferences
+      </p>
 
-        {/* Profile picture section */}
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold">User information</h2>
+      <div className="space-y-8">
+        {/* Profile Info Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile Information</CardTitle>
+            <CardDescription>
+              Update your profile picture and personal details
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Profile picture */}
+            <div className="flex items-center gap-6">
+              <Avatar className="w-24 h-24 border-4 border-primary/10">
+                <AvatarImage src={preview || ""} alt={name} />
+                <AvatarFallback className="text-xl bg-primary/10 text-primary">
+                  {getInitials(name || email)}
+                </AvatarFallback>
+              </Avatar>
 
-          <p className="text-sm text-gray-700 mb-6">
-            <strong className="font-medium">Name:</strong>{" "}
-            {name?.trim() || email?.split("@")[0] || "Loading user..."}
-          </p>
-        </section>
-
-        {/* Profile picture section */}
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold">Profile Picture</h2>
-
-          <div className="flex flex-col items-center gap-4">
-            {preview ? (
-              <Image
-                src={preview}
-                alt="Profile Preview"
-                width={150}
-                height={150}
-                className="rounded-full border object-cover w-36 h-36"
-              />
-            ) : (
-              <div className="w-36 h-36 rounded-full bg-gray-200 flex items-center justify-center border">
-                <span className="text-gray-500 text-sm">No image</span>
+              <div className="space-y-2">
+                <Label htmlFor="profile-upload">Profile Picture</Label>
+                <div className="flex gap-2">
+                  <label htmlFor="profile-upload">
+                    <Button variant="secondary" size="sm" asChild>
+                      <span>Upload New</span>
+                    </Button>
+                    <Input
+                      id="profile-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <p className="text-xs text-muted-foreground">Max 2MB. JPG, PNG, or GIF.</p>
               </div>
-            )}
-
-            <div>
-              <input
-                type="file"
-                accept="image/*"
-                id="profile-upload"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <label htmlFor="profile-upload">
-                <Button asChild>
-                  <span>Upload New</span>
-                </Button>
-              </label>
             </div>
-          </div>
-        </section>
 
-        {/* Delete account section */}
-        <section className="mt-12 border-t pt-8">
-          <h2 className="text-lg font-semibold text-600 mb-4">
-            Delete account
-          </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            Deleting your account is permanent and cannot be undone. All your
-            data will be removed.
-          </p>
-          <button
-            type="button"
-            className="px-4 py-2 rounded-md bg-red-600 text-white font-medium hover:bg-red-700 transition"
-            onClick={handleDeleteAccount}
-          >
-            Delete Account
-          </button>
-        </section>
-      </main>
-    </div>
+            {/* Full Name (read-only) */}
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                value={name}
+                readOnly
+                className="max-w-md bg-muted cursor-not-allowed"
+              />
+            </div>
+            <Button className="w-full sm:w-auto">
+                Save Changes
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Delete Account */}
+        <Card className="border-destructive/50">
+          <CardHeader>
+            <CardTitle className="text-destructive">Delete Account</CardTitle>
+            <CardDescription>
+              Permanently remove your account and data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md bg-destructive/5 p-4 border border-destructive/20">
+              <p className="text-sm text-muted-foreground mb-4">
+                Once deleted, your account and data can't be recovered.
+              </p>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteAccount}
+              >
+                Delete Account
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
   );
 }
