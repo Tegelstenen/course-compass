@@ -50,7 +50,6 @@ export default function SearchView({
           <input
             className="rounded-md outline p-2 w-64 text-center"
             type="text"
-            value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="Search course..."
           />
