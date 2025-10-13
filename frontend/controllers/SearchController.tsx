@@ -81,6 +81,8 @@ export default function SearchController() {
       isLoading={isLoading}
       error={error}
       results={results}
+      filters={filters}
+      onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}
     />
   );
