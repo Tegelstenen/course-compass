@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Topbar from "@/components/Topbar";
-import LandingPageView from "@/views/LandingPageView";
 import { getSession } from "@/state/session/sessionSlice";
 import type { Dispatch, RootState } from "@/state/store";
+import LandingPageView from "@/views/LandingPageView";
 import AuthController from "./AuthController";
 
 export default function HomeController() {
