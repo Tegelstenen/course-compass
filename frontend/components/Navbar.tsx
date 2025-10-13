@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+
+// UI imports
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,8 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DiCompass } from "react-icons/di";
+import { MdContactSupport, MdOutlineContactSupport } from "react-icons/md";
+import { 
+  RiCompass3Line, RiCompass3Fill,
+  RiSearch2Line, RiSearch2Fill,
+  RiHeartLine, RiHeartFill,
+  RiStarLine, RiStarFill,
+  RiBookOpenLine, RiBookOpenFill,
+} from "react-icons/ri";
+
 import { logout } from "@/state/session/sessionSlice";
 import type { Dispatch, RootState } from "@/state/store";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -24,35 +36,81 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex flex-col items-start h-full max-h-screen gap-6 p-2.5 max-w-[25rem] border-r bg-primary text-primary-foreground">
-      <Link href="/">
-        <Button variant="nav" className="w-full justify-start">
-          <img src="/compass-icon-1.png" width={50} alt="compass icon" />
-          <h1 className="ml-2">Course Compass</h1>
-        </Button>
-      </Link>
+    <div className="flex flex-col items-start h-full max-h-screen gap-6 p-2.5 w-full border-r bg-primary text-primary-foreground">
+      <div className="self-center pt-2">
+        <Link href="/">
+          <Button variant="nav" className="w-full justify-start hover:bg-primary">
+            <DiCompass className="text-white !w-12 !h-12"/>
+            <h1 className="text-xl">Course Compass</h1>
+          </Button>
+        </Link>
+      </div>
 
-      <ul className="space-y-5 w-full">
+      <ul className="space-y-2 w-full mt-10">
         <li>
           <Link href="/search">
             <Button variant="nav" className="w-full justify-start">
-              <img src="/search-icon-png-1.png" width={15} alt="search icon" />
-              <h1 className="ml-2">Explore</h1>
+              {pathname === "/search" ? 
+                (<RiSearch2Fill className="text-white !w-4 !h-4"/>) :
+                (<RiSearch2Line className="text-white !w-4 !h-4"/>)
+              }
+              <h1 className="text-md">Explore</h1>
             </Button>
           </Link>
         </li>
         <li>
           <Link href="/user">
             <Button variant="nav" className="w-full justify-start">
-              <img src="/star-icon.png" width={15} alt="star icon" />
-              <h1 className="ml-2">My Reviews</h1>
+              {pathname === "/user" ? 
+                (<RiHeartFill className="text-white !w-4 !h-4"/>) :
+                (<RiHeartLine className="text-white !w-4 !h-4"/>)
+              }
+              <h1 className="text-md">Saved courses</h1>
+            </Button>
+          </Link>
+        </li>
+        <li>
+          <Link href="/reviews">
+            <Button variant="nav" className="w-full justify-start">
+              {pathname === "/reviews" ? 
+                (<RiStarFill className="text-white !w-4 !h-4"/>) :
+                (<RiStarLine className="text-white !w-4 !h-4"/>)
+              }
+              <h1 className="text-md">My Reviews</h1>
             </Button>
           </Link>
         </li>
       </ul>
 
+      {/* The menu just above the profile card */}
+      <ul className="space-y-1 w-full mt-auto">
+        <li>
+          <Link href="/about">
+            <Button variant="nav" className="w-full justify-start">
+              {pathname === "/about" ? 
+                (<RiBookOpenFill className="text-white !w-4 !h-4"/>) :
+                (<RiBookOpenLine className="text-white !w-4 !h-4"/>)
+              }
+              <h1 className="text-md ml-2">About</h1>
+            </Button>
+          </Link>
+        </li>
+        <li>
+          <Link href="/contact">
+            <Button variant="nav" className="w-full justify-start">
+              {pathname === "/contact" ? 
+                (<MdContactSupport className="text-white !w-4 !h-4"/>) :
+                (<MdOutlineContactSupport className="text-white !w-4 !h-4"/>)
+              }
+              <h1 className="text-md ml-2">Contact</h1>
+            </Button>
+          </Link>
+        </li>
+      </ul>
+
+      {/* PROFILE CARD */}
       <DropdownMenu>
-        <DropdownMenuTrigger className="w-full mt-auto mb-10 h-auto hover:bg-accent rounded-md text-sm font-medium transition-all justify-start p-2 whitespace-normal cursor-pointer flex items-center gap-2 group hover:bg-accent">
+        <DropdownMenuTrigger className="w-full mb-10 h-auto rounded-md text-sm font-medium transition-all gap-2 py-2 pl-2 pr-2 justify-start whitespace-normal cursor-pointer flex items-center group hover:bg-primary-light">
           {user.profilePicture ? (
             <img
               src={user.profilePicture}
@@ -62,7 +120,7 @@ export default function Navbar() {
           ) : (
             <div className="w-10 h-10 rounded-full bg-gray-400" /> // placeholder
           )}
-          <span className="transition-colors group-hover:text-black">
+          <span className="transition-all group-hover:font-bold">
             {user.name?.trim() ||
               user.email?.split("@")[0] ||
               "Loading user..."}

@@ -48,8 +48,8 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: #456882;
   --primary-dark: #3c5b71;
-  --primary-light: #668fae;
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-light: #9ab5ca;
+  --primary-foreground: white;
   --secondary: #423842;
   --secondary-light: #6b5b6b;
   --secondary-foreground: white;
