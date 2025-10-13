@@ -1,7 +1,7 @@
 import type { Client as ESClient } from "@elastic/elasticsearch";
 import { HttpService } from "@nestjs/axios";
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { firstValueFrom } from "rxjs";
@@ -62,6 +62,179 @@ export class IngestService {
       this.logger.error("Ingest process failed:", error);
       throw error;
     }
+  }
+
+  async ingestCredits() {
+    this.logger.log("Starting credits ingestion process");
+    try {
+      const courseCodes = await this.getCourseCodesMissingCredits();
+      this.logger.log(`Found ${courseCodes.length} courses missing credits`);
+
+      if (courseCodes.length === 0) {
+        this.logger.log("No courses missing credits, skipping ingestion");
+        return;
+      }
+
+      const courseCreditsPairs = await this.getCredits(courseCodes);
+      this.logger.log(
+        `Successfully fetched credits for ${courseCreditsPairs.length} courses`,
+      );
+
+      await this.upsertCredits(courseCreditsPairs);
+      this.logger.log("Credits ingestion completed successfully");
+    } catch (error) {
+      this.logger.error("Credits ingestion failed:", error);
+      throw error;
+    }
+  }
+
+  private async getCredits(courseCodes: string[]) {
+    this.logger.log("Fetching credits for course codes...");
+    const courseCreditsPairs: { courseCode: string; credits: number }[] = [];
+    const failedCourses: string[] = [];
+
+    for (let i = 0; i < courseCodes.length; i++) {
+      const courseCode = courseCodes[i];
+      try {
+        const response = await fetch(
+          `https://api.kth.se/api/kopps/v2/course/${courseCode}`,
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const credits = data.credits;
+
+        courseCreditsPairs.push({ courseCode, credits: parseFloat(credits) });
+      } catch (error) {
+        this.logger.error(
+          `Failed to fetch credits for course ${courseCode}:`,
+          error,
+        );
+        failedCourses.push(courseCode);
+      }
+
+      // Rate limiting: add delay between requests to avoid overwhelming the API
+      if (i < courseCodes.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 150)); // 150ms delay
+      }
+
+      // Progress tracking
+      if ((i + 1) % 50 === 0 || i === 0) {
+        this.logger.log(
+          `Processed ${i + 1} out of ${courseCodes.length} course codes (${courseCreditsPairs.length} successful, ${failedCourses.length} failed)`,
+        );
+      }
+    }
+
+    this.logger.log(
+      `Credits fetch completed: ${courseCreditsPairs.length} successful, ${failedCourses.length} failed`,
+    );
+    if (failedCourses.length > 0) {
+      this.logger.warn(
+        `Failed courses: ${failedCourses.slice(0, 10).join(", ")}${failedCourses.length > 10 ? "..." : ""}`,
+      );
+    }
+
+    return courseCreditsPairs;
+  }
+
+  private async upsertCredits(
+    courseCreditsPairs: { courseCode: string; credits: number }[],
+  ) {
+    this.logger.log(
+      `Upserting credits for ${courseCreditsPairs.length} courses...`,
+    );
+
+    if (courseCreditsPairs.length === 0) {
+      this.logger.log("No credits to upsert");
+      return;
+    }
+
+    // Process in batches to avoid overwhelming the database
+    const batchSize = 100;
+    let processed = 0;
+
+    for (let i = 0; i < courseCreditsPairs.length; i += batchSize) {
+      const batch = courseCreditsPairs.slice(i, i + batchSize);
+
+      try {
+        // Use Promise.all for concurrent updates within each batch
+        await Promise.all(
+          batch.map((pair) =>
+            this.db
+              .update(coursesTable)
+              .set({ credits: pair.credits })
+              .where(eq(coursesTable.code, pair.courseCode)),
+          ),
+        );
+
+        processed += batch.length;
+        this.logger.log(
+          `Updated credits for ${processed}/${courseCreditsPairs.length} courses`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to update batch starting at index ${i}:`,
+          error,
+        );
+        // Continue with next batch instead of failing completely
+      }
+    }
+
+    this.logger.log(`Credits upsert completed: ${processed} courses updated`);
+  }
+
+  async getCreditsIngestionStatus() {
+    const totalCourses = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(coursesTable)
+      .where(eq(coursesTable.state, "ESTABLISHED"));
+
+    const coursesWithCredits = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(coursesTable)
+      .where(
+        and(
+          eq(coursesTable.state, "ESTABLISHED"),
+          sql`${coursesTable.credits} IS NOT NULL`,
+        ),
+      );
+
+    const coursesMissingCredits = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(coursesTable)
+      .where(
+        and(
+          eq(coursesTable.state, "ESTABLISHED"),
+          isNull(coursesTable.credits),
+        ),
+      );
+
+    return {
+      total: totalCourses[0]?.count || 0,
+      withCredits: coursesWithCredits[0]?.count || 0,
+      missingCredits: coursesMissingCredits[0]?.count || 0,
+      completionPercentage: totalCourses[0]?.count
+        ? Math.round(
+            ((coursesWithCredits[0]?.count || 0) / totalCourses[0].count) * 100,
+          )
+        : 0,
+    };
+  }
+
+  private async getCourseCodesMissingCredits() {
+    this.logger.log("Fetching course codes missing credits...");
+    const response = await this.db
+      .select({ code: coursesTable.code })
+      .from(coursesTable)
+      .where(
+        and(
+          eq(coursesTable.state, "ESTABLISHED"),
+          isNull(coursesTable.credits),
+        ),
+      );
+    return response.map((row) => row.code);
   }
 
   async runElasticTest() {
@@ -245,7 +418,7 @@ export class IngestService {
     };
     const failures = (res.items as BulkItem[])
       .map((item, i): Failure | null => {
-        const action = Object.keys(item)[0] as keyof typeof item;
+        const action = Object.keys(item)[0];
         const r = item[action];
         if (!r?.error) return null;
         return {

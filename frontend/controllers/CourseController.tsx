@@ -8,7 +8,11 @@ import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
-import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
+import {
+  checkIfCourseCodeExists,
+  getCourseCredits,
+  getCourseInfo,
+} from "@/lib/courses";
 import {
   createReview,
   dislikeReview,
@@ -119,10 +123,11 @@ const getCourseHeader = async (
 ) => {
   try {
     const courseInfo = await getCourseInfo(courseCode);
+    const credits = await getCourseCredits(courseCode);
     return {
       courseCode: courseInfo.course_code,
       courseName: courseInfo.course_name,
-      credits: 0,
+      credits: credits || null,
       syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
       courseRating: getAverageRating(posts),
       percentageWouldRecommend: getPercentageWouldRecommend(posts),

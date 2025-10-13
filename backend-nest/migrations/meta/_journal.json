@@ -64,6 +64,20 @@
       "when": 1760299930000,
       "tag": "0006_silent_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1760378245318,
+      "tag": "0007_dry_paibok",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1760384564500,
+      "tag": "0008_purple_spencer_smythe",
+      "breakpoints": true
     }
   ]
 }

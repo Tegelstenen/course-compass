@@ -15,7 +15,7 @@ export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
   courseRating: number | null;
-  credits: number;
+  credits: number | null;
   syllabus: string;
   percentageWouldRecommend: number | null;
   userId: string;

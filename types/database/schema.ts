@@ -4,6 +4,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  real,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -19,6 +20,7 @@ export const courses = pgTable("courses", {
   name: text("name").notNull(),
   state: courseState("state").notNull(),
   lastExaminationSemester: text("last_examination_semester"),
+  credits: real("credits"),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
