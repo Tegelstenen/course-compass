@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import type { Course } from "@/models/CourseModel";
 
@@ -53,7 +54,11 @@ export default function SearchView({
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="Search course..."
           />
-          <Button variant="outline" className="h-10 w-10 p-0">
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0"
+            onClick={() => console.log(filters)}
+          >
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>
         </form>
@@ -61,7 +66,6 @@ export default function SearchView({
 
         <div className="w-full max-w-3xl">
           <div className="flex items-center gap-4 mb-6">
-            <span className="text-sm font-medium">Filter by:</span>
             <Select
               value={(filters.department as string) || ""}
               onValueChange={(value) => {
@@ -79,6 +83,39 @@ export default function SearchView({
                 <SelectItem value="CBH">CBH</SelectItem>
                 <SelectItem value="ITM">ITM</SelectItem>
                 <SelectItem value="SCI">SCI</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={(filters.minRating as string) || ""}
+              onValueChange={(value) => {
+                const newFilters = { ...filters };
+                newFilters.minRating = value;
+                onFiltersChange(newFilters);
+              }}
+            >
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Minimum Rating..." />
+              </SelectTrigger>
+              <SelectContent>
+                
+                {Array.from({ length: 5 }).map((_, ratingValue) => (
+                  <SelectItem
+                    key={`selectitem-${ratingValue}`}
+                    value={(ratingValue + 1).toString()}
+                  >
+                    <Rating value={ratingValue + 1} readOnly>
+                      {(["one", "two", "three", "four", "five"] as const).map(
+                        (starId) => (
+                          <RatingButton
+                            className="text-yellow-600"
+                            key={`star-${ratingValue + 1}-${starId}`}
+                          />
+                        ),
+                      )}
+                    </Rating>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
