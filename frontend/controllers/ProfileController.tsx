@@ -1,13 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import Session from "supertokens-auth-react/recipe/session";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
 import { deleteAccount } from "@/state/user/userThunk";
 import ProfileView from "@/views/ProfileView";
-import { useRouter } from "next/navigation";
-import Session from "supertokens-auth-react/recipe/session";
-
 
 export default function ProfileController() {
   const router = useRouter();

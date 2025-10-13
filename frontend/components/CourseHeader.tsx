@@ -1,33 +1,41 @@
 "use client";
+import { Review, type ReviewFormData } from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
-  courseRating: number;
+  courseRating: number | null;
   credits: number;
   syllabus: string;
-  percentageWouldRecommend: number;
-  onAddReview: (courseCode: string) => void;
-  onReadCourseSyllabus: (courseCode: string) => void;
+  percentageWouldRecommend: number | null;
+  userId: string;
+  onAddReview: (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ) => Promise<void>;
 };
 
-export default function CourseHeader({
-  courseCode,
-  courseName,
-  courseRating,
-  credits,
-  syllabus,
-  percentageWouldRecommend,
-  onAddReview,
-  onReadCourseSyllabus,
-}: Readonly<CourseHeaderProps>) {
-  const rating = Math.min(5, Math.max(0, courseRating));
-  const ratingLabel = `Avg: ${rating.toFixed(1)}/5.0`;
-  const creditsLabel = `${credits} credits`;
-  const recommendPct = Math.min(100, Math.max(0, percentageWouldRecommend));
-  const recommendLabel = `${recommendPct}% would recommend`;
+export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
+  const rating = props.courseRating
+    ? Math.min(5, Math.max(0, props.courseRating))
+    : null;
+  const ratingLabel = `Avg: ${rating ? rating.toFixed(1) : "__ "}/5.0`;
+  const creditsLabel = `${props.credits} credits`;
+  const recommendPct = props.percentageWouldRecommend
+    ? Math.min(100, Math.max(0, props.percentageWouldRecommend))
+    : null;
+  const recommendLabel = `${recommendPct ? `${recommendPct.toFixed(0)}%` : "__"} would recommend`;
 
   return (
     <Card className="w-full p-4 md:p-6 grid gap-4 md:grid-cols-2">
@@ -35,8 +43,8 @@ export default function CourseHeader({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1 min-w-0">
-            <h1 className="text-2xl">{courseCode}</h1>
-            <h2 className="text-xl truncate">{courseName}</h2>
+            <h1 className="text-2xl">{props.courseCode}</h1>
+            <h2 className="text-xl truncate">{props.courseName}</h2>
           </div>
           <div className="text-2xl font-bold shrink-0 w-36 h-24 grid place-items-center rounded-md">
             {ratingLabel}
@@ -53,22 +61,28 @@ export default function CourseHeader({
         </div>
 
         <div className="flex gap-2">
-          <Button
-            className="flex-1"
-            onClick={() => onAddReview(courseCode)}
-            type="button"
-            aria-label="Add review"
-          >
-            Add Review
-          </Button>
-          <Button
-            className="flex-1"
-            onClick={() => onReadCourseSyllabus(courseCode)}
-            type="button"
-            aria-label="Read course syllabus"
-          >
-            Read course syllabus
-          </Button>
+          <Review
+            courseCode={props.courseCode}
+            userId={props.userId}
+            onAddReview={props.onAddReview}
+          />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="flex-1"
+                type="button"
+                aria-label="Read course syllabus"
+              >
+                Read course syllabus
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Course Syllabus</DialogTitle>
+                <DialogDescription>{props.syllabus}</DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

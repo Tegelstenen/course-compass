@@ -1,9 +1,8 @@
 import type { Dispatch } from "@/state/store";
 import { clearUser, setProfilePicture, setUser } from "./userSlice";
 
-
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_DOMAIN || "http://localhost:8080";
-
+const API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_DOMAIN || "http://localhost:8080";
 
 export function getUser() {
   return async (dispatch: Dispatch) => {

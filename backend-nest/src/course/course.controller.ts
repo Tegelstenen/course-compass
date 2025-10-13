@@ -52,4 +52,10 @@ export class CourseController {
       };
     }
   }
+
+  @Get("/neon/courseCodeExists/:course_code")
+  async checkIfCourseCodeExists(@Param("course_code") courseCode: string) {
+    const exists = await this.courseService.courseCodeExists(courseCode);
+    return { exists };
+  }
 }

@@ -24,9 +24,21 @@ export class SearchService {
     if (filters?.department) {
       const dept = filters.department;
       console.log("Filtering by department:", JSON.stringify(dept));
-      searchFilters.push({
-        term: { department: dept },
-      });
+      const departments = ["EECS", "ABE", "CBH", "ITM", "SCI"];
+      const matchingDepts = departments.find((abbr) => dept.includes(abbr));
+      if (matchingDepts) {
+        const wildcardFilter = {
+          wildcard: {
+            department: `*${matchingDepts}*`,
+          },
+        };
+        searchFilters.push(wildcardFilter);
+      } else {
+        const termFilter = {
+          term: { department: dept },
+        };
+        searchFilters.push(termFilter);
+      }
     }
     if (filters?.minRating)
       searchFilters.push({

@@ -3,13 +3,12 @@ import CourseHeader, {
   type CourseHeaderProps,
 } from "@/components/CourseHeader";
 import Post, { type PostProps } from "@/components/Post";
-
 import PostActionBar from "@/components/PostActionBar";
 
 export type CourseViewProps = CourseHeaderProps & {
   posts: (PostProps & { postId: string })[];
-  onPostLike: (postId: string) => void;
-  onPostDislike: (postId: string) => void;
+  onLikePost: (postId: string) => void;
+  onDislikePost: (postId: string) => void;
 };
 
 export default function CourseView(props: CourseViewProps) {
@@ -23,25 +22,31 @@ export default function CourseView(props: CourseViewProps) {
         syllabus={props.syllabus}
         percentageWouldRecommend={props.percentageWouldRecommend}
         onAddReview={props.onAddReview}
-        onReadCourseSyllabus={props.onReadCourseSyllabus}
+        userId={props.userId}
       />
       <div className="flex flex-col gap-6 items-center">
-        {props.posts.map((post) => (
-          <div key={post.postId}>
-            <Post
-              wouldRecommend={post.wouldRecommend}
-              content={post.content}
-              easyScore={post.easyScore}
-              usefulScore={post.usefulScore}
-              interestingScore={post.interestingScore}
-            />
-            <PostActionBar
-              postId={post.postId}
-              onPostLike={props.onPostLike}
-              onPostDislike={props.onPostDislike}
-            />
+        {props.posts && props.posts.length > 0 ? (
+          props.posts.map((post) => (
+            <div key={post.postId}>
+              <Post
+                wouldRecommend={post.wouldRecommend}
+                content={post.content}
+                easyScore={post.easyScore}
+                usefulScore={post.usefulScore}
+                interestingScore={post.interestingScore}
+              />
+              <PostActionBar
+                postId={post.postId}
+                onPostLike={props.onLikePost}
+                onPostDislike={props.onDislikePost}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="mt-12 text-center text-muted-foreground text-lg">
+            No reviews yet. Be the first to add a review for this course!
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
