@@ -1,13 +1,13 @@
 "use client";
 
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { MessageSquare, Send, Users } from "lucide-react";
+import { toast } from "sonner";
+import { Textarea } from "@/components/Textarea";
 import Navigation from "@/components/Topbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/Textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { MessageSquare, Send, Users } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -21,8 +21,8 @@ const Contact = () => {
               Get in Touch
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Have questions about Course Compass? Want to share feedback or suggest improvements?
-              We'd love to hear from you!
+              Have questions about Course Compass? Want to share feedback or
+              suggest improvements? We'd love to hear from you!
             </p>
           </div>
 
@@ -35,9 +35,12 @@ const Contact = () => {
                   <Users className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg text-card-foreground mb-2">About Us</h3>
+                  <h3 className="font-semibold text-lg text-card-foreground mb-2">
+                    About Us
+                  </h3>
                   <p className="text-muted-foreground">
-                    We're a team of KTH students dedicated to helping fellow students make informed course decisions.
+                    We're a team of KTH students dedicated to helping fellow
+                    students make informed course decisions.
                   </p>
                 </div>
               </div>
@@ -50,9 +53,12 @@ const Contact = () => {
                   <MessageSquare className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg text-card-foreground mb-2">Share Your Feedback</h3>
+                  <h3 className="font-semibold text-lg text-card-foreground mb-2">
+                    Share Your Feedback
+                  </h3>
                   <p className="text-muted-foreground">
-                    Your feedback helps us improve Course Compass for all KTH students. Let us know below!
+                    Your feedback helps us improve Course Compass for all KTH
+                    students. Let us know below!
                   </p>
                 </div>
               </div>
@@ -61,7 +67,9 @@ const Contact = () => {
 
           {/* Contact Form using Formik */}
           <div className="bg-card p-8 rounded-lg shadow-md border border-border">
-            <h2 className="text-2xl font-bold text-card-foreground mb-6">Send us a Message</h2>
+            <h2 className="text-2xl font-bold text-card-foreground mb-6">
+              Send us a Message
+            </h2>
 
             <Formik
               initialValues={{ name: "", email: "", message: "" }}
@@ -70,10 +78,13 @@ const Contact = () => {
                 if (!values.name.trim()) errors.name = "Name is required";
                 if (!values.email.trim()) {
                   errors.email = "Email is required";
-                } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+                } else if (
+                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                ) {
                   errors.email = "Invalid email address";
                 }
-                if (!values.message.trim()) errors.message = "Message is required";
+                if (!values.message.trim())
+                  errors.message = "Message is required";
                 return errors;
               }}
               onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -88,23 +99,57 @@ const Contact = () => {
                 <Form className="space-y-6">
                   <div>
                     <Label htmlFor="name">Name</Label>
-                    <Field as={Input} id="name" name="name" placeholder="Your name" />
-                    <ErrorMessage name="name" component="p" className="text-sm text-destructive mt-1" />
+                    <Field
+                      as={Input}
+                      id="name"
+                      name="name"
+                      placeholder="Your name"
+                    />
+                    <ErrorMessage
+                      name="name"
+                      component="p"
+                      className="text-sm text-destructive mt-1"
+                    />
                   </div>
 
                   <div>
                     <Label htmlFor="email">Email</Label>
-                    <Field as={Input} id="email" name="email" type="email" placeholder="your.email@kth.se" />
-                    <ErrorMessage name="email" component="p" className="text-sm text-destructive mt-1" />
+                    <Field
+                      as={Input}
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="your.email@kth.se"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="p"
+                      className="text-sm text-destructive mt-1"
+                    />
                   </div>
 
                   <div>
                     <Label htmlFor="message">Message</Label>
-                    <Field as={Textarea} id="message" name="message" rows={6} placeholder="Tell us what's on your mind..." />
-                    <ErrorMessage name="message" component="p" className="text-sm text-destructive mt-1" />
+                    <Field
+                      as={Textarea}
+                      id="message"
+                      name="message"
+                      rows={6}
+                      placeholder="Tell us what's on your mind..."
+                    />
+                    <ErrorMessage
+                      name="message"
+                      component="p"
+                      className="text-sm text-destructive mt-1"
+                    />
                   </div>
 
-                  <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full"
+                    size="lg"
+                  >
                     <Send className="w-4 h-4 mr-2" />
                     Send Message
                   </Button>

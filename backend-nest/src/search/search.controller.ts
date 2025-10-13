@@ -1,4 +1,11 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from "@nestjs/common";
+import { CourseMapping } from "../../../types/search/elastic.mappings";
 import { type SearchResult, SearchService } from "./search.service";
 
 @Controller("search")
@@ -19,5 +26,17 @@ export class SearchController {
       { department },
     );
     return { results, total: results.length };
+  }
+
+  @Get(":course_code")
+  async getCourseInfo(@Param("course_code") courseCode: string) {
+    const results: CourseMapping | undefined =
+      await this.searchService.getCourseByCode(courseCode);
+
+    if (!results) {
+      throw new NotFoundException(`Course with code ${courseCode} not found`);
+    }
+
+    return results;
   }
 }

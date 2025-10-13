@@ -42,9 +42,12 @@
     "@nestjs/platform-express": "^11.1.6",
     "@radix-ui/react-avatar": "^1.1.10",
     "dotenv": "^17.2.2",
+    "motion": "^12.23.24",
     "drizzle-kit": "^0.30.0",
     "formik": "^2.4.6",
     "multer": "^2.0.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "uuid": "^13.0.0"
   }
 }
