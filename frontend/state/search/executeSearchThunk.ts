@@ -30,21 +30,21 @@ export function executeSearch() {
     });
     if (sort) params.set("sort", sort);
 
-    // encode filters as filters[key]=value
+    // encode filters directly as query parameters
     Object.entries(filters || {}).forEach(([k, v]) => {
       if (Array.isArray(v)) {
         v.forEach((vv) => {
-          params.append(`filters[${k}]`, vv);
+          params.append(k, vv);
         });
       } else {
-        params.append(`filters[${k}]`, v);
+        params.append(k, v);
       }
     });
 
     try {
       // const res = await fetch(`/api/search?${params.toString()}`); // fetch is used to access the search endpoint in backend with params query, page number, and number of results per page
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/search?q=${encodeURIComponent(query)}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/search?${params.toString()}`,
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
