@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { MessageSquare, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/Textarea";
-import Navigation from "@/components/Topbar";
+import Topbar from "@/components/Topbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,6 @@ import { sendFeedback } from "@/lib/feedback";
 const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <main className="container mx-auto px-6 py-12 pt-32">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
