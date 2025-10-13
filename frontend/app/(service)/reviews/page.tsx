@@ -1,6 +1,3 @@
-
 export default function Page() {
-    return (
-        <div> Temporary review page</div>
-    );
+  return <div> Temporary review page</div>;
 }

@@ -1,5 +1,22 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { DiCompass } from "react-icons/di";
+import { MdContactSupport, MdOutlineContactSupport } from "react-icons/md";
+import {
+  RiBookOpenFill,
+  RiBookOpenLine,
+  RiCompass3Fill,
+  RiCompass3Line,
+  RiHeartFill,
+  RiHeartLine,
+  RiSearch2Fill,
+  RiSearch2Line,
+  RiStarFill,
+  RiStarLine,
+} from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
 // UI imports
 import { Button } from "@/components/ui/button";
 import {
@@ -10,21 +27,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DiCompass } from "react-icons/di";
-import { MdContactSupport, MdOutlineContactSupport } from "react-icons/md";
-import { 
-  RiCompass3Line, RiCompass3Fill,
-  RiSearch2Line, RiSearch2Fill,
-  RiHeartLine, RiHeartFill,
-  RiStarLine, RiStarFill,
-  RiBookOpenLine, RiBookOpenFill,
-} from "react-icons/ri";
-
 import { logout } from "@/state/session/sessionSlice";
 import type { Dispatch, RootState } from "@/state/store";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -39,8 +43,11 @@ export default function Navbar() {
     <div className="flex flex-col items-start h-full max-h-screen gap-6 p-2.5 w-full border-r bg-primary text-primary-foreground">
       <div className="self-center pt-2">
         <Link href="/">
-          <Button variant="nav" className="w-full justify-start hover:bg-primary">
-            <DiCompass className="text-white !w-12 !h-12"/>
+          <Button
+            variant="nav"
+            className="w-full justify-start hover:bg-primary"
+          >
+            <DiCompass className="text-white !w-12 !h-12" />
             <h1 className="text-xl">Course Compass</h1>
           </Button>
         </Link>
@@ -50,10 +57,11 @@ export default function Navbar() {
         <li>
           <Link href="/search">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/search" ? 
-                (<RiSearch2Fill className="text-white !w-4 !h-4"/>) :
-                (<RiSearch2Line className="text-white !w-4 !h-4"/>)
-              }
+              {pathname === "/search" ? (
+                <RiSearch2Fill className="text-white !w-4 !h-4" />
+              ) : (
+                <RiSearch2Line className="text-white !w-4 !h-4" />
+              )}
               <h1 className="text-md">Explore</h1>
             </Button>
           </Link>
@@ -61,10 +69,11 @@ export default function Navbar() {
         <li>
           <Link href="/user">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/user" ? 
-                (<RiHeartFill className="text-white !w-4 !h-4"/>) :
-                (<RiHeartLine className="text-white !w-4 !h-4"/>)
-              }
+              {pathname === "/user" ? (
+                <RiHeartFill className="text-white !w-4 !h-4" />
+              ) : (
+                <RiHeartLine className="text-white !w-4 !h-4" />
+              )}
               <h1 className="text-md">Saved courses</h1>
             </Button>
           </Link>
@@ -72,10 +81,11 @@ export default function Navbar() {
         <li>
           <Link href="/reviews">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/reviews" ? 
-                (<RiStarFill className="text-white !w-4 !h-4"/>) :
-                (<RiStarLine className="text-white !w-4 !h-4"/>)
-              }
+              {pathname === "/reviews" ? (
+                <RiStarFill className="text-white !w-4 !h-4" />
+              ) : (
+                <RiStarLine className="text-white !w-4 !h-4" />
+              )}
               <h1 className="text-md">My Reviews</h1>
             </Button>
           </Link>
@@ -87,10 +97,11 @@ export default function Navbar() {
         <li>
           <Link href="/about">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/about" ? 
-                (<RiBookOpenFill className="text-white !w-4 !h-4"/>) :
-                (<RiBookOpenLine className="text-white !w-4 !h-4"/>)
-              }
+              {pathname === "/about" ? (
+                <RiBookOpenFill className="text-white !w-4 !h-4" />
+              ) : (
+                <RiBookOpenLine className="text-white !w-4 !h-4" />
+              )}
               <h1 className="text-md ml-2">About</h1>
             </Button>
           </Link>
@@ -98,10 +109,11 @@ export default function Navbar() {
         <li>
           <Link href="/contact">
             <Button variant="nav" className="w-full justify-start">
-              {pathname === "/contact" ? 
-                (<MdContactSupport className="text-white !w-4 !h-4"/>) :
-                (<MdOutlineContactSupport className="text-white !w-4 !h-4"/>)
-              }
+              {pathname === "/contact" ? (
+                <MdContactSupport className="text-white !w-4 !h-4" />
+              ) : (
+                <MdOutlineContactSupport className="text-white !w-4 !h-4" />
+              )}
               <h1 className="text-md ml-2">Contact</h1>
             </Button>
           </Link>
