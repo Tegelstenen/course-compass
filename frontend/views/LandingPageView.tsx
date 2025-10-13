@@ -52,10 +52,9 @@ const childVariants: Variants = {
   },
 };
 
-const titleText = "Explore, find and express your thoughts of all KTH courses!";
+const titleText = "Explore, find and express your thoughts with Course Compass!";
 const subTitleText =
-  "A very short description of the app. Course Compass is built on \
-  student reviews to give an honest picture of the course contents";
+  "What every KTH student has though of at least once, and it is finally here! A forum for reviewing and exploring all KTH courses! ";
 
 export default function LandingPageView(props: LandingPageViewProps) {
   const handleClick = () => {
@@ -78,7 +77,7 @@ export default function LandingPageView(props: LandingPageViewProps) {
       {/* Fades from transparent (left) over the image, to the background color (right) */}
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent"></div>
 
-      <div className="relative z-10 w-1/2 text-wrap">
+      <div className="relative z-10 w-3/4 2xl:w-1/3 break-words">
         <motion.h1
           variants={containerVariants}
           initial="hidden"
