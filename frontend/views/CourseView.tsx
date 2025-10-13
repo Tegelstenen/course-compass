@@ -3,7 +3,6 @@ import CourseHeader, {
   type CourseHeaderProps,
 } from "@/components/CourseHeader";
 import Post, { type PostProps } from "@/components/Post";
-import PostActionBar from "@/components/PostActionBar";
 
 export type CourseViewProps = CourseHeaderProps & {
   posts: (PostProps & { postId: string })[];
@@ -27,20 +26,20 @@ export default function CourseView(props: CourseViewProps) {
       <div className="flex flex-col gap-6 items-center">
         {props.posts && props.posts.length > 0 ? (
           props.posts.map((post) => (
-            <div key={post.postId}>
-              <Post
-                wouldRecommend={post.wouldRecommend}
-                content={post.content}
-                easyScore={post.easyScore}
-                usefulScore={post.usefulScore}
-                interestingScore={post.interestingScore}
-              />
-              <PostActionBar
-                postId={post.postId}
-                onPostLike={props.onLikePost}
-                onPostDislike={props.onDislikePost}
-              />
-            </div>
+            <Post
+              key={post.postId}
+              wouldRecommend={post.wouldRecommend}
+              content={post.content}
+              easyScore={post.easyScore}
+              usefulScore={post.usefulScore}
+              interestingScore={post.interestingScore}
+              likeCount={post.likeCount}
+              dislikeCount={post.dislikeCount}
+              userVote={post.userVote}
+              postId={post.postId}
+              onPostLike={props.onLikePost}
+              onPostDislike={props.onDislikePost}
+            />
           ))
         ) : (
           <div className="mt-12 text-center text-muted-foreground text-lg">
