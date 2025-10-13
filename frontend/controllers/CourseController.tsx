@@ -33,6 +33,19 @@ const getAverageRating = (posts: PostProps[]) => {
   );
 };
 
+const getRatingDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    const avgScore = Math.round(
+      (post.easyScore + post.usefulScore + post.interestingScore) / 3,
+    );
+    if (avgScore >= 1 && avgScore <= 5) {
+      counts[avgScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
 const getPercentageWouldRecommend = (posts: PostProps[]) => {
   return (
     (posts.filter((post) => post.wouldRecommend).length / posts.length) * 100
@@ -76,6 +89,7 @@ const getCourseHeader = async (
       credits: 0,
       syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
       courseRating: getAverageRating(posts),
+      ratingDistribution: getRatingDistribution(posts),
       percentageWouldRecommend: getPercentageWouldRecommend(posts),
       userId,
       onAddReview: addReview,
@@ -185,6 +199,7 @@ export default function CourseController() {
         credits={courseHeader.credits}
         syllabus={courseHeader.syllabus}
         percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+        ratingDistribution={getRatingDistribution(posts)}
         courseRating={getAverageRating(posts)}
         userId={userId}
         onAddReview={handleAddReview}

@@ -1,4 +1,5 @@
 "use client";
+import RatingDistributionChart from "@/components/RatingDistributionChart";
 import { Review, type ReviewFormData } from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,6 +16,7 @@ export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
   courseRating: number | null;
+  ratingDistribution: number[];
   credits: number;
   syllabus: string;
   percentageWouldRecommend: number | null;
@@ -88,9 +90,10 @@ export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
 
       {/* Right */}
       <div className="p-2 md:p-0">
-        <Card className="h-full min-h-40 flex items-center justify-center text-center bg-secondary text-secondary-foreground">
-          Add a plot for the rating distribution here (use the specified library
-          in the grading criteria).
+        <Card className="h-full min-h-40 flex items-center justify-center text-center text-secondary-foreground">
+          <RatingDistributionChart
+            distribution={props.ratingDistribution || [0, 0, 0, 0, 0]}
+          />
         </Card>
       </div>
     </Card>
