@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { DiCompass } from "react-icons/di";
+import { Button } from "./ui/button";
 
 export default function Topbar() {
   return (
     <div className="flex w-full fixed z-50 p-5 bg-primary items-center justify-between">
       <Link href="/">
         <Button variant="nav" className="w-full justify-start hover:bg-primary">
-          <DiCompass className="text-white !w-9 !h-9"/>
+          <DiCompass className="text-white !w-9 !h-9" />
           <h1 className="font-bold text-3xl text-white">Course Compass</h1>
         </Button>
       </Link>
