@@ -71,7 +71,7 @@ type PluginsProps = {
   onContentChange?: (content: string) => void;
 };
 export function Plugins(props: Readonly<PluginsProps>) {
-  const [floatingAnchorElem, setFloatingAnchorElem] =
+  const [_floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
@@ -81,22 +81,24 @@ export function Plugins(props: Readonly<PluginsProps>) {
   };
 
   const [editor] = useLexicalComposerContext();
+  const { onContentChange } = props;
 
   useEffect(() => {
-    if (!props.onContentChange) return;
+    if (!onContentChange) return;
 
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const htmlString = $generateHtmlFromNodes(editor, null);
-        props.onContentChange?.(htmlString);
+        onContentChange(htmlString);
       });
     });
-  }, [editor, props.onContentChange]);
+  }, [editor, onContentChange]);
 
   return (
     <div className="relative">
       {/* toolbar plugins */}
       <ToolbarPlugin>
+        {/* biome-ignore lint/correctness/noUnusedFunctionParameters: implemented by package creator */}
         {({ blockType }) => (
           <div className="vertical-align-middle sticky top-0 z-10 flex gap-2 overflow-auto border-b p-1">
             <BlockFormatDropDown>

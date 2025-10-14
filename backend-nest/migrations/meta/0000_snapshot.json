@@ -1,6 +1,6 @@
 {
-  "id": "fc4f2e09-2cba-4d92-a0ea-3383ebe50fcb",
-  "prevId": "3626f2c6-5f43-4810-a0bf-d6d611cefad0",
+  "id": "51e26ba9-ee2f-48ff-83a3-ab466d50b77d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -41,12 +41,56 @@
         },
         "credits": {
           "name": "credits",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.feedback_form": {
+      "name": "feedback_form",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
