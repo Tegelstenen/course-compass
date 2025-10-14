@@ -6,7 +6,7 @@ type SearchItemProps = {
   courseName: string;
   courseCode: string;
   rating: number;
-  semester: string;
+  // semester: string;
   ects: number;
   onSeeReviews: () => void;
 };
@@ -15,7 +15,7 @@ export function SearchItem({
   courseName = "Calculus in Several Variables",
   courseCode = "SF1626",
   rating = 4,
-  semester = "P1",
+  // semester = "P1",
   ects = 7.5,
   onSeeReviews,
 }: SearchItemProps) {
@@ -39,8 +39,8 @@ export function SearchItem({
             )}
           </Rating>
         </div>
-        <Separator orientation="vertical" />
-        <div>{semester}</div>
+        {/*<Separator orientation="vertical" />
+        <div>{semester}</div>*/}
         <Separator orientation="vertical" />
         <div>{ects} ECTS</div>
         <Separator orientation="vertical" />

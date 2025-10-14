@@ -56,6 +56,50 @@ const getAverageRating = (posts: PostProps[]) => {
   );
 };
 
+const getEasyScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.easyScore >= 1 && post.easyScore <= 5) {
+      counts[post.easyScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+const getUsefulScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.usefulScore >= 1 && post.usefulScore <= 5) {
+      counts[post.usefulScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+const getInterestingScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.interestingScore >= 1 && post.interestingScore <= 5) {
+      counts[post.interestingScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+// Average rating distribution (1-5 stars)
+const getRatingDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    const avgScore = Math.round(
+      (post.easyScore + post.usefulScore + post.interestingScore) / 3,
+    );
+    if (avgScore >= 1 && avgScore <= 5) {
+      counts[avgScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
 const getPercentageWouldRecommend = (posts: PostProps[]) => {
   return (
     (posts.filter((post) => post.wouldRecommend).length / posts.length) * 100
@@ -125,6 +169,10 @@ const getCourseHeader = async (
       credits: 0,
       syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
       courseRating: getAverageRating(posts),
+      ratingDistribution: getRatingDistribution(posts),
+      easyScoreDistribution: getEasyScoreDistribution(posts),
+      usefulScoreDistribution: getUsefulScoreDistribution(posts),
+      interestingScoreDistribution: getInterestingScoreDistribution(posts),
       percentageWouldRecommend: getPercentageWouldRecommend(posts),
       userId,
       onAddReview: addReview,
@@ -257,6 +305,10 @@ export default function CourseController() {
         credits={courseHeader.credits}
         syllabus={courseHeader.syllabus}
         percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+        easyScoreDistribution={getEasyScoreDistribution(posts)}
+        usefulScoreDistribution={getUsefulScoreDistribution(posts)}
+        interestingScoreDistribution={getInterestingScoreDistribution(posts)}
+        ratingDistribution={getRatingDistribution(posts)}
         courseRating={getAverageRating(posts)}
         userId={userId}
         onAddReview={handleAddReview}

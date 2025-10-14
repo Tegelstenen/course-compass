@@ -2,11 +2,12 @@ import { Client } from "@elastic/elasticsearch";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ES } from "./search.constants.js";
+import { DrizzleModule } from "../database/drizzle.module.js";
 import { SearchController } from "./search.controller.js";
 import { SearchService } from "./search.service.js";
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DrizzleModule],
   providers: [
     {
       provide: ES,
