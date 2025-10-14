@@ -12,6 +12,7 @@ import { DepartmentsService } from "./search/departments.service";
 import { ElasticSearchModule } from "./search/search.module";
 import { SupertokensModule } from "./supertokens/supertokens.module";
 import { UserModule } from "./user/user.module";
+import { FeedbackModule } from "./feedback/feedback.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserModule } from "./user/user.module";
     SupertokensModule,
     CourseModule,
     ReviewsModule,
+    FeedbackModule
   ],
   controllers: [AppController, DepartmentsController],
   providers: [AppService, DepartmentsService],

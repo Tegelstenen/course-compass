@@ -1,5 +1,5 @@
 {
-  "id": "3626f2c6-5f43-4810-a0bf-d6d611cefad0",
+  "id": "a151e007-bf32-4e5e-b9fe-1aca9d7e1065",
   "prevId": "117a4a47-44a7-4f6d-8ae8-f330a125ae30",
   "version": "7",
   "dialect": "postgresql",
@@ -55,6 +55,18 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.courses": {
+      "name": "courses",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "department": {
+          "name": "department",
     "public.review_likes": {
       "name": "review_likes",
       "schema": "",
@@ -65,12 +77,29 @@
           "primaryKey": false,
           "notNull": true
         },
+        "name": {
+          "name": "name",
         "review_id": {
           "name": "review_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
+        "state": {
+          "name": "state",
+          "type": "course_state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_examination_semester": {
+          "name": "last_examination_semester",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
         "vote_type": {
           "name": "vote_type",
           "type": "text",
@@ -194,8 +223,12 @@
           "name": "reviews_user_id_users_id_fk",
           "tableFrom": "reviews",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -203,8 +236,12 @@
           "name": "reviews_course_code_courses_code_fk",
           "tableFrom": "reviews",
           "tableTo": "courses",
-          "columnsFrom": ["course_code"],
-          "columnsTo": ["code"],
+          "columnsFrom": [
+            "course_code"
+          ],
+          "columnsTo": [
+            "code"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -245,8 +282,12 @@
           "name": "user_favorites_user_id_users_id_fk",
           "tableFrom": "user_favorites",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -254,8 +295,12 @@
           "name": "user_favorites_fav_course_code_courses_code_fk",
           "tableFrom": "user_favorites",
           "tableTo": "courses",
-          "columnsFrom": ["fav_course_code"],
-          "columnsTo": ["code"],
+          "columnsFrom": [
+            "fav_course_code"
+          ],
+          "columnsTo": [
+            "code"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -263,7 +308,10 @@
       "compositePrimaryKeys": {
         "user_favorites_user_id_fav_course_code_pk": {
           "name": "user_favorites_user_id_fav_course_code_pk",
-          "columns": ["user_id", "fav_course_code"]
+          "columns": [
+            "user_id",
+            "fav_course_code"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -321,7 +369,9 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -333,7 +383,11 @@
     "public.course_state": {
       "name": "course_state",
       "schema": "public",
-      "values": ["CANCELLED", "ESTABLISHED", "DEACTIVATED"]
+      "values": [
+        "CANCELLED",
+        "ESTABLISHED",
+        "DEACTIVATED"
+      ]
     }
   },
   "schemas": {},
