@@ -48,6 +48,8 @@
     "react-dom": "19.1.0",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "sonner": "^2.0.7",
     "supertokens-auth-react": "^0.50.0",
     "supertokens-web-js": "^0.16.0",

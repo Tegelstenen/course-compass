@@ -36,8 +36,8 @@ type Review = {
   userVote: string | null;
 };
 
+import { getReviewsSocket } from "@/lib/realtime";
 import CourseView from "@/views/CourseView";
-
 import SuspenseView from "@/views/SuspenseView";
 
 const getAverageRating = (posts: PostProps[]) => {
@@ -238,16 +238,6 @@ export default function CourseController() {
       const created = await addReview(courseCode, userId, reviewForm);
       if (!created) return false;
 
-      // refresh the posts and course header data
-      const updatedPosts = await getCoursePosts(courseCode, userId);
-      const updatedCourseHeader = await getCourseHeader(
-        courseCode,
-        userId,
-        updatedPosts,
-      );
-
-      setPosts(updatedPosts);
-      setCourseHeader(updatedCourseHeader);
       return true;
     } catch (error) {
       console.error(error);
@@ -299,6 +289,35 @@ export default function CourseController() {
       })
       .finally(() => setIsChecking(false));
   }, [params.courseCode, router, userId]);
+
+  // updates via websockets
+  useEffect(() => {
+    if (!params.courseCode || !userId) return;
+
+    const socket = getReviewsSocket();
+    const doJoin = () =>
+      socket.emit("joinCourse", { courseCode: params.courseCode });
+    if (socket.connected) doJoin();
+    else socket.once("connect", doJoin);
+
+    const handler = async () => {
+      const updatedPosts = await getCoursePosts(params.courseCode, userId);
+      setPosts(updatedPosts);
+      const updatedHeader = await getCourseHeader(
+        params.courseCode,
+        userId,
+        updatedPosts,
+      );
+      setCourseHeader(updatedHeader);
+    };
+
+    socket.on("reviews.changed", handler);
+
+    return () => {
+      socket.off("reviews.changed", handler);
+      socket.off("connect", doJoin);
+    };
+  }, [params.courseCode, userId]);
 
   if (!params.courseCode || isChecking || !courseHeader || !posts) {
     return <SuspenseView />;

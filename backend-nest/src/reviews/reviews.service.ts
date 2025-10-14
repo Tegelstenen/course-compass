@@ -4,11 +4,13 @@ import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { nanoid } from "nanoid"; // for generating unique review ids
 import { DRIZZLE } from "src/database/drizzle.module";
 import * as schema from "../../../types/database/schema";
+import { ReviewsGateway } from "./reviews.gateway";
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @Inject(DRIZZLE) private readonly db: NeonHttpDatabase<typeof schema>,
+    private readonly reviewsGateway: ReviewsGateway,
   ) {}
 
   async create(
@@ -35,6 +37,8 @@ export class ReviewsService {
         content: reviewData.content,
       })
       .returning();
+    // Notify clients in the course room
+    this.reviewsGateway.emitCourseChanged(courseCode);
     return inserted;
   }
 
@@ -126,6 +130,7 @@ export class ReviewsService {
       .returning();
 
     if (!updated) throw new NotFoundException(`Review with id ${id} not found`);
+    this.reviewsGateway.emitCourseChanged(updated.courseCode);
     return updated;
   }
 
@@ -137,6 +142,7 @@ export class ReviewsService {
       .returning();
 
     if (!deleted) throw new NotFoundException(`Review with id ${id} not found`);
+    this.reviewsGateway.emitCourseChanged(deleted.courseCode);
     return deleted;
   }
 
@@ -171,6 +177,8 @@ export class ReviewsService {
               eq(schema.reviewLikes.userId, userId),
             ),
           );
+        const review = await this.getReview(reviewId);
+        if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
         return { action: "removed", voteType: null };
       } else {
         // if different vote type, update to new vote type
@@ -183,6 +191,8 @@ export class ReviewsService {
               eq(schema.reviewLikes.userId, userId),
             ),
           );
+        const review = await this.getReview(reviewId);
+        if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
         return { action: "updated", voteType };
       }
     } else {
@@ -192,7 +202,18 @@ export class ReviewsService {
         reviewId,
         voteType,
       });
+      const review = await this.getReview(reviewId);
+      if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
       return { action: "added", voteType };
     }
+  }
+
+  private async getReview(reviewId: string) {
+    const [review] = await this.db
+      .select({ courseCode: schema.reviews.courseCode })
+      .from(schema.reviews)
+      .where(eq(schema.reviews.id, reviewId))
+      .limit(1);
+    return review;
   }
 }
