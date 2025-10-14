@@ -15,6 +15,6 @@ export class DepartmentsService {
     const result = await this.db.execute(
       sql`SELECT DISTINCT department FROM ${schema.courses} ORDER BY department ASC`,
     );
-    return result.rows.map((r: any) => r.department);
+    return result.rows.map((r) => r.department as string);
   }
 }

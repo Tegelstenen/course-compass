@@ -1,10 +1,10 @@
 import type { Client as ESClient } from "@elastic/elasticsearch";
 import { Inject, Injectable } from "@nestjs/common";
+import { inArray, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { sql, inArray } from "drizzle-orm";
 import * as schema from "../../../types/database/schema";
-import { DRIZZLE } from "../database/drizzle.module.js";
 import type { CourseMapping } from "../../../types/search/elastic.mappings";
+import { DRIZZLE } from "../database/drizzle.module.js";
 import { ES } from "./search.constants.js";
 
 const INDEX = "courses";
@@ -28,7 +28,11 @@ export class SearchService {
     filters?: { department?: string; minRating?: number },
   ): Promise<SearchResult[]> {
     if (!query?.trim()) return [];
-    const searchFilters: any[] = [];
+    const searchFilters: Array<{
+      wildcard?: { department: string };
+      term?: { department: string };
+      range?: { averageRating: { gte: number } };
+    }> = [];
     if (filters?.department) {
       const dept = filters.department;
       console.log("Filtering by department:", JSON.stringify(dept));
@@ -103,7 +107,10 @@ export class SearchService {
       codeToRating.set(r.course_code, Number(r.rating) || 0);
     }
 
-    return base.map((c) => ({ ...c, rating: codeToRating.get(c.course_code) ?? 0 }));
+    return base.map((c) => ({
+      ...c,
+      rating: codeToRating.get(c.course_code) ?? 0,
+    }));
   }
 
   async getCourseByCode(

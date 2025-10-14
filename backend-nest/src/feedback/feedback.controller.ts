@@ -6,7 +6,9 @@ export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post()
-  async createFeedback(@Body() body: { name: string; email: string; message: string }) {
+  async createFeedback(
+    @Body() body: { name: string; email: string; message: string },
+  ) {
     return this.feedbackService.submitFeedback(body);
   }
 }

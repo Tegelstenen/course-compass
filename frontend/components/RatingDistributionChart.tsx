@@ -54,7 +54,7 @@ export default function RatingDistributionChart({
     const xAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
       g
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x) as any);
+        .call(d3.axisBottom(x));
 
     const yAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) =>
       g
@@ -131,7 +131,7 @@ export default function RatingDistributionChart({
       .selectAll("rect")
       .data(data)
       .join("rect")
-      .attr("x", (_, i) => x(String(i + 1))!)
+      .attr("x", (_, i) => x(String(i + 1)) ?? margin.left)
       .attr("y", (d) => y(d))
       .attr("width", x.bandwidth())
       .attr("height", (d) => y(0) - y(d))
@@ -147,7 +147,15 @@ export default function RatingDistributionChart({
       .duration(500)
       .attr("y", (d) => y(d))
       .attr("height", (d) => y(0) - y(d));
-  }, [distribution]);
+  }, [distribution, title]);
 
-  return <svg ref={svgRef} className="w-full h-full"></svg>;
+  return (
+    <svg
+      ref={svgRef}
+      className="w-full h-full"
+      aria-label={title || "Rating Distribution Chart"}
+    >
+      <title>{title || "Rating Distribution Chart"}</title>
+    </svg>
+  );
 }
