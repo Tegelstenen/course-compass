@@ -1,6 +1,6 @@
 {
-  "id": "117a4a47-44a7-4f6d-8ae8-f330a125ae30",
-  "prevId": "b840b759-4be9-42a8-bfb2-e79df7eabafc",
+  "id": "51e26ba9-ee2f-48ff-83a3-ab466d50b77d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -39,6 +39,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "credits": {
+          "name": "credits",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp with time zone",
@@ -50,6 +56,112 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.feedback_form": {
+      "name": "feedback_form",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.review_likes": {
+      "name": "review_likes",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "review_id": {
+          "name": "review_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vote_type": {
+          "name": "vote_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "review_likes_user_id_users_id_fk": {
+          "name": "review_likes_user_id_users_id_fk",
+          "tableFrom": "review_likes",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "review_likes_review_id_reviews_id_fk": {
+          "name": "review_likes_review_id_reviews_id_fk",
+          "tableFrom": "review_likes",
+          "tableTo": "reviews",
+          "columnsFrom": ["review_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "review_likes_user_id_review_id_pk": {
+          "name": "review_likes_user_id_review_id_pk",
+          "columns": ["user_id", "review_id"]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},

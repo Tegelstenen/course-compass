@@ -4,6 +4,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  real,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -19,6 +20,7 @@ export const courses = pgTable("courses", {
   name: text("name").notNull(),
   state: courseState("state").notNull(),
   lastExaminationSemester: text("last_examination_semester"),
+  credits: real("credits"),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -108,6 +110,18 @@ export const reviewLikes = pgTable(
   ],
 );
 
+export const feedback_form = pgTable("feedback_form", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+  .defaultNow()
+  .notNull(),
+  });
+
+export type InsertFeedbackForm = typeof feedback_form.$inferInsert; 
+export type SelectFeedbackMessage = typeof feedback_form.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
 export type InsertUserFavorite = typeof user_favorites.$inferInsert;

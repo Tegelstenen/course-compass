@@ -4,7 +4,6 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { MessageSquare, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/Textarea";
-import Topbar from "@/components/Topbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

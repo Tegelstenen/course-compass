@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ContentEditable } from "@/components/editor/editor-ui/content-editable";
 
 export function Plugins() {
-  const [floatingAnchorElem, setFloatingAnchorElem] =
+  const [_floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {

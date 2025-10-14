@@ -1,4 +1,3 @@
-import * as React from "react";
 import { type JSX, useCallback, useMemo, useState } from "react";
 
 import {

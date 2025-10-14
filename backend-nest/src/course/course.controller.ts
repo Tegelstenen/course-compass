@@ -58,4 +58,10 @@ export class CourseController {
     const exists = await this.courseService.courseCodeExists(courseCode);
     return { exists };
   }
+
+  @Get("/neon/courseCredits/:course_code")
+  async getCourseCredits(@Param("course_code") courseCode: string) {
+    const credits = await this.courseService.getCourseCredits(courseCode);
+    return { credits };
+  }
 }

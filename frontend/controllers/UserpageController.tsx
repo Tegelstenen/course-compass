@@ -6,7 +6,7 @@ import UserView from "@/views/UserView";
 
 export default function UserpageController() {
   const userData = useUserData();
-  const { isLoading, userId } = useSessionData();
+  const { isLoading } = useSessionData();
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -16,11 +16,11 @@ export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
   courseRating: number | null;
+  credits: number | null;
   easyScoreDistribution: number[];
   usefulScoreDistribution: number[];
   interestingScoreDistribution: number[];
   ratingDistribution: number[];
-  credits: number;
   syllabus: string;
   percentageWouldRecommend: number | null;
   userId: string;
