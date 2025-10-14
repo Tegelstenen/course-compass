@@ -109,8 +109,8 @@ export default function SearchView({
                 <SearchItem
                   courseName={course.course_name}
                   courseCode={course.course_code}
-                  rating={5}
-                  semester={"P1"}
+                  rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}
+                  // semester={"P1"}
                   ects={7.5}
                   onSeeReviews={() => onSeeReviews(course.course_code)}
                 />

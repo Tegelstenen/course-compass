@@ -8,8 +8,6 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { CreateReviewDto } from "./dto/create-review.dto";
-import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReviewsService } from "./reviews.service";
 
 @Controller("reviews")
@@ -33,8 +31,11 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll(@Query("courseCode") courseCode?: string) {
-    return this.reviewsService.findAll(courseCode);
+  findAll(
+    @Query("courseCode") courseCode?: string,
+    @Query("userId") userId?: string,
+  ) {
+    return this.reviewsService.findAll(courseCode, userId);
   }
 
   @Get(":id")
@@ -59,5 +60,23 @@ export class ReviewsController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.reviewsService.remove(id);
+  }
+
+  @Post(":id/like")
+  likeReview(@Param("id") reviewId: string, @Body() body: { userId: string }) {
+    return this.reviewsService.toggleVote(reviewId, body.userId, "like");
+  }
+
+  @Post(":id/dislike")
+  dislikeReview(
+    @Param("id") reviewId: string,
+    @Body() body: { userId: string },
+  ) {
+    return this.reviewsService.toggleVote(reviewId, body.userId, "dislike");
+  }
+
+  @Delete(":id/vote")
+  removeVote(@Param("id") reviewId: string, @Body() body: { userId: string }) {
+    return this.reviewsService.toggleVote(reviewId, body.userId, "like"); // this will toggle off if exists
   }
 }
