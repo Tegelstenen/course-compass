@@ -5,10 +5,12 @@ import { useEffect, useRef } from "react";
 
 type RatingDistributionChartProps = {
   distribution: number[];
+  title?: string;
 };
 
 export default function RatingDistributionChart({
   distribution,
+  title = "Rating distribution",
 }: RatingDistributionChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -100,7 +102,7 @@ export default function RatingDistributionChart({
       .attr("fill", axisColor)
       .style("font-size", "12px")
       .style("font-weight", "600")
-      .text("Rating distribution");
+      .text(title);
 
     // X-axis label
     svg
