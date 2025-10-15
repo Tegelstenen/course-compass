@@ -1,8 +1,8 @@
-import { Test, type TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
+import { Test, type TestingModule } from "@nestjs/testing";
+import { SearchService } from "../search/search.service";
 import { CourseController } from "./course.controller";
 import { CourseService } from "./course.service";
-import { SearchService } from "../search/search.service";
 
 describe("CourseController", () => {
   let controller: CourseController;
@@ -72,7 +72,9 @@ describe("CourseController", () => {
       mockCourseService.getCourse.mockResolvedValue(null);
 
       await expect(controller.getNeonCourse("ABCD1234")).rejects.toThrow(
-        new NotFoundException("Course with code ABCD1234 not found in database.")
+        new NotFoundException(
+          "Course with code ABCD1234 not found in database.",
+        ),
       );
 
       expect(courseService.getCourse).toHaveBeenCalledWith("ABCD1234");
@@ -107,7 +109,9 @@ describe("CourseController", () => {
       mockSearchService.getCourseByCode.mockResolvedValue(null);
 
       await expect(controller.getElasticCourse("ABCD1234")).rejects.toThrow(
-        new NotFoundException("Course with code ABCD1234 not found in database.")
+        new NotFoundException(
+          "Course with code ABCD1234 not found in database.",
+        ),
       );
 
       expect(searchService.getCourseByCode).toHaveBeenCalledWith("ABCD1234");

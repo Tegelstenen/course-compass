@@ -1,5 +1,5 @@
 // Global Jest setup file
-import 'reflect-metadata';
+import "reflect-metadata";
 
 // Mock console.log in tests to reduce noise
 global.console = {

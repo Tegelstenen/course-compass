@@ -1,20 +1,20 @@
 import { Test, type TestingModule } from "@nestjs/testing";
-import { CourseService } from "./course.service";
 import { DRIZZLE } from "../database/drizzle.module";
+import { CourseService } from "./course.service";
 
 describe("CourseService", () => {
   let courseService: CourseService;
   let mockDb: any;
 
   const mockCourse = {
-        code: "SF1625",
-        department: "SF (SCI/Matematik) ",
-        name: "Calculus in One Variable",
-        state: "ESTABLISHED",
-        lastExaminationSemester: null,
-        updatedAt: new Date("2023-01-01"),
-        credits: 7.5,
-      };
+    code: "SF1625",
+    department: "SF (SCI/Matematik) ",
+    name: "Calculus in One Variable",
+    state: "ESTABLISHED",
+    lastExaminationSemester: null,
+    updatedAt: new Date("2023-01-01"),
+    credits: 7.5,
+  };
 
   beforeEach(async () => {
     mockDb = {
@@ -44,11 +44,11 @@ describe("CourseService", () => {
   it("should be defined", () => {
     expect(courseService).toBeDefined();
   });
-  
+
   describe("getCourse", () => {
     it("should return course data", async () => {
       mockDb.limit.mockResolvedValue([mockCourse]);
-      
+
       const result = await courseService.getCourse("SF1625");
 
       expect(result).toEqual(mockCourse);
