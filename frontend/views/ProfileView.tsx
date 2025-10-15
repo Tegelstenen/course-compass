@@ -52,12 +52,19 @@ export default function ProfileView({
           <CardContent className="space-y-6">
             {/* Profile picture */}
             <div className="flex items-center gap-6">
-              <Avatar className="w-24 h-24 border-4 border-primary/10">
-                <AvatarImage src={preview || ""} alt={name} />
+            <Avatar className="w-24 h-24 border-4 border-primary/10">
+              {preview ? (
+                <img 
+                  src={preview} 
+                  alt={name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
                 <AvatarFallback className="text-xl bg-primary/10 text-primary">
                   {getInitials(name || email)}
                 </AvatarFallback>
-              </Avatar>
+              )}
+            </Avatar>
 
               <div className="space-y-2">
                 <Label htmlFor="profile-upload">Profile Picture</Label>
