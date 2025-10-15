@@ -114,12 +114,12 @@ curl -X POST "http://localhost:8080/ingest/courses"
 
 This process may take some time. You can monitor the logs from the backend server for progress.
 
-### 8. Build Docker Image (should this be here or internally?)
+### 8. Build Docker Image (should not be here, only for deploying. Add to CI/CD flow later)
 To build the Docker image, run
 
 ```bash
-docker build -t username/frontend-image -f Dockerfile.frontend .
-docker build -t username/backend-image -f Dockerfile.backend .
+docker build -t your-dockerhub-username/course-compass-frontend:latest -f Dockerfile.frontend .
+docker build -t your-dockerhub-username/course-compass-backend:latest -f Dockerfile.backend .
 ```
 
 ## Available Scripts

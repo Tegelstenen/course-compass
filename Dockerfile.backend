@@ -14,30 +14,36 @@ EXPOSE 8080
 # BUIDLER, installs dependencies and builds projects for production
 FROM base AS builder
 WORKDIR /app
-COPY backend-nest/. ./backend-nest
+COPY backend-nest/. ./backend-nest  
 COPY types/ ./types 
 RUN npm install
 # RUN npm ci
 
 # docker:fe:build is custom script in package to handle workspaces
-RUN npm run docker:be:build
+
+WORKDIR /app/backend-nest
+RUN npm run build
 
 #----- STAGE 3
 # PRODUCTION, finalizes the production build
 FROM base AS production
-WORKDIR /app
+WORKDIR /app 
+
 ENV NODE_ENV=production
 
+# 1. Setup non-root user
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001 -G nodejs
+
 USER nodejs
 
-# Needed to give access (chown) to some modules that required root access
-COPY --from=builder --chown=nodejs:nodejs /app/backend-nest/node_modules /app/node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/backend-nest/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules /app/node_modules
+
 COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nodejs:nodejs /app/package-lock.json ./package-lock.json
 
-RUN npm install --omit=dev --no-audit
+# Copy the built backend-nest code and its package file to the workspace folder
+COPY --from=builder --chown=nodejs:nodejs /app/backend-nest /app/backend-nest
+#COPY --from=builder --chown=nodejs:nodejs /app/backend-nest/package.json ./backend-nest/package.json 
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "docker:start:prod"] 

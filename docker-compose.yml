@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: maxandreasen/course-compass-backend:latest
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+
+  frontend:
+    image: maxandreasen/course-compass-frontend:latest
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: http://backend:8080
+    depends_on:
+      - backend
