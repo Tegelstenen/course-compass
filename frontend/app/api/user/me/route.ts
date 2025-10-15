@@ -1,12 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-
   const { getSSRSession } = await import("supertokens-node/nextjs");
   const { ensureSuperTokensInit } = await import("@/lib/supertokens.server");
 
   ensureSuperTokensInit();
-  
+
   // SuperTokens getSSRSession (app router) expects an array of headers
   const headerList: { name: string; value: string }[] = [];
   for (const [name, value] of request.headers) {

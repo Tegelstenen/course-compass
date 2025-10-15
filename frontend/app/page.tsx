@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import HomeController from "@/controllers/HomeController";
 
