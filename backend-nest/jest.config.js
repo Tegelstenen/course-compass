@@ -20,4 +20,7 @@ module.exports = {
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testTimeout: 10000,
+  transformIgnorePatterns: [
+    "node_modules/(?!(uuid)/)"
+  ],
 };
