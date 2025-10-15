@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DiCompass } from "react-icons/di";
@@ -134,7 +133,7 @@ export default function Navbar() {
       {/* PROFILE CARD */}
       <DropdownMenu>
         <DropdownMenuTrigger className="w-full mb-10 h-auto rounded-md text-sm font-medium transition-all gap-2 py-2 pl-2 pr-2 justify-start whitespace-normal cursor-pointer flex items-center group hover:bg-primary-light">
-        {user.profilePicture ? (
+          {user.profilePicture ? (
             <img
               src={user.profilePicture}
               alt="Profile"

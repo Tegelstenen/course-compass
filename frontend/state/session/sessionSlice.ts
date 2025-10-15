@@ -30,7 +30,7 @@ export const getSession = createAsyncThunk(
           name: userData.name,
           email: userData.email,
           userFavorites: userData.userFavorites,
-          profilePicture: null,
+          profilePicture: userData.profilePicture ?? null,
         }),
       );
 

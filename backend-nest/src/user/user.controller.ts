@@ -1,12 +1,12 @@
 // src/app.controller.ts
 
 import {
+  Body,
   Controller,
   Delete,
   Get,
   NotFoundException,
   Post,
-  Body,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -64,7 +64,7 @@ export class UserController {
     const userId = session.getUserId();
     const { url } = body;
 
-    // Validate URL format (optional but recommended)
+    // Validate URL format
     if (!url || !url.startsWith("https://")) {
       throw new Error("Invalid URL provided");
     }

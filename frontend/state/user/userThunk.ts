@@ -14,7 +14,7 @@ export function getUser() {
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-
+      
       dispatch(
         setUser({
           name: data.name,
@@ -57,7 +57,6 @@ export function uploadProfilePicture(file: File) {
     }
   };
 }
-
 
 // Delete account
 export function deleteAccount() {
