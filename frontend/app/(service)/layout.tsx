@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react";
 import AuthProvider from "@/providers/AuthProvider";
 import Navbar from "../../components/Navbar";

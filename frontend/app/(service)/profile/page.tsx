@@ -1,3 +1,5 @@
+"use client";
+
 import ProfileController from "@/controllers/ProfileController";
 
 export default function ProfilePage() {

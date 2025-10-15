@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReviewFormData } from "@/components/review";
 import type { SelectReview } from "../../types/database/schema";
 

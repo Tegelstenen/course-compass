@@ -23,6 +23,8 @@ node_modules/
 /frontend/out/
 /frontend/build
 
+dist
+
 # testing
 /frontend/coverage
 /frontend/.nyc_output

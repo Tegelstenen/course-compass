@@ -1,3 +1,5 @@
+"use client";
+
 // frontend/lib/feedback.ts
 export async function sendFeedback(data: {
   name: string;

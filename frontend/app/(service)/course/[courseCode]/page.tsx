@@ -1,4 +1,5 @@
 "use client";
+
 import CourseController from "@/controllers/CourseController";
 
 const CourseView = () => {

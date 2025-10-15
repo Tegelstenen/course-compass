@@ -1,3 +1,5 @@
+"use client";
+
 import { type JSX, useCallback, useMemo, useState } from "react";
 
 import {

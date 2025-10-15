@@ -1,3 +1,5 @@
+"use client";
+
 import type { CourseMapping } from "../../types/search/elastic.mappings";
 export async function checkIfCourseCodeExists(
   courseCode: string,

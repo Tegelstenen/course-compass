@@ -1,3 +1,5 @@
+"use client";
+
 import type { SelectUserFavorites } from "../../types/database/schema";
 
 interface TempCourse {
