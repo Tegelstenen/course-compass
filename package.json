@@ -5,12 +5,13 @@
   "main": "index.js",
   "workspaces": [
     "frontend",
-    "backend-nest"
+    "backend-nest" 
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "biome check --fix",
     "format": "biome format --write",
+    "build": "echo 'Run build from /frontend or /backend-nest instead'",
     "dev:fe": "npm run dev -C frontend",
     "dev:be": "npm run start:dev -C backend-nest",
     "add:fe": "npm -C frontend i",
@@ -18,7 +19,8 @@
     "add:be": "npm -C backend-nest i",
     "add:be:dev": "npm -C backend-nest i -D",
     "rm:fe": "npm -C frontend un",
-    "rm:be": "npm -C backend-nest un"
+    "rm:be": "npm -C backend-nest un",
+    "docker:build": "npm run build --workspace=frontend"
   },
   "repository": {
     "type": "git",

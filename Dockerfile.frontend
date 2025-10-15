@@ -1,22 +1,30 @@
 
-# This Dockerfile must be build from the root directory
+# Dockerfile to build the FRONTEND image
 
+# BASE, adds small install for mac, copies package files and defines port
 FROM node:23.6-alpine AS base
 RUN apk add --no-cache g++ make py3-pip libc6-compat
-WORKDIR /app
 
+WORKDIR /app
 COPY package*.json ./
+
 EXPOSE 3000 
 
-# First we build the app, install dependencies etc. 
+# BUIDLER, installs dependencies and builds projects for production
 FROM base AS builder
 WORKDIR /app
+
+COPY frontend/. ./frontend
+COPY types/ ./types 
 RUN npm install
 
-COPY frontend/. .
-RUN npm run build
+# Had problems with this dependency only, fixed with a manual install
+RUN npm install supertokens-node --prefix ./frontend --no-save
 
-# Then we move into running the production build
+# docker:build is custom script in package to handle workspaces
+RUN npm run docker:build
+
+# PRODUCTION, finalizes the production build
 FROM base AS production
 WORKDIR /app
 
@@ -28,14 +36,20 @@ RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 USER nextjs
 
+# Needed to give access (chown) to some modules that required root access
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./.next
-COPY --from=builder /app/frontend/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/package-lock.json ./package-lock.json
+
+COPY --from=builder /app/frontend/public ./public
+
+RUN npm install --omit=dev --no-audit
 
 CMD ["npm", "start"]
 
-# This is not necessary unless we want to test our deployment in a container before shipping it into production
+# NOT SURE IF DEV WORK YET
+# DEV environment, not necessary unless we would want a dev container to test changes before deploying in production
 FROM base AS dev
 WORKDIR /app/frontend
 ENV NODE_ENV=development
