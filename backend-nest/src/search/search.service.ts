@@ -4,8 +4,8 @@ import { inArray, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "../../../types/database/schema";
 import type { CourseMapping } from "../../../types/search/elastic.mappings";
-import { DRIZZLE } from "../database/drizzle.module.js";
-import { ES } from "./search.constants.js";
+import { DRIZZLE } from "../database/drizzle.module";
+import { ES } from "./search.constants";
 
 const INDEX = "courses";
 
