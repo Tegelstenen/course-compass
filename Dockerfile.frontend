@@ -21,15 +21,14 @@ RUN npm install
 # Had problems with this dependency only, fixed with a manual install
 RUN npm install supertokens-node --prefix ./frontend --no-save
 
-# docker:build is custom script in package to handle workspaces
-RUN npm run docker:build
+# docker:fe:build is custom script in package to handle workspaces
+RUN npm run docker:fe:build
 
 # PRODUCTION, finalizes the production build
 FROM base AS production
 WORKDIR /app
 
 ENV NODE_ENV=production
-#RUN npm ci
 
 # Good practice to add a user that is non root. 
 RUN addgroup -g 1001 -S nodejs
