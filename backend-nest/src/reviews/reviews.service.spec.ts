@@ -1,9 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
-import { Test, type TestingModule } from '@nestjs/testing';
-import { DRIZZLE } from '../database/drizzle.module';
-import { ReviewsService } from './reviews.service';
+import { NotFoundException } from "@nestjs/common";
+import { Test, type TestingModule } from "@nestjs/testing";
+import { DRIZZLE } from "../database/drizzle.module";
+import { ReviewsService } from "./reviews.service";
 
-describe('ReviewsService', () => {
+describe("ReviewsService", () => {
   let reviewsService: ReviewsService;
   let mockDb: any;
 
@@ -12,16 +12,16 @@ describe('ReviewsService', () => {
     usefulScore: 5,
     interestingScore: 3,
     wouldRecommend: true,
-    content: 'Great course content!',
+    content: "Great course content!",
   };
 
   const mockInsertedReview = {
-    id: 'review-123',
-    userId: 'user-456',
-    courseCode: 'SF1625',
+    id: "review-123",
+    userId: "user-456",
+    courseCode: "SF1625",
     ...mockReviewData,
-    createdAt: new Date('2023-01-01'),
-    updatedAt: new Date('2023-01-01'),
+    createdAt: new Date("2023-01-01"),
+    updatedAt: new Date("2023-01-01"),
   };
 
   beforeEach(async () => {
@@ -57,17 +57,17 @@ describe('ReviewsService', () => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(reviewsService).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should create new review', async () => {
+  describe("create", () => {
+    it("should create new review", async () => {
       mockDb.returning.mockResolvedValue([mockInsertedReview]);
 
       const result = await reviewsService.create(
-        'SF1625',
-        'user-456',
+        "SF1625",
+        "user-456",
         mockReviewData,
       );
 
@@ -75,11 +75,11 @@ describe('ReviewsService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should build query for reviews', () => {
+  describe("findAll", () => {
+    it("should build query for reviews", () => {
       mockDb.where = jest.fn().mockReturnThis();
 
-      reviewsService.findAll('SF1625');
+      reviewsService.findAll("SF1625");
 
       expect(mockDb.select).toHaveBeenCalled();
       expect(mockDb.where).toHaveBeenCalled();
@@ -87,105 +87,105 @@ describe('ReviewsService', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return one review', async () => {
+  describe("findOne", () => {
+    it("should return one review", async () => {
       mockDb.limit.mockResolvedValue([mockInsertedReview]);
 
-      const result = await reviewsService.findOne('review-123');
+      const result = await reviewsService.findOne("review-123");
 
       expect(result).toEqual(mockInsertedReview);
     });
   });
 
-  describe('update', () => {
-    it('should update review', async () => {
+  describe("update", () => {
+    it("should update review", async () => {
       const updatedReview = { ...mockInsertedReview, ...mockReviewData };
       mockDb.returning.mockResolvedValue([updatedReview]);
 
-      const result = await reviewsService.update('review-123', mockReviewData);
+      const result = await reviewsService.update("review-123", mockReviewData);
 
       expect(result).toEqual(updatedReview);
     });
   });
 
-  describe('remove', () => {
-    it('should delete review', async () => {
+  describe("remove", () => {
+    it("should delete review", async () => {
       mockDb.returning.mockResolvedValue([mockInsertedReview]);
 
-      const result = await reviewsService.remove('review-123');
+      const result = await reviewsService.remove("review-123");
 
       expect(result).toEqual(mockInsertedReview);
     });
   });
 
-  describe('toggleVote', () => {
-    it('should add new vote if no existing vote', async () => {
+  describe("toggleVote", () => {
+    it("should add new vote if no existing vote", async () => {
       mockDb.limit.mockResolvedValueOnce([]);
       mockDb.values.mockResolvedValue(undefined);
 
       const result = await reviewsService.toggleVote(
-        'review-123',
-        'user-456',
-        'like',
+        "review-123",
+        "user-456",
+        "like",
       );
 
-      expect(result).toEqual({ action: 'added', voteType: 'like' });
+      expect(result).toEqual({ action: "added", voteType: "like" });
     });
 
-    it('should remove vote if same vote type exists', async () => {
+    it("should remove vote if same vote type exists", async () => {
       const existingVote = {
-        voteType: 'like',
-        userId: 'user-456',
-        reviewId: 'review-123',
+        voteType: "like",
+        userId: "user-456",
+        reviewId: "review-123",
       };
       mockDb.limit.mockResolvedValueOnce([existingVote]);
 
       const result = await reviewsService.toggleVote(
-        'review-123',
-        'user-456',
-        'like',
+        "review-123",
+        "user-456",
+        "like",
       );
 
-      expect(result).toEqual({ action: 'removed', voteType: null });
+      expect(result).toEqual({ action: "removed", voteType: null });
     });
 
-    it('should update vote if different vote type exists', async () => {
+    it("should update vote if different vote type exists", async () => {
       const existingVote = {
-        voteType: 'like',
-        userId: 'user-456',
-        reviewId: 'review-123',
+        voteType: "like",
+        userId: "user-456",
+        reviewId: "review-123",
       };
       mockDb.limit.mockResolvedValueOnce([existingVote]);
 
       const result = await reviewsService.toggleVote(
-        'review-123',
-        'user-456',
-        'dislike',
+        "review-123",
+        "user-456",
+        "dislike",
       );
 
-      expect(result).toEqual({ action: 'updated', voteType: 'dislike' });
+      expect(result).toEqual({ action: "updated", voteType: "dislike" });
     });
   });
 });
 
-jest.mock('../../../types/database/schema', () => ({
+jest.mock("../../../types/database/schema", () => ({
   reviews: {
-    id: 'reviews.id',
-    userId: 'reviews.userId',
-    courseCode: 'reviews.courseCode',
-    easyScore: 'reviews.easyScore',
-    usefulScore: 'reviews.usefulScore',
-    interestingScore: 'reviews.interestingScore',
-    wouldRecommend: 'reviews.wouldRecommend',
-    content: 'reviews.content',
-    createdAt: 'reviews.createdAt',
-    updatedAt: 'reviews.updatedAt',
+    id: "reviews.id",
+    userId: "reviews.userId",
+    courseCode: "reviews.courseCode",
+    easyScore: "reviews.easyScore",
+    usefulScore: "reviews.usefulScore",
+    interestingScore: "reviews.interestingScore",
+    wouldRecommend: "reviews.wouldRecommend",
+    content: "reviews.content",
+    createdAt: "reviews.createdAt",
+    updatedAt: "reviews.updatedAt",
   },
   reviewLikes: {
-    id: 'reviewLikes.id',
-    reviewId: 'reviewLikes.reviewId',
-    userId: 'reviewLikes.userId',
-    voteType: 'reviewLikes.voteType',
-    createdAt: 'reviewLikes.createdAt',
+    id: "reviewLikes.id",
+    reviewId: "reviewLikes.reviewId",
+    userId: "reviewLikes.userId",
+    voteType: "reviewLikes.voteType",
+    createdAt: "reviewLikes.createdAt",
   },
 }));

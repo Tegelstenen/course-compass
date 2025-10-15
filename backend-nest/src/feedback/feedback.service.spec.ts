@@ -1,15 +1,15 @@
-import { Test, type TestingModule } from '@nestjs/testing';
-import { DRIZZLE } from '../database/drizzle.module';
-import { FeedbackService } from './feedback.service';
+import { Test, type TestingModule } from "@nestjs/testing";
+import { DRIZZLE } from "../database/drizzle.module";
+import { FeedbackService } from "./feedback.service";
 
-describe('FeedbackService', () => {
+describe("FeedbackService", () => {
   let feedbackService: FeedbackService;
   let mockDb: any;
 
   const mockFeedbackData = {
-    name: 'Sven',
-    email: 'sven@kth.se',
-    message: 'This is a test feedback message',
+    name: "Sven",
+    email: "sven@kth.se",
+    message: "This is a test feedback message",
   };
 
   beforeEach(async () => {
@@ -35,32 +35,32 @@ describe('FeedbackService', () => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(feedbackService).toBeDefined();
   });
 
-  describe('submitFeedback', () => {
-    it('should successfully submit feedback', async () => {
+  describe("submitFeedback", () => {
+    it("should successfully submit feedback", async () => {
       const result = await feedbackService.submitFeedback(mockFeedbackData);
 
       expect(mockDb.insert).toHaveBeenCalled();
       expect(mockDb.values).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: 'Sven',
-          email: 'sven@kth.se',
-          message: 'This is a test feedback message',
+          name: "Sven",
+          email: "sven@kth.se",
+          message: "This is a test feedback message",
           id: expect.any(String),
         }),
       );
       expect(result).toEqual({ success: true });
     });
 
-    it('should handle database errors', async () => {
-      mockDb.values.mockRejectedValue(new Error('Database connection failed'));
+    it("should handle database errors", async () => {
+      mockDb.values.mockRejectedValue(new Error("Database connection failed"));
 
       await expect(
         feedbackService.submitFeedback(mockFeedbackData),
-      ).rejects.toThrow('Database connection failed');
+      ).rejects.toThrow("Database connection failed");
     });
   });
 });
