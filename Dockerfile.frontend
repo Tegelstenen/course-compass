@@ -1,0 +1,44 @@
+
+# This Dockerfile must be build from the root directory
+
+FROM node:23.6-alpine AS base
+RUN apk add --no-cache g++ make py3-pip libc6-compat
+WORKDIR /app
+
+COPY package*.json ./
+EXPOSE 3000 
+
+# First we build the app, install dependencies etc. 
+FROM base AS builder
+WORKDIR /app
+RUN npm install
+
+COPY frontend/. .
+RUN npm run build
+
+# Then we move into running the production build
+FROM base AS production
+WORKDIR /app
+
+ENV NODE_ENV=production
+#RUN npm ci
+
+# Good practice to add a user that is non root. 
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+USER nextjs
+
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./.next
+COPY --from=builder /app/frontend/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
+
+CMD ["npm", "start"]
+
+# This is not necessary unless we want to test our deployment in a container before shipping it into production
+FROM base AS dev
+WORKDIR /app/frontend
+ENV NODE_ENV=development
+COPY frontend/. .
+RUN npm install
+CMD ["npm", "run", "dev"]
