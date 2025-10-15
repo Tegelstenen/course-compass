@@ -1,12 +1,17 @@
-import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-import { getSession } from "supertokens-node/nextjs";
-import { ensureSuperTokensInit } from "@/lib/supertokens.server";
-
-ensureSuperTokensInit();
 
 export async function GET(request: NextRequest) {
-  const session = await getSession(request);
+  const { getSSRSession } = await import("supertokens-node/nextjs");
+  const { ensureSuperTokensInit } = await import("@/lib/supertokens.server");
+
+  ensureSuperTokensInit();
+
+  // SuperTokens getSSRSession (app router) expects an array of headers
+  const headerList: { name: string; value: string }[] = [];
+  for (const [name, value] of request.headers) {
+    headerList.push({ name, value });
+  }
+  const session = await getSSRSession(headerList);
 
   if (!session) {
     return new NextResponse("Authentication required", { status: 401 });
@@ -20,7 +25,7 @@ export async function GET(request: NextRequest) {
   try {
     const response = await fetch(`${backendDomain}/user/me`, {
       headers: {
-        cookie: headers().get("cookie") || "",
+        cookie: request.headers.get("cookie") || "",
       },
     });
 
