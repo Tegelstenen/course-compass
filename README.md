@@ -136,3 +136,6 @@ The following scripts are available to be run from the root directory:
 | `npm run rm:be`    | Removes a dependency from the backend workspace.   |
 
 Other scripts can be found in the `package.json` files within the `frontend` and `backend-nest` directories.
+
+
+Woow!
