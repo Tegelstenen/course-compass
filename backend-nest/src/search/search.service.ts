@@ -15,6 +15,13 @@ export type SearchResult = CourseMapping & {
   rating?: number;
 };
 
+// This simulates the 'Course' type defined in the frontend 'course_model'
+export type ElasticCourse = CourseMapping & {
+  _id: string;
+  rating?: number;
+  credits?: number;
+};
+
 @Injectable()
 export class SearchService {
   constructor(
@@ -91,10 +98,10 @@ export class SearchService {
 
     const result = await this.db.execute(
       sql`SELECT course_code,
-             ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
-           FROM ${schema.reviews}
-           WHERE ${inArray(schema.reviews.courseCode, codes)}
-           GROUP BY course_code`,
+          ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
+          FROM ${schema.reviews}
+          WHERE ${inArray(schema.reviews.courseCode, codes)}
+          GROUP BY course_code`,
     );
 
     const rows = result.rows as Array<{ course_code: string; rating: number }>;
@@ -111,27 +118,46 @@ export class SearchService {
     let filteredResults = resultsWithRatings;
     if (filters?.minRating) {
       filteredResults = resultsWithRatings.filter(
-        (course) => course.rating >= filters.minRating!
+        (course) => course.rating >= filters.minRating!,
       );
     }
     return filteredResults.slice(0, size);
   }
 
+  // Fetches a single course by code
   async getCourseByCode(
     courseCode: string,
-  ): Promise<CourseMapping | undefined> {
+  ): Promise<ElasticCourse | undefined> {
+    // Fetching course information from ES
     const res = await this.es.search<CourseMapping>({
       index: INDEX,
       size: 1,
       query: {
-        term: {
-          course_code: courseCode,
+        term: { // makes a direct match to the course code
+          course_code: courseCode, 
         },
       },
     });
     const hits = res.hits?.hits ?? []; // fallback on [] which triggers a return of "undefined"
+    // Fetching rating from NEON
+    const ratingResult = await this.db.execute(
+      sql`SELECT course_code,
+          ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
+          FROM ${schema.reviews}
+          WHERE ${schema.reviews.courseCode} = ${courseCode}
+          GROUP BY course_code`,
+    );
+    const rating = ratingResult.rows[0]?.rating;
+
+    console.log("Service: ", hits[0]._source);
+    
     if (hits.length > 0) {
-      return hits[0]._source;
+      return {
+        ...hits[0]._source, // makes sure only one object is returned
+        _id: hits[0]._id,
+        rating: rating,
+        // credits: when they have been indexed
+      } as ElasticCourse; 
     }
     return undefined;
   }

@@ -18,7 +18,7 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
 
   const onSeeReviews = (code: string) => {
     props.onSeeReviews(code); // handle navigation logic in controller
-  }
+  };
 
   return (
     <div className="flex flex-col items-center m-10 w-full max-w-4xl">
@@ -30,8 +30,8 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
           skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
         ) : props.userFavorites?.length ? (
           props.userFavorites.map((course, i) => (
-            <CourseItem 
-              key={`${course.course_code}${i}`} 
+            <CourseItem
+              key={`${course.course_code}${i}`}
               courseName={course.course_name}
               courseCode={course.course_code}
               rating={3}

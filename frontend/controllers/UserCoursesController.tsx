@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { useUserData } from "@/hooks/userHooks";
 import { getCourseInfo } from "@/lib/courses";
@@ -18,8 +18,8 @@ export default function UserpageController() {
   const router = useRouter();
 
   const onSeeReviews = (courseCode: string) => {
-      router.push(`/course/${courseCode}`);
-  }
+    router.push(`/course/${courseCode}`);
+  };
 
   // Handles the fetching of user's favorite courses
   useEffect(() => {
