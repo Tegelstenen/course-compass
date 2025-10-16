@@ -37,7 +37,6 @@ export function uploadProfilePicture(file: File) {
       const formData = new FormData();
       formData.append("file", file);
 
-      // Call your Next.js API route instead of backend directly
       const res = await fetch("/api/picture-upload", {
         method: "POST",
         body: formData,
