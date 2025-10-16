@@ -2,6 +2,9 @@ name: Code quality
 
 on:
   push:
+    branches: 
+      - main
+      - dev
   pull_request:
 
 jobs:
@@ -14,9 +17,18 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
+
       - name: Setup Biome
         uses: biomejs/setup-biome@v2
         with:
           version: latest
+
       - name: Run Biome
         run: biome ci .
+
+      - name: Build backend image for tests
+        run: docker build --target builder -t backend-test ./backend
+        
+      - name: Run backend tests
+        run: docker run --rm backend-test npm run test:be
+  
