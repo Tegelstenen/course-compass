@@ -9,12 +9,16 @@ interface UserCoursesViewProps {
   userData: UserState;
   userFavorites: Course[] | null;
   isLoadingCourse: boolean;
+  onSeeReviews: (courseCode: string) => void;
 }
 
 export default function UserCoursesView(props: UserCoursesViewProps) {
-
   // Necessary for static arrays? Can't we just use the map index?
   const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
+
+  const onSeeReviews = (code: string) => {
+    props.onSeeReviews(code); // handle navigation logic in controller
+  }
 
   return (
     <div className="flex flex-col items-center m-10 w-full max-w-4xl">
@@ -26,7 +30,14 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
           skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
         ) : props.userFavorites?.length ? (
           props.userFavorites.map((course, i) => (
-            <CourseItem key={`${course.course_code}${i}`} {...course} />
+            <CourseItem 
+              key={`${course.course_code}${i}`} 
+              courseName={course.course_name}
+              courseCode={course.course_code}
+              rating={3}
+              ects={7.5}
+              onSeeReviews={() => onSeeReviews(course.course_code)}
+            />
           ))
         ) : (
           <div>User has not favorite courses</div>

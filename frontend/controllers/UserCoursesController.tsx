@@ -17,13 +17,11 @@ export default function UserpageController() {
 
   const router = useRouter();
 
-  const onSeeReviews = useCallback(
-    (courseCode: string) => {
+  const onSeeReviews = (courseCode: string) => {
       router.push(`/course/${courseCode}`);
-    },
-    [router],
-  );
+  }
 
+  // Handles the fetching of user's favorite courses
   useEffect(() => {
     if (!userData) return;
 
@@ -36,6 +34,7 @@ export default function UserpageController() {
       const courses = await Promise.all(
         userData.userFavorites.map(async (favCourse) => {
           const course = await fetchCourseByCode(favCourse.favoriteCourse);
+          console.log(course);
           return { course };
         }),
       );
@@ -45,6 +44,7 @@ export default function UserpageController() {
     fetchCourses();
   }, [userData]);
 
+  // Returns suspense view but could be improved to always render skeleton on all updates
   if (!userData || isLoading) {
     return <SuspenseView />;
   } else {
@@ -53,6 +53,7 @@ export default function UserpageController() {
         userData={userData}
         userFavorites={userFavorites}
         isLoadingCourse={isLoadingCourse}
+        onSeeReviews={onSeeReviews}
       />
     );
   }
