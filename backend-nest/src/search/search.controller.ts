@@ -18,12 +18,14 @@ export class SearchController {
     @Query("q") q?: string,
     @Query("size") size?: string,
     @Query("department") department?: string,
+    @Query("minRating") minRating?: string,
   ) {
     const limit = Number.isFinite(Number(size)) ? Number(size) : 10;
+    const minRatingNum = Number.isFinite(Number(minRating)) ? Number(minRating) : undefined;
     const results: SearchResult[] = await this.searchService.searchCourses(
       q ?? "",
       limit,
-      { department },
+      { department, minRating: minRatingNum },
     );
     return { results, total: results.length };
   }
