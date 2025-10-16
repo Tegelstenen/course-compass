@@ -15,6 +15,7 @@ import {
   RiStarLine,
 } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
+import { ModeToggle } from "@/components/mode-toggle";
 // UI imports
 import { Button } from "@/components/ui/button";
 import {
@@ -137,7 +138,9 @@ export default function Navbar() {
             <img
               src={user.profilePicture}
               alt="Profile"
-              className="w-10 h-10 rounded-full object-cover"
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-white font-semibold">
@@ -173,6 +176,9 @@ export default function Navbar() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="w-full flex justify-end pr-2 pb-4">
+        <ModeToggle />
+      </div>
     </div>
   );
 }

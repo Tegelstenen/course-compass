@@ -4,8 +4,8 @@ import { inArray, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "../../../types/database/schema";
 import type { CourseMapping } from "../../../types/search/elastic.mappings";
-import { DRIZZLE } from "../database/drizzle.module.js";
-import { ES } from "./search.constants.js";
+import { DRIZZLE } from "../database/drizzle.module";
+import { ES } from "./search.constants";
 
 const INDEX = "courses";
 
@@ -52,14 +52,10 @@ export class SearchService {
         searchFilters.push(termFilter);
       }
     }
-    if (filters?.minRating)
-      searchFilters.push({
-        range: { averageRating: { gte: filters.minRating } },
-      });
 
     const res = await this.es.search<unknown, CourseMapping>({
       index: INDEX,
-      size,
+      size: filters?.minRating ? size * 5 : size, // get more results for rating filter
       query: {
         bool: {
           must: {
@@ -107,10 +103,18 @@ export class SearchService {
       codeToRating.set(r.course_code, Number(r.rating) || 0);
     }
 
-    return base.map((c) => ({
+    const resultsWithRatings = base.map((c) => ({
       ...c,
       rating: codeToRating.get(c.course_code) ?? 0,
     }));
+
+    let filteredResults = resultsWithRatings;
+    if (filters?.minRating) {
+      filteredResults = resultsWithRatings.filter(
+        (course) => course.rating >= filters.minRating!
+      );
+    }
+    return filteredResults.slice(0, size);
   }
 
   async getCourseByCode(
