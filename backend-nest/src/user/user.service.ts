@@ -67,6 +67,13 @@ export class UserService {
     } as UserWithFavorites;
   }
 
+  async updateProfilePicture(userId: string, profilePictureUrl: string) {
+    return await this.db
+      .update(schema.users)
+      .set({ profilePicture: profilePictureUrl })
+      .where(eq(schema.users.id, userId));
+  }
+
   async deleteUser(id: string): Promise<void> {
     await this.db
       .delete(schema.user_favorites)

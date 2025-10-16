@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DiCompass } from "react-icons/di";
@@ -36,6 +35,18 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const getInitials = (name: string, email: string) => {
+    if (name?.trim()) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    return email?.charAt(0).toUpperCase() || "U";
   };
 
   return (
@@ -123,13 +134,15 @@ export default function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger className="w-full mb-10 h-auto rounded-md text-sm font-medium transition-all gap-2 py-2 pl-2 pr-2 justify-start whitespace-normal cursor-pointer flex items-center group hover:bg-primary-light">
           {user.profilePicture ? (
-            <Image
+            <img
               src={user.profilePicture}
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-400" /> // placeholder
+            <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-white font-semibold">
+              {getInitials(user.name, user.email)}
+            </div>
           )}
           <span className="transition-all group-hover:font-bold">
             {user.name?.trim() ||
