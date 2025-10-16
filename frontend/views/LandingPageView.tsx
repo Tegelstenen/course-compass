@@ -69,7 +69,7 @@ export default function LandingPageView(props: LandingPageViewProps) {
     <motion.div
       className="flex flex-col w-full justify-left p-40 text-secondary"
       style={{
-        backgroundImage: 'url("course_map.jpg")',
+        backgroundImage: 'url("compass-pixabay.png")', // royalty free image from https://pixabay.com/sv/vectors/kompass-karta-navigering-vindros-146166/
         backgroundSize: "75%", // Set a specific size, e.g., 30% of the container
         backgroundPosition: "right center", // Align to the left, centered vertically
         backgroundRepeat: "no-repeat", // Crucial: prevents the image from tiling
