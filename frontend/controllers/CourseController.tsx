@@ -229,6 +229,10 @@ export default function CourseController() {
     null,
   );
 
+  if (!params?.courseCode) {
+    router.push("/search");
+  }
+
   const handleAddReview = async (
     courseCode: string,
     userId: string,
@@ -276,8 +280,9 @@ export default function CourseController() {
     setPosts(updatedPosts);
   };
 
+  // Execution
   useEffect(() => {
-    if (!params.courseCode) {
+    if (!params?.courseCode) {
       router.push("/search");
       return;
     }

@@ -1,0 +1,71 @@
+services:
+  frontend:
+    image: maxandreasen/course-compass-frontend:latest
+    container_name: frontend
+
+    restart: always
+
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_BACKEND_DOMAIN: http://localhost:8080
+      NEXT_PUBLIC_WEBSITE_DOMAIN: http://localhost:3000
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
+
+    logging: # used to avoid logs filling up on server disk
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  backend:
+    image: maxandreasen/course-compass-backend:latest
+    container_name: backend
+    environment: # environmental variables for production
+      NODE_ENV: production
+      PORT: 8080
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      ELASTIC_USER: ${ES_USER_SECRET}
+      ELASTIC_PASSWORD: ${ES_PASSWORD_SECRET}
+      DATABASE_URL: ${NEON_DATABASE_URL}
+    
+    ports:
+      - "8080:8080"
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+    
+    logging: # used to avoid logs filling up on server disk
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - xpack.security.enabled=true # secuirity
+      - ELASTIC_PASSWORD=${ES_PASSWORD_SECRET} 
+      - ELASTIC_USER=${ES_USER_SECRET}
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  volumes:
+    esdata:
+      driver: local
