@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Session from "supertokens-auth-react/recipe/session";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
-import { deleteAccount } from "@/state/user/userThunk";
+import { deleteAccount, uploadProfilePicture, getUser } from "@/state/user/userThunk";
 import ProfileView from "@/views/ProfileView";
 
 export default function ProfileController() {
@@ -16,12 +16,19 @@ export default function ProfileController() {
   );
 
   // Handle file upload
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const localPreview = URL.createObjectURL(file);
       dispatch(setProfilePicture(localPreview));
-      //dispatch(uploadProfilePicture(file) as any);  // temporarily disabled
+
+      try {
+        await dispatch(uploadProfilePicture(file) as any); 
+        await dispatch(getUser() as any);
+        URL.revokeObjectURL(localPreview);
+      } catch (error) {
+        console.error("Upload failed:", error);
+      }
     }
   };
 
