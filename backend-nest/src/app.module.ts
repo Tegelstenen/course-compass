@@ -4,6 +4,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { CourseModule } from "./course/course.module";
 import { DrizzleModule } from "./database/drizzle.module";
+import { FeedbackModule } from "./feedback/feedback.module";
 import { HealthModule } from "./health/health.module";
 import { IngestModule } from "./ingest/ingest.module";
 import { ReviewsModule } from "./reviews/reviews.module";
@@ -24,6 +25,7 @@ import { UserModule } from "./user/user.module";
     SupertokensModule,
     CourseModule,
     ReviewsModule,
+    FeedbackModule,
   ],
   controllers: [AppController, DepartmentsController],
   providers: [AppService, DepartmentsService],

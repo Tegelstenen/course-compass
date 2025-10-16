@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1757925529210,
-      "tag": "0000_strong_morg",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1757925698820,
-      "tag": "0001_quiet_nitro",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1759162109263,
-      "tag": "0002_square_skaar",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1759329947492,
-      "tag": "0003_fantastic_ravenous",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1760101991829,
-      "tag": "0004_burly_mister_fear",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1760108041668,
-      "tag": "0005_huge_slapstick",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1760104089082,
-      "tag": "0004_clean_whizzer",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1760186055539,
-      "tag": "0005_tan_marten_broadcloak",
+      "when": 1760436504018,
+      "tag": "0000_bitter_unicorn",
       "breakpoints": true
     }
   ]

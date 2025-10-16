@@ -1,4 +1,5 @@
 "use client";
+import RatingDistributionChart from "@/components/RatingDistributionChart";
 import { Review, type ReviewFormData } from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,7 +16,11 @@ export type CourseHeaderProps = {
   courseCode: string;
   courseName: string;
   courseRating: number | null;
-  credits: number;
+  credits: number | null;
+  easyScoreDistribution: number[];
+  usefulScoreDistribution: number[];
+  interestingScoreDistribution: number[];
+  ratingDistribution: number[];
   syllabus: string;
   percentageWouldRecommend: number | null;
   userId: string;
@@ -38,7 +43,7 @@ export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
   const recommendLabel = `${recommendPct ? `${recommendPct.toFixed(0)}%` : "__"} would recommend`;
 
   return (
-    <Card className="w-full p-4 md:p-6 grid gap-4 md:grid-cols-2">
+    <Card className="w-full p-4 md:p-6 grid gap-4 md:grid-cols-2 md:gap-x-40 md:gap-y-4">
       {/* Left */}
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
@@ -87,10 +92,33 @@ export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
       </div>
 
       {/* Right */}
-      <div className="p-2 md:p-0">
-        <Card className="h-full min-h-40 flex items-center justify-center text-center bg-secondary text-secondary-foreground">
-          Add a plot for the rating distribution here (use the specified library
-          in the grading criteria).
+
+      {/* Overall distribution — match PostActionBar height (~40-48px) */}
+      <Card className="flex flex-col gap-2 w-80 h-56 p-2 md:p-0 items-center justify-center text-center text-secondary-foreground">
+        <RatingDistributionChart
+          distribution={props.ratingDistribution || [0, 0, 0, 0, 0]}
+          title="Overall rating distribution"
+        />
+      </Card>
+
+      {/* Other score distributions */}
+      <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <Card className="p-1 flex items-center justify-center">
+          <RatingDistributionChart
+            distribution={props.easyScoreDistribution || [0, 0, 0, 0, 0]}
+            title="Easy score distribution"
+          />
+        </Card>
+        <Card className="p-1 flex items-center justify-center">
+          <RatingDistributionChart
+            distribution={props.usefulScoreDistribution || [0, 0, 0, 0, 0]}
+          />
+        </Card>
+        <Card className="p-1 flex items-center justify-center">
+          <RatingDistributionChart
+            distribution={props.interestingScoreDistribution || [0, 0, 0, 0, 0]}
+            title="Interesting score distribution"
+          />
         </Card>
       </div>
     </Card>

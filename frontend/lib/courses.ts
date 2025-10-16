@@ -43,3 +43,22 @@ export async function getCourseInfo(
 
   return data;
 }
+
+export async function getCourseCredits(
+  courseCode: string,
+): Promise<number | null> {
+  const backend = process.env.NEXT_PUBLIC_BACKEND_DOMAIN;
+  if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_DOMAIN is not set");
+
+  const res = await fetch(
+    `${backend}/course/neon/courseCredits/${courseCode}`,
+    {
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  const data = (await res.json()) as { credits: number | null };
+  return data.credits;
+}

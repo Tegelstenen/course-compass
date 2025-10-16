@@ -8,8 +8,34 @@ import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
-import { checkIfCourseCodeExists, getCourseInfo } from "@/lib/courses";
-import { createReview, findAllReviews } from "@/lib/reviews";
+import {
+  checkIfCourseCodeExists,
+  getCourseCredits,
+  getCourseInfo,
+} from "@/lib/courses";
+import {
+  createReview,
+  dislikeReview,
+  findAllReviews,
+  likeReview,
+} from "@/lib/reviews";
+
+type Review = {
+  id: string;
+  userId: string;
+  courseCode: string;
+  easyScore: number;
+  usefulScore: number;
+  interestingScore: number;
+  wouldRecommend: boolean;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  likeCount: number;
+  dislikeCount: number;
+  userVote: string | null;
+};
+
 import CourseView from "@/views/CourseView";
 
 import SuspenseView from "@/views/SuspenseView";
@@ -34,18 +60,72 @@ const getAverageRating = (posts: PostProps[]) => {
   );
 };
 
+const getEasyScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.easyScore >= 1 && post.easyScore <= 5) {
+      counts[post.easyScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+const getUsefulScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.usefulScore >= 1 && post.usefulScore <= 5) {
+      counts[post.usefulScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+const getInterestingScoreDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    if (post.interestingScore >= 1 && post.interestingScore <= 5) {
+      counts[post.interestingScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
+// Average rating distribution (1-5 stars)
+const getRatingDistribution = (posts: PostProps[]) => {
+  const counts = [0, 0, 0, 0, 0];
+  posts.forEach((post) => {
+    const avgScore = Math.round(
+      (post.easyScore + post.usefulScore + post.interestingScore) / 3,
+    );
+    if (avgScore >= 1 && avgScore <= 5) {
+      counts[avgScore - 1] += 1;
+    }
+  });
+  return counts;
+};
+
 const getPercentageWouldRecommend = (posts: PostProps[]) => {
   return (
     (posts.filter((post) => post.wouldRecommend).length / posts.length) * 100
   );
 };
 
-const likePost = (_postId: string) => {
-  toast(`Like not implemented`);
+const likePost = async (postId: string, userId: string) => {
+  try {
+    await likeReview(postId, userId);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to like review");
+  }
 };
 
-const dislikePost = (_postId: string) => {
-  toast(`Dislike not implemented`);
+const dislikePost = async (postId: string, userId: string) => {
+  try {
+    await dislikeReview(postId, userId);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to dislike review");
+  }
 };
 
 const addReview = async (
@@ -87,12 +167,17 @@ const getCourseHeader = async (
 ) => {
   try {
     const courseInfo = await getCourseInfo(courseCode);
+    const credits = await getCourseCredits(courseCode);
     return {
       courseCode: courseInfo.course_code,
       courseName: courseInfo.course_name,
-      credits: 0,
+      credits: credits || null,
       syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
       courseRating: getAverageRating(posts),
+      ratingDistribution: getRatingDistribution(posts),
+      easyScoreDistribution: getEasyScoreDistribution(posts),
+      usefulScoreDistribution: getUsefulScoreDistribution(posts),
+      interestingScoreDistribution: getInterestingScoreDistribution(posts),
       percentageWouldRecommend: getPercentageWouldRecommend(posts),
       userId,
       onAddReview: addReview,
@@ -110,8 +195,8 @@ const getCourseHeader = async (
   }
 };
 
-const getCoursePosts = async (courseCode: string) => {
-  const posts = await findAllReviews(courseCode);
+const getCoursePosts = async (courseCode: string, userId?: string) => {
+  const posts = (await findAllReviews(courseCode, userId)) as Review[];
   return posts?.map((post) => ({
     postId: post.id,
     wouldRecommend: post.wouldRecommend,
@@ -119,12 +204,15 @@ const getCoursePosts = async (courseCode: string) => {
     easyScore: post.easyScore,
     usefulScore: post.usefulScore,
     interestingScore: post.interestingScore,
+    likeCount: post.likeCount || 0,
+    dislikeCount: post.dislikeCount || 0,
+    userVote: post.userVote || null,
   })) as (PostProps & { postId: string })[];
 };
 
 const getPageData = async (courseCode: string, userId: string) => {
   const exists = await checkIfCourseCodeExists(courseCode);
-  const posts = await getCoursePosts(courseCode);
+  const posts = await getCoursePosts(courseCode, userId);
   const courseHeader = await getCourseHeader(courseCode, userId, posts);
   return { exists, courseHeader, posts };
 };
@@ -151,7 +239,7 @@ export default function CourseController() {
       if (!created) return false;
 
       // refresh the posts and course header data
-      const updatedPosts = await getCoursePosts(courseCode);
+      const updatedPosts = await getCoursePosts(courseCode, userId);
       const updatedCourseHeader = await getCourseHeader(
         courseCode,
         userId,
@@ -168,6 +256,24 @@ export default function CourseController() {
       });
       return false;
     }
+  };
+
+  const handleLikePost = async (postId: string) => {
+    if (!userId) return;
+    await likePost(postId, userId);
+
+    // Refresh posts to get updated like counts
+    const updatedPosts = await getCoursePosts(params.courseCode, userId);
+    setPosts(updatedPosts);
+  };
+
+  const handleDislikePost = async (postId: string) => {
+    if (!userId) return;
+    await dislikePost(postId, userId);
+
+    // Refresh posts to get updated like counts
+    const updatedPosts = await getCoursePosts(params.courseCode, userId);
+    setPosts(updatedPosts);
   };
 
   useEffect(() => {
@@ -204,12 +310,16 @@ export default function CourseController() {
         credits={courseHeader.credits}
         syllabus={courseHeader.syllabus}
         percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+        easyScoreDistribution={getEasyScoreDistribution(posts)}
+        usefulScoreDistribution={getUsefulScoreDistribution(posts)}
+        interestingScoreDistribution={getInterestingScoreDistribution(posts)}
+        ratingDistribution={getRatingDistribution(posts)}
         courseRating={getAverageRating(posts)}
         userId={userId}
         onAddReview={handleAddReview}
         posts={posts}
-        onLikePost={likePost}
-        onDislikePost={dislikePost}
+        onLikePost={handleLikePost}
+        onDislikePost={handleDislikePost}
       />
     );
   }

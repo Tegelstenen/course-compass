@@ -31,4 +31,13 @@ export class CourseService {
       .limit(1);
     return courseObject.length > 0;
   }
+
+  async getCourseCredits(courseCode: string): Promise<number | null> {
+    const courseObject = await this.db
+      .select()
+      .from(courses)
+      .where(eq(courses.code, courseCode))
+      .limit(1);
+    return courseObject[0].credits;
+  }
 }

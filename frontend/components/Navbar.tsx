@@ -7,8 +7,6 @@ import { MdContactSupport, MdOutlineContactSupport } from "react-icons/md";
 import {
   RiBookOpenFill,
   RiBookOpenLine,
-  RiCompass3Fill,
-  RiCompass3Line,
   RiHeartFill,
   RiHeartLine,
   RiSearch2Fill,
@@ -37,6 +35,18 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const getInitials = (name: string, email: string) => {
+    if (name?.trim()) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    return email?.charAt(0).toUpperCase() || "U";
   };
 
   return (
@@ -130,7 +140,9 @@ export default function Navbar() {
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-400" /> // placeholder
+            <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-white font-semibold">
+              {getInitials(user.name, user.email)}
+            </div>
           )}
           <span className="transition-all group-hover:font-bold">
             {user.name?.trim() ||
