@@ -70,13 +70,15 @@
 
 .dark {
   /* Cohesive dark palette inspired by Tailwind slate/blue */
-  --background: #0b1220; /* near-slate-950 */
+  /*--background: #0b1220; /* near-slate-950 */
+  --background: oklch(0.28 0.04 260);
   --foreground: #e5e7eb; /* slate-200 */
   --card: #0f172a; /* slate-900 */
   --card-foreground: #e5e7eb;
   --popover: #0f172a;
   --popover-foreground: #e5e7eb;
-  --primary: #456882; /* keep brand primary for consistency */
+  /*--primary: #456882; /* keep brand primary for consistency */
+  --primary: oklch(0.21 0.04 266);
   --primary-light: #5b86a5;
   --primary-foreground: #f8fafc; /* slate-50 */
   --secondary: oklch(0.71 0.04 257); /* slate-800 */
