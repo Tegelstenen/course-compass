@@ -19,7 +19,7 @@ export default function SearchController() {
   );
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
   const router = useRouter();
-  const [localQuery, setLocalQuery] = useState(query); // redux synced
+  const [localQuery, setLocalQuery] = useState(query || "interaction programming"); // redux synced
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
