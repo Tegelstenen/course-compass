@@ -98,10 +98,6 @@ export default function ProfileView({
                 className="max-w-md bg-muted cursor-not-allowed"
               />
             </div>
-<<<<<<< HEAD
-            <Button className="w-full sm:w-auto">Save Changes</Button>
-=======
->>>>>>> f4e7326b809ca8c3ca47b301f36beac48515777e
           </CardContent>
         </Card>
 

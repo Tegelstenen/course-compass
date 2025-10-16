@@ -1,42 +1,37 @@
 "use client";
 
 import { CourseItem } from "@/components/CourseItem";
-import TempCourseObject from "@/components/tempCourseObject";
+import { CourseItemSkeleton } from "@/components/CourseItemSkeleton";
+import type { Course } from "@/models/CourseModel";
 import type { UserState } from "@/state/user/userSlice";
-import SuspenseView from "./SuspenseView";
 
 interface UserCoursesViewProps {
   userData: UserState;
-  userFavorites: [] | null;
+  userFavorites: Course[] | null;
+  isLoadingCourse: boolean;
 }
 
 export default function UserCoursesView(props: UserCoursesViewProps) {
-  console.log(props.userFavorites);
 
-  const displayFavorites = () => {
-    if (
-      props.userData.userFavorites &&
-      props.userData.userFavorites.length < 1
-    ) {
-      return <div> User has not favorite courses</div>;
-    }
-    if (props.userFavorites && props.userFavorites.length > 0) {
-      return (
-        <div>
-          {props.userFavorites.map((course) => (
-            <CourseItem {...course} />
-          ))}
-        </div>
-      );
-    } else {
-      return <SuspenseView />;
-    }
-  };
+  // Necessary for static arrays? Can't we just use the map index?
+  const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
 
   return (
-    <div className="flex flex-col justify-left m-10">
-      <h1 className="text-secondary font-extrabold text-4xl">Saved Courses</h1>
-      <div>{displayFavorites()}</div>
+    <div className="flex flex-col items-center m-10 w-full max-w-4xl">
+      <h1 className="text-secondary font-extrabold text-4xl self-start mb-6">
+        Saved Courses
+      </h1>
+      <div className="flex flex-col w-full gap-6">
+        {props.isLoadingCourse ? (
+          skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
+        ) : props.userFavorites?.length ? (
+          props.userFavorites.map((course, i) => (
+            <CourseItem key={`${course.course_code}${i}`} {...course} />
+          ))
+        ) : (
+          <div>User has not favorite courses</div>
+        )}
+      </div>
     </div>
   );
 }
