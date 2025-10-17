@@ -29,6 +29,8 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/platform-socket.io": "^11.1.6",
+    "@nestjs/websockets": "^11.1.6",
     "@scaleway/random-name": "^5.1.2",
     "@types/pg": "^8.15.5",
     "dotenv": "^17.2.3",
