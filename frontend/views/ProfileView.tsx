@@ -53,10 +53,17 @@ export default function ProfileView({
             {/* Profile picture */}
             <div className="flex items-center gap-6">
               <Avatar className="w-24 h-24 border-4 border-primary/10">
-                <AvatarImage src={preview || ""} alt={name} />
-                <AvatarFallback className="text-xl bg-primary/10 text-primary">
-                  {getInitials(name || email)}
-                </AvatarFallback>
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt={name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <AvatarFallback className="text-xl bg-primary/10 text-primary">
+                    {getInitials(name || email)}
+                  </AvatarFallback>
+                )}
               </Avatar>
 
               <div className="space-y-2">
@@ -91,7 +98,6 @@ export default function ProfileView({
                 className="max-w-md bg-muted cursor-not-allowed"
               />
             </div>
-            <Button className="w-full sm:w-auto">Save Changes</Button>
           </CardContent>
         </Card>
 

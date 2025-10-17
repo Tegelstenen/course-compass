@@ -20,7 +20,7 @@ export default function OAuthCallbackController() {
       if (result.status === "OK") {
         await ThirdParty.getStateAndOtherInfoFromStorage();
         await dispatch(getUser()); // fetch user details and store in Redux
-        router.replace("/user");
+        router.replace("/search");
       } else {
         // Todo add a toaser to show the error to the user
         dispatch(clearUser());

@@ -37,19 +37,22 @@ export function uploadProfilePicture(file: File) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("http://localhost:8080/user/profile-picture", {
-        // temporary URL
+      const res = await fetch("/api/picture-upload", {
         method: "POST",
         body: formData,
-        credentials: "include", // send cookies/session to backend
+        credentials: "include",
       });
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || `HTTP ${res.status}`);
+      }
 
       const data = await res.json();
       dispatch(setProfilePicture(data.url));
     } catch (err) {
       console.error("Upload failed:", err);
+      throw err;
     }
   };
 }

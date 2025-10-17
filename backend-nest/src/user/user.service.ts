@@ -1,12 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { DRIZZLE } from "src/database/drizzle.module";
 import * as schema from "../../../types/database/schema";
 import {
   SelectUser,
   SelectUserFavorites,
 } from "../../../types/database/schema";
+import { DRIZZLE } from "../database/drizzle.module";
 
 // Since we can't change the schema to have the userFAvorites, we need to define a new type,
 // that includes the userFavorites property.
@@ -65,6 +65,13 @@ export class UserService {
       ...user,
       userFavorites: userFavorites,
     } as UserWithFavorites;
+  }
+
+  async updateProfilePicture(userId: string, profilePictureUrl: string) {
+    return await this.db
+      .update(schema.users)
+      .set({ profilePicture: profilePictureUrl })
+      .where(eq(schema.users.id, userId));
   }
 
   async deleteUser(id: string): Promise<void> {

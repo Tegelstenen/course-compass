@@ -4,8 +4,8 @@ import { inArray, sql } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "../../../types/database/schema";
 import type { CourseMapping } from "../../../types/search/elastic.mappings";
-import { DRIZZLE } from "../database/drizzle.module.js";
-import { ES } from "./search.constants.js";
+import { DRIZZLE } from "../database/drizzle.module";
+import { ES } from "./search.constants";
 
 const INDEX = "courses";
 
@@ -13,6 +13,13 @@ export type SearchResult = CourseMapping & {
   _id: string;
   _score: number | null;
   rating?: number;
+};
+
+// This simulates the 'Course' type defined in the frontend 'course_model'
+export type ElasticCourse = CourseMapping & {
+  _id: string;
+  rating?: number;
+  credits?: number;
 };
 
 @Injectable()
@@ -52,14 +59,10 @@ export class SearchService {
         searchFilters.push(termFilter);
       }
     }
-    if (filters?.minRating)
-      searchFilters.push({
-        range: { averageRating: { gte: filters.minRating } },
-      });
 
     const res = await this.es.search<unknown, CourseMapping>({
       index: INDEX,
-      size,
+      size: filters?.minRating ? size * 5 : size, // get more results for rating filter
       query: {
         bool: {
           must: {
@@ -95,10 +98,10 @@ export class SearchService {
 
     const result = await this.db.execute(
       sql`SELECT course_code,
-             ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
-           FROM ${schema.reviews}
-           WHERE ${inArray(schema.reviews.courseCode, codes)}
-           GROUP BY course_code`,
+          ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
+          FROM ${schema.reviews}
+          WHERE ${inArray(schema.reviews.courseCode, codes)}
+          GROUP BY course_code`,
     );
 
     const rows = result.rows as Array<{ course_code: string; rating: number }>;
@@ -107,27 +110,53 @@ export class SearchService {
       codeToRating.set(r.course_code, Number(r.rating) || 0);
     }
 
-    return base.map((c) => ({
+    const resultsWithRatings = base.map((c) => ({
       ...c,
       rating: codeToRating.get(c.course_code) ?? 0,
     }));
+
+    let filteredResults = resultsWithRatings;
+    if (filters?.minRating) {
+      filteredResults = resultsWithRatings.filter(
+        (course) => course.rating >= filters.minRating!,
+      );
+    }
+    return filteredResults.slice(0, size);
   }
 
+  // Fetches a single course by code
   async getCourseByCode(
     courseCode: string,
-  ): Promise<CourseMapping | undefined> {
+  ): Promise<ElasticCourse | undefined> {
+    // Fetching the basic course information from ES
     const res = await this.es.search<CourseMapping>({
       index: INDEX,
       size: 1,
       query: {
         term: {
+          // makes a direct match to the course code
           course_code: courseCode,
         },
       },
     });
     const hits = res.hits?.hits ?? []; // fallback on [] which triggers a return of "undefined"
+    // Fetching rating from NEON
+    const ratingResult = await this.db.execute(
+      sql`SELECT course_code,
+          ROUND((AVG(easy_score) + AVG(useful_score) + AVG(interesting_score))/3) AS rating
+          FROM ${schema.reviews}
+          WHERE ${schema.reviews.courseCode} = ${courseCode}
+          GROUP BY course_code`,
+    );
+    const rating = ratingResult.rows[0]?.rating;
+
     if (hits.length > 0) {
-      return hits[0]._source;
+      return {
+        ...hits[0]._source, // makes sure only one object is returned
+        _id: hits[0]._id,
+        rating: rating,
+        // credits: when they have been indexed
+      } as ElasticCourse;
     }
     return undefined;
   }

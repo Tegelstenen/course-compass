@@ -1,12 +1,12 @@
 // src/app.controller.ts
 
 import {
+  Body,
   Controller,
   Delete,
   Get,
   NotFoundException,
   Post,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -36,13 +36,22 @@ export class UserController {
       );
     } else {
       return {
-        userId: session.getUserId(),
+        userId: user.id,
         name: user.name,
         email: user.email,
         userFavorites: user.userFavorites,
-        //profilePicture: user.profilePicture || null,
+        profilePicture: user.profilePicture || null,
       };
     }
+  }
+
+  // Get user favorite courses
+  @Get("/favorites")
+  async getFavorites(@Session() session: SessionContainer) {
+    const userId = session.getUserId();
+    // Can be empty but we accept an empty array of favorite courses
+    const userFavorites = await this.userService.getUserFavorites(userId);
+    return userFavorites;
   }
 
   // Delete account
@@ -54,22 +63,24 @@ export class UserController {
     return { success: true };
   }
 
-  // Upload profile picture
+  // Save profile picture URL (uploaded to Vercel Blob from frontend)
   @Post("/profile-picture")
   @VerifySession()
-  @UseInterceptors(FileInterceptor("file"))
-  async uploadProfilePicture(
-    @Session() _session: SessionContainer,
-    @UploadedFile() file: Express.Multer.File,
+  async updateProfilePicture(
+    @Session() session: SessionContainer,
+    @Body() body: { url: string },
   ) {
-    // For now, just logging file info:
-    console.log("Uploaded file:", file);
+    const userId = session.getUserId();
+    const { url } = body;
 
-    // TODO: Save the file to storage
+    // Validate URL format
+    if (!url || !url.startsWith("https://")) {
+      throw new Error("Invalid URL provided");
+    }
 
-    // Returning a fake URL for testing
-    return {
-      url: `http://localhost:8080/uploads/${file.originalname}`,
-    };
+    // Save to database
+    await this.userService.updateProfilePicture(userId, url);
+
+    return { url };
   }
 }

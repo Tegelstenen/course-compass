@@ -1,8 +1,8 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { SearchItem } from "@/components/SearchItem";
-import { SearchItemSkeleton } from "@/components/SearchItemSkeleton";
+import { CourseItem } from "@/components/CourseItem";
+import { CourseItemSkeleton } from "@/components/CourseItemSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import type { Course } from "@/models/CourseModel";
 
@@ -26,6 +27,7 @@ type SearchViewProps = {
   onSeeReviews: (courseCode: string) => void;
 };
 
+// Necessary for static arrays? Can't we just use the map index?
 const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
 
 export default function SearchView({
@@ -41,19 +43,20 @@ export default function SearchView({
 }: SearchViewProps) {
   return (
     <div>
-      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8">
-        Find Your Course
-      </p>
+      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8"></p>
       <div className="centered flex flex-col items-center gap-12 pb-12">
         <form onSubmit={onSubmit} className="flex items-center gap-4">
           <input
             className="rounded-md outline p-2 w-64 text-center"
             type="text"
-            value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="Search course..."
           />
-          <Button variant="outline" className="h-10 w-10 p-0">
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0"
+            onClick={() => console.log(filters)}
+          >
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>
         </form>
@@ -61,7 +64,6 @@ export default function SearchView({
 
         <div className="w-full max-w-3xl">
           <div className="flex items-center gap-4 mb-6">
-            <span className="text-sm font-medium">Filter by:</span>
             <Select
               value={(filters.department as string) || ""}
               onValueChange={(value) => {
@@ -82,6 +84,41 @@ export default function SearchView({
               </SelectContent>
             </Select>
 
+            <Select
+              value={(filters.minRating as string) || ""}
+              onValueChange={(value) => {
+                const newFilters = { ...filters };
+                newFilters.minRating = value;
+                onFiltersChange(newFilters);
+              }}
+            >
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Minimum Rating..." />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 5 }).map((_, ratingValue) => {
+                  const value = ratingValue + 1;
+                  return (
+                    <SelectItem
+                      key={`selectitem-${value}`}
+                      value={value.toString()}
+                    >
+                      <Rating value={value} readOnly>
+                        {(["one", "two", "three", "four", "five"] as const).map(
+                          (starId) => (
+                            <RatingButton
+                              key={`star-${value}-${starId}`}
+                              className="text-yellow-600"
+                            />
+                          ),
+                        )}
+                      </Rating>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+
             {Object.keys(filters).length > 0 && (
               <Button
                 variant="outline"
@@ -97,7 +134,7 @@ export default function SearchView({
             <ul className="flex flex-col gap-6">
               {skeletonKeys.map((key) => (
                 <li key={key}>
-                  <SearchItemSkeleton />
+                  <CourseItemSkeleton />
                 </li>
               ))}
             </ul>
@@ -106,7 +143,7 @@ export default function SearchView({
           <ul className="flex flex-col gap-6">
             {results.map((course) => (
               <li key={course._id}>
-                <SearchItem
+                <CourseItem
                   courseName={course.course_name}
                   courseCode={course.course_code}
                   rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}

@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function SearchItemSkeleton() {
+export function CourseItemSkeleton() {
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
       <div className="space-y-1">

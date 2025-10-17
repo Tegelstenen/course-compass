@@ -46,9 +46,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #456882;
-  --primary-dark: #3c5b71;
-  --primary-light: #9ab5ca;
+  --primary: #243744;
+  --primary-dark: #18242d;
+  --primary-light: #778c9c;
   --primary-foreground: white;
   --secondary: #423842;
   --secondary-light: #6b5b6b;
@@ -69,30 +69,33 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-light: oklch(0.922, 0, 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  /* Cohesive dark palette inspired by Tailwind slate/blue */
+  /*--background: #0b1220; /* near-slate-950 */
+  --background: oklch(0.28 0.04 260);
+  --foreground: #e5e7eb; /* slate-200 */
+  --card: #0f172a; /* slate-900 */
+  --card-foreground: #e5e7eb;
+  --popover: #0f172a;
+  --popover-foreground: #e5e7eb;
+  /*--primary: #456882; /* keep brand primary for consistency */
+  --primary: oklch(0.21 0.04 266);
+  --primary-light: #5b86a5;
+  --primary-foreground: #f8fafc; /* slate-50 */
+  --secondary: oklch(0.71 0.04 257); /* slate-800 */
+  --secondary-foreground: #e5e7eb;
+  --muted: #111827; /* slate-900-ish */
+  --muted-foreground: #cbd5e1; /* slate-400 */
+  --accent: #0b1220;
+  --accent-foreground: #e5e7eb;
+  --destructive: #ef4444; /* red-500 */
+  --border: #1f2937; /* slate-800 border */
+  --input: #1f2937;
+  --ring: #3b82f6; /* blue-500 */
+  --chart-1: #60a5fa; /* blue-400 */
+  --chart-2: #34d399; /* emerald-400 */
+  --chart-3: #fbbf24; /* amber-400 */
+  --chart-4: #a78bfa; /* violet-400 */
+  --chart-5: #f472b6; /* pink-400 */
 }
 
 @layer base {
