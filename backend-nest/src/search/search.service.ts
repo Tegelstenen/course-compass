@@ -128,13 +128,14 @@ export class SearchService {
   async getCourseByCode(
     courseCode: string,
   ): Promise<ElasticCourse | undefined> {
-    // Fetching course information from ES
+    // Fetching the basic course information from ES
     const res = await this.es.search<CourseMapping>({
       index: INDEX,
       size: 1,
       query: {
-        term: { // makes a direct match to the course code
-          course_code: courseCode, 
+        term: {
+          // makes a direct match to the course code
+          course_code: courseCode,
         },
       },
     });
@@ -149,15 +150,13 @@ export class SearchService {
     );
     const rating = ratingResult.rows[0]?.rating;
 
-    console.log("Service: ", hits[0]._source);
-    
     if (hits.length > 0) {
       return {
         ...hits[0]._source, // makes sure only one object is returned
         _id: hits[0]._id,
         rating: rating,
         // credits: when they have been indexed
-      } as ElasticCourse; 
+      } as ElasticCourse;
     }
     return undefined;
   }

@@ -6,14 +6,14 @@ import { CourseService } from "./course.service";
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
-    private readonly elasticService: SearchService, 
+    private readonly elasticService: SearchService,
   ) {}
 
   //--------
   // Postgres NEON endpoints
 
   // /neon/:course_code for the neon SQL object
-  @Get("/neon/:course_code") 
+  @Get("/neon/:course_code")
   async getNeonCourse(@Param("course_code") courseCode: string) {
     const course = await this.courseService.getCourse(courseCode);
 
@@ -53,7 +53,7 @@ export class CourseController {
   // Using SearchService from the search-module to reach ElasticSearch
   @Get(":course_code")
   async getElasticCourse(@Param("course_code") courseCode: string) {
-    const courseDocument = // type? 
+    const courseDocument = // type?
       await this.elasticService.getCourseByCode(courseCode);
 
     if (!courseDocument) {
@@ -62,13 +62,16 @@ export class CourseController {
       );
     } else {
       return {
+        // good practice to have the mapping here as well
+        // In the furure, needs to be fixed along with "Course type" in models, and the assigning of
+        // properties in search.controller object return to map to the same type (Course).
         _id: courseDocument._id,
         courseCode: courseDocument.course_code,
         department: courseDocument.department,
         name: courseDocument.course_name,
         goals: courseDocument.goals,
         content: courseDocument.content,
-        rating: courseDocument.rating, 
+        rating: courseDocument.rating,
         // credits: eventually after indexed
       };
     }

@@ -82,7 +82,7 @@ export default function SearchController() {
       onSubmit={onSubmit}
       isLoading={isLoading}
       error={error}
-      results={results}
+      results={results} // Needs to be of type course
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}

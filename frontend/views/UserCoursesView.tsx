@@ -7,7 +7,7 @@ import type { UserState } from "@/state/user/userSlice";
 
 interface UserCoursesViewProps {
   userData: UserState;
-  userFavorites: Course[] | null;
+  userFavorites: Course[];
   isLoadingCourse: boolean;
   onSeeReviews: (courseCode: string) => void;
 }
@@ -26,17 +26,19 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
         Saved Courses
       </h1>
       <div className="flex flex-col w-full gap-6">
-        {props.isLoadingCourse ? (
+        {props.isLoadingCourse ? ( // skeleton items if loading
           skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
-        ) : props.userFavorites?.length ? (
+        ) : props.userFavorites.length ? ( // else map userFavorites
           props.userFavorites.map((course, i) => (
             <CourseItem
               key={`${course.course_code}${i}`}
-              courseName={course.course_name}
-              courseCode={course.course_code}
-              rating={3}
-              ects={7.5}
-              onSeeReviews={() => onSeeReviews(course.course_code)}
+              // Underlines here are caused by mismatch of types.
+              // Larger structural problem, exists a seperate ticket for solving this.
+              courseName={course.name}
+              courseCode={course.courseCode}
+              rating={course.rating ?? 0}
+              ects={7.5} // When db configured object will contain ects / credits as well
+              onSeeReviews={() => onSeeReviews(course.courseCode)}
             />
           ))
         ) : (
