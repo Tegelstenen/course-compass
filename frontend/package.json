@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "test": "echo 'No tests set up in frontend'",
     "lint": "biome check",
     "format": "biome format --write",
     "ingest": "tsx script/ingest-data.ts"
