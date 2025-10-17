@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Button } from "./ui/button";
 
-type SearchItemProps = {
+export type CourseItemProps = {
   courseName: string;
   courseCode: string;
   rating: number;
@@ -11,14 +11,14 @@ type SearchItemProps = {
   onSeeReviews: () => void;
 };
 
-export function SearchItem({
+export function CourseItem({
   courseName = "Calculus in Several Variables",
   courseCode = "SF1626",
   rating = 4,
   // semester = "P1",
   ects = 7.5,
   onSeeReviews,
-}: SearchItemProps) {
+}: CourseItemProps) {
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
       <div className="space-y-1">

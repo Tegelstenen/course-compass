@@ -21,7 +21,9 @@ export class SearchController {
     @Query("minRating") minRating?: string,
   ) {
     const limit = Number.isFinite(Number(size)) ? Number(size) : 10;
-    const minRatingNum = Number.isFinite(Number(minRating)) ? Number(minRating) : undefined;
+    const minRatingNum = Number.isFinite(Number(minRating))
+      ? Number(minRating)
+      : undefined;
     const results: SearchResult[] = await this.searchService.searchCourses(
       q ?? "",
       limit,
@@ -38,7 +40,6 @@ export class SearchController {
     if (!results) {
       throw new NotFoundException(`Course with code ${courseCode} not found`);
     }
-
     return results;
   }
 }

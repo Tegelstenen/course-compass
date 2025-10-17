@@ -36,13 +36,22 @@ export class UserController {
       );
     } else {
       return {
-        userId: session.getUserId(),
+        userId: user.id,
         name: user.name,
         email: user.email,
         userFavorites: user.userFavorites,
         profilePicture: user.profilePicture || null,
       };
     }
+  }
+
+  // Get user favorite courses
+  @Get("/favorites")
+  async getFavorites(@Session() session: SessionContainer) {
+    const userId = session.getUserId();
+    // Can be empty but we accept an empty array of favorite courses
+    const userFavorites = await this.userService.getUserFavorites(userId);
+    return userFavorites;
   }
 
   // Delete account

@@ -1,8 +1,8 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { SearchItem } from "@/components/SearchItem";
-import { SearchItemSkeleton } from "@/components/SearchItemSkeleton";
+import { CourseItem } from "@/components/CourseItem";
+import { CourseItemSkeleton } from "@/components/CourseItemSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -27,6 +27,7 @@ type SearchViewProps = {
   onSeeReviews: (courseCode: string) => void;
 };
 
+// Necessary for static arrays? Can't we just use the map index?
 const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
 
 export default function SearchView({
@@ -42,8 +43,7 @@ export default function SearchView({
 }: SearchViewProps) {
   return (
     <div>
-      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8">
-      </p>
+      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8"></p>
       <div className="centered flex flex-col items-center gap-12 pb-12">
         <form onSubmit={onSubmit} className="flex items-center gap-4">
           <input
@@ -134,7 +134,7 @@ export default function SearchView({
             <ul className="flex flex-col gap-6">
               {skeletonKeys.map((key) => (
                 <li key={key}>
-                  <SearchItemSkeleton />
+                  <CourseItemSkeleton />
                 </li>
               ))}
             </ul>
@@ -143,7 +143,7 @@ export default function SearchView({
           <ul className="flex flex-col gap-6">
             {results.map((course) => (
               <li key={course._id}>
-                <SearchItem
+                <CourseItem
                   courseName={course.course_name}
                   courseCode={course.course_code}
                   rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}

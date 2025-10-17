@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   title: "Course Compass",
   description: "Navigates KTH courses",
   icons: {
-    icon: "/compass.png"
-  }
+    icon: "/compass.png",
+  },
 };
 
 export default function RootLayout({

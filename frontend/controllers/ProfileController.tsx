@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Session from "supertokens-auth-react/recipe/session";
 import type { Dispatch, RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
-import { deleteAccount, uploadProfilePicture, getUser } from "@/state/user/userThunk";
+import {
+  deleteAccount,
+  getUser,
+  uploadProfilePicture,
+} from "@/state/user/userThunk";
 import ProfileView from "@/views/ProfileView";
 
 export default function ProfileController() {
@@ -23,7 +27,7 @@ export default function ProfileController() {
       dispatch(setProfilePicture(localPreview));
 
       try {
-        await dispatch(uploadProfilePicture(file) as any); 
+        await dispatch(uploadProfilePicture(file) as any);
         await dispatch(getUser() as any);
         URL.revokeObjectURL(localPreview);
       } catch (error) {

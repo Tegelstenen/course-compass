@@ -14,7 +14,7 @@ export function getUser() {
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      
+
       dispatch(
         setUser({
           name: data.name,

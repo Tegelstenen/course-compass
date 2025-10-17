@@ -9,7 +9,11 @@ export class CourseController {
     private readonly elasticService: SearchService,
   ) {}
 
-  @Get("/neon/:course_code") // /neon/:course_code for the neon SQL object
+  //--------
+  // Postgres NEON endpoints
+
+  // /neon/:course_code for the neon SQL object
+  @Get("/neon/:course_code")
   async getNeonCourse(@Param("course_code") courseCode: string) {
     const course = await this.courseService.getCourse(courseCode);
 
@@ -31,28 +35,6 @@ export class CourseController {
     }
   }
 
-  // Fetching from ElasticSearch, using SearchService
-  @Get(":course_code")
-  async getElasticCourse(@Param("course_code") courseCode: string) {
-    const courseDocument =
-      await this.elasticService.getCourseByCode(courseCode);
-
-    if (!courseDocument) {
-      throw new NotFoundException(
-        `Course with code ${courseCode} not found in database.`,
-      );
-    } else {
-      return {
-        courseCode: courseDocument.course_code,
-        department: courseDocument.department,
-        name: courseDocument.course_name,
-        goals: courseDocument.goals,
-        content: courseDocument.content,
-        //currentStatus: courseDocument.state, // renaming here to status to avoid conflicting naming with "state"
-      };
-    }
-  }
-
   @Get("/neon/courseCodeExists/:course_code")
   async checkIfCourseCodeExists(@Param("course_code") courseCode: string) {
     const exists = await this.courseService.courseCodeExists(courseCode);
@@ -63,5 +45,35 @@ export class CourseController {
   async getCourseCredits(@Param("course_code") courseCode: string) {
     const credits = await this.courseService.getCourseCredits(courseCode);
     return { credits };
+  }
+
+  //--------
+  // ElasticSearch endpoints
+
+  // Using SearchService from the search-module to reach ElasticSearch
+  @Get(":course_code")
+  async getElasticCourse(@Param("course_code") courseCode: string) {
+    const courseDocument = // type?
+      await this.elasticService.getCourseByCode(courseCode);
+
+    if (!courseDocument) {
+      throw new NotFoundException(
+        `Course with code ${courseCode} not found in database.`,
+      );
+    } else {
+      return {
+        // good practice to have the mapping here as well
+        // In the furure, needs to be fixed along with "Course type" in models, and the assigning of
+        // properties in search.controller object return to map to the same type (Course).
+        _id: courseDocument._id,
+        courseCode: courseDocument.course_code,
+        department: courseDocument.department,
+        name: courseDocument.course_name,
+        goals: courseDocument.goals,
+        content: courseDocument.content,
+        rating: courseDocument.rating,
+        // credits: eventually after indexed
+      };
+    }
   }
 }
