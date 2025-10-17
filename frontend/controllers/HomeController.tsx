@@ -26,7 +26,7 @@ export default function HomeController() {
   function onSubmit() {
     // If already authenticated, go directly to search
     if (isAuthenticated) {
-      router.push("/user");
+      router.push("/search");
     } else {
       // Otherwise, show the auth flow
       setIsLoggingIn(true);
