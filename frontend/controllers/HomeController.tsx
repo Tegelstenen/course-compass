@@ -15,7 +15,7 @@ export default function HomeController() {
   const dispatch = useDispatch<Dispatch>();
 
   const { isAuthenticated, isLoading } = useSelector(
-    (s: RootState) => s.session,
+    (state: RootState) => state.session,
   );
 
   useEffect(() => {

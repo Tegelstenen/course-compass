@@ -2,20 +2,17 @@
 
 import { CourseItem } from "@/components/CourseItem";
 import { CourseItemSkeleton } from "@/components/CourseItemSkeleton";
-import type { Course } from "@/models/CourseModel";
-import type { UserState } from "@/state/user/userSlice";
+import type { CourseWithUserInfo } from "@/models/CourseModel";
 
 interface UserCoursesViewProps {
-  userData: UserState;
-  userFavorites: Course[];
+  userFavoriteCourses: CourseWithUserInfo[];
   isLoadingCourse: boolean;
   onSeeReviews: (courseCode: string) => void;
   onAddFavorite: (courseCode: string) => void;
 }
 
 export default function UserCoursesView({
-  userData,
-  userFavorites,
+  userFavoriteCourses,
   isLoadingCourse,
   onSeeReviews,
   onAddFavorite,
@@ -31,8 +28,8 @@ export default function UserCoursesView({
       <div className="flex flex-col w-full gap-6">
         {isLoadingCourse ? ( // skeleton items if loading
           skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
-        ) : userFavorites.length ? ( // else map userFavorites
-          userFavorites.map((course, i) => (
+        ) : userFavoriteCourses.length ? ( // else map userFavorites
+          userFavoriteCourses.map((course, i) => (
             <CourseItem
               key={`${course.course_code}${i}`}
               // Underlines here are caused by mismatch of types.
@@ -41,7 +38,7 @@ export default function UserCoursesView({
               courseCode={course.courseCode}
               rating={course.rating ?? 0}
               ects={7.5} // When db configured object will contain ects / credits as well
-              isUserFavorite={false} //TODO: fill state
+              isUserFavorite={course.isUserFavorite} 
               onSeeReviews={() => onSeeReviews(course.courseCode)}
               onAddFavorite={() => onAddFavorite(course.courseCode)}
             />
