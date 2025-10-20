@@ -32,11 +32,11 @@ export function CourseItem({
           <p className="text-muted-foreground text-sm">{courseCode}</p>
         </div>
         <div>
-          <Button 
-            variant={"ghost"} 
+          <Button
+            variant={"ghost"}
             onClick={onToggleFavorite}
             className="hover:bg-transparent hover:cursor-pointer"
-            >
+          >
             {isUserFavorite ? (
               <IoMdHeart size={25} />
             ) : (
