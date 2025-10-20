@@ -11,7 +11,7 @@ export type CourseItemProps = {
   ects: number;
   isUserFavorite: boolean;
   onSeeReviews: () => void;
-  onAddFavorite: () => void;
+  onToggleFavorite: () => void;
 };
 
 export function CourseItem({
@@ -22,12 +22,9 @@ export function CourseItem({
   ects = 7.5,
   isUserFavorite,
   onSeeReviews,
-  onAddFavorite,
+  onToggleFavorite,
 }: CourseItemProps) {
-  const heartButtonCB = () => {
-    console.log("clicked");
-  };
-
+  console.log(isUserFavorite, "for", courseCode);
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
       <div className="flex justify-between">
@@ -36,7 +33,7 @@ export function CourseItem({
           <p className="text-muted-foreground text-sm">{courseCode}</p>
         </div>
         <div>
-          <Button variant={"ghost"} onClick={onAddFavorite}>
+          <Button variant={"ghost"} onClick={onToggleFavorite}>
             {isUserFavorite ? (
               <IoMdHeart size={25} />
             ) : (

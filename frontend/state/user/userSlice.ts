@@ -26,6 +26,24 @@ const userSlice = createSlice({
       state.userFavorites = action.payload.userFavorites;
       state.profilePicture = action.payload.profilePicture ?? null;
     },
+    toggleFavoriteSuccess: (
+      state,
+      action: PayloadAction<{ courseCode: string; action: "added" | "removed" }>,
+    ) => {
+      const { courseCode, action: toggleAction } = action.payload;
+
+      if (toggleAction === "added") {
+        // Add the course code if it's not already present
+        if (!state.userFavorites.includes(courseCode)) {
+          state.userFavorites.push(courseCode);
+        }
+      } else if (toggleAction === "removed") {
+        // Remove the course code from the array
+        state.userFavorites = state.userFavorites.filter(
+          (code) => code !== courseCode,
+        );
+      }
+    },
     setProfilePicture: (state, action: PayloadAction<string>) => {
       state.profilePicture = action.payload;
     },
@@ -53,5 +71,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setProfilePicture, clearUser } = userSlice.actions;
+export const { setUser, toggleFavoriteSuccess, setProfilePicture, clearUser } = userSlice.actions;
 export default userSlice.reducer;

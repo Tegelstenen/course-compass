@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { CourseService } from "src/course/course.service";
 import * as schema from "../../../types/database/schema";
@@ -72,7 +72,7 @@ export class UserService {
 
   async toggleUserFavorite(userId: string, courseCode: string) {
     // Check if course code exists, throws error from course.service
-    await this.courseService.courseCodeExists(courseCode); 
+    await this.courseService.courseCodeExists(courseCode);
 
     const courseInFavorites = await this.db
       .select()
@@ -81,18 +81,22 @@ export class UserService {
         and(
           eq(schema.user_favorites.userId, userId),
           eq(schema.user_favorites.favoriteCourse, courseCode),
-      ))
+        ),
+      )
       .limit(1);
     
+    console.log(courseInFavorites.length);
+
     // if course in favorites, remove the course
     if (courseInFavorites.length > 0) {
-      await this.db 
+      await this.db
         .delete(schema.user_favorites)
         .where(
           and(
-          eq(schema.user_favorites.userId, userId),
-          eq(schema.user_favorites.favoriteCourse, courseCode),
-        ));
+            eq(schema.user_favorites.userId, userId),
+            eq(schema.user_favorites.favoriteCourse, courseCode),
+          ),
+        );
       return { action: "removed" };
     } else {
       await this.db
@@ -102,7 +106,7 @@ export class UserService {
           favoriteCourse: courseCode,
           createdAt: new Date(),
         });
-      return { action: "added" }
+      return { action: "added" };
     }
   }
 

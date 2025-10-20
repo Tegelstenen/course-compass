@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useUser } from "@/hooks/userHooks";
-import { addUserFavorite } from "@/lib/user";
+import { toggleUserFavorite } from "@/lib/user";
 import { executeSearch } from "@/state/search/executeSearchThunk";
 import {
   filtersChanged,
@@ -12,6 +12,7 @@ import {
   queryChanged,
 } from "@/state/search/searchSlice";
 import type { Dispatch, RootState } from "@/state/store";
+import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 import SearchView from "@/views/SearchView";
 import type { Course } from "../models/CourseModel";
 
@@ -91,9 +92,32 @@ export default function SearchController() {
     [router],
   );
 
-  const onAddFavorite = (courseCode: string) => {
-    addUserFavorite(courseCode);
-  };
+  async function onToggleFavorite(courseCode: string) {
+    try {
+      const res = await toggleUserFavorite(courseCode);
+
+      console.log(res.action);
+
+      // Update Redux
+      dispatch(
+        toggleFavoriteSuccess({
+          courseCode,
+          action: res.action,
+        })
+      );
+
+      // Update local state immediately
+      setResultsFull((prev) =>
+        prev.map((course) =>
+          course.course_code === courseCode
+            ? { ...course, isUserFavorite: res.action === "added" }
+            : course
+        )
+      );
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  }
 
   return (
     <SearchView
@@ -106,7 +130,7 @@ export default function SearchController() {
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}
-      onAddFavorite={onAddFavorite}
+      onToggleFavorite={onToggleFavorite}
     />
   );
 }

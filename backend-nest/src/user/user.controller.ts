@@ -17,8 +17,8 @@ import {
   VerifySession,
 } from "supertokens-nestjs";
 import type { SessionContainer } from "supertokens-node/recipe/session";
-import { UserService } from "./user.service";
 import { success } from "zod/index.cjs";
+import { UserService } from "./user.service";
 
 @Controller("user")
 @UseGuards(SuperTokensAuthGuard)
@@ -68,14 +68,17 @@ export class UserController {
   @Post("/toggle-favorite")
   @VerifySession()
   async addFavoriteCourse(
-    @Session() session: SessionContainer, 
-    @Body() body: {courseCode: string}, 
-    ){
+    @Session() session: SessionContainer,
+    @Body() body: { courseCode: string },
+  ) {
     const userId = session.getUserId();
     const { courseCode } = body;
 
-    const result = await this.userService.toggleUserFavorite(userId, courseCode);
-    return {success: true, action: result.action};
+    const result = await this.userService.toggleUserFavorite(
+      userId,
+      courseCode,
+    );
+    return { success: true, action: result.action };
   }
 
   // Save profile picture URL (uploaded to Vercel Blob from frontend)

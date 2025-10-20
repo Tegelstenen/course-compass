@@ -2,13 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch} from "react-redux";
+import type { Dispatch } from "@/state/store";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { useUser } from "@/hooks/userHooks";
 import { getFullCourseInfo } from "@/lib/courses";
-import { addUserFavorite } from "@/lib/user";
+import { toggleUserFavorite } from "@/lib/user";
 import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
 import SuspenseView from "@/views/SuspenseView";
 import UserCoursesView from "@/views/UserCoursesView";
+import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 
 export default function UserpageController() {
   const { isLoading } = useSessionData();
@@ -19,14 +22,42 @@ export default function UserpageController() {
   const [isLoadingCourse, setIsLoadingCourse] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
 
   const onSeeReviews = (courseCode: string) => {
     router.push(`/course/${courseCode}`);
   };
 
-  const onAddFavorite = (courseCode: string) => {
-    addUserFavorite(courseCode);
-  };
+  async function onToggleFavorite(courseCode: string) {
+    try {
+      const res = await toggleUserFavorite(courseCode);
+
+      dispatch(toggleFavoriteSuccess({
+            courseCode: courseCode,
+            action: res.action, // will be "added" or "removed"
+      }));
+      console.log(res);
+
+      if (res.action === "added") {
+        const course = await getFullCourseInfo(courseCode);
+        setUserFavoriteCourses((prev) => {
+          // If the course is already in the array, return a copy of the *existing* array
+          // to ensure a new reference is always returned, even if no content changed.
+          if (prev.some((c) => c.course_code === courseCode)) {
+            return [...prev]; // FIX: Return a new array reference (shallow copy)
+          }
+          // Otherwise, add the new course
+          return [...prev, { ...course, isUserFavorite: true }];
+        });
+      } else if (res.action === "removed") {
+        setUserFavoriteCourses((prev) =>
+          prev.filter((course) => course.course_code !== courseCode)
+        );
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  }
 
   // Maps the course codes in to full Course objects
   useEffect(() => {
@@ -56,7 +87,7 @@ export default function UserpageController() {
         userFavoriteCourses={userFavoriteCourses} // array of CourseWithUserInfo object
         isLoadingCourse={isLoadingCourse}
         onSeeReviews={onSeeReviews}
-        onAddFavorite={onAddFavorite}
+        onToggleFavorite={onToggleFavorite}
       />
     );
   }
