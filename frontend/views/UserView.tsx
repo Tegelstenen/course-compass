@@ -8,8 +8,6 @@ interface UserViewProps {
 }
 
 export default function UserView(props: UserViewProps) {
-  console.log(props.userData);
-
   if (!props.userData) {
     return <div> Cannot find userData...</div>;
   }

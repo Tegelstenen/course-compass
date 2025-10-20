@@ -42,7 +42,7 @@ export class SearchService {
     }> = [];
     if (filters?.department) {
       const dept = filters.department;
-      console.log("Filtering by department:", JSON.stringify(dept));
+      // console.log("Filtering by department:", JSON.stringify(dept));
       const departments = ["EECS", "ABE", "CBH", "ITM", "SCI"];
       const matchingDepts = departments.find((abbr) => dept.includes(abbr));
       if (matchingDepts) {
