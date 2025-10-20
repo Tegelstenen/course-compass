@@ -39,26 +39,12 @@
   "homepage": "https://github.com/Tegelstenen/course-compass#readme",
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
-    "@biomejs/biome": "^2.2.4",
+    "@biomejs/biome": "2.2.6",
     "@types/express": "^5.0.3",
     "@types/multer": "^2.0.0",
     "dotenv-cli": "^10.0.0",
-    "zod": "^4.1.12"
-  },
-  "dependencies": {
-    "@nestjs/config": "^4.0.2",
-    "@nestjs/platform-express": "^11.1.6",
-    "@radix-ui/react-avatar": "^1.1.10",
-    "@vercel/blob": "^2.0.0",
-    "dotenv": "^17.2.2",
     "drizzle-kit": "^0.30.0",
-    "drizzle-orm": "^0.44.6",
-    "formik": "^2.4.6",
-    "motion": "^12.23.24",
-    "multer": "^2.0.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.5.0",
-    "uuid": "^8.3.2"
+    "lefthook": "^2.0.0",
+    "zod": "^4.1.12"
   }
 }
