@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useUser } from "@/hooks/userHooks";
 import { executeSearch } from "@/state/search/executeSearchThunk";
 import {
   filtersChanged,
@@ -11,8 +12,7 @@ import {
 } from "@/state/search/searchSlice";
 import type { Dispatch, RootState } from "@/state/store";
 import SearchView from "@/views/SearchView";
-import { Course } from "../models/CourseModel"
-import { useUser } from "@/hooks/userHooks";
+import type { Course } from "../models/CourseModel";
 
 export default function SearchController() {
   // Access state
@@ -49,14 +49,13 @@ export default function SearchController() {
   // Adds 'isUserFavorites' to the result course object
   useEffect(() => {
     const resultsWithFavorites = results.map((result) => ({
-      ...result, 
-      isUserFavorite: userFavorites.includes(result.course_code)
+      ...result,
+      isUserFavorite: userFavorites.includes(result.course_code),
     }));
     setResultsFull(resultsWithFavorites);
   }, [results, userFavorites]);
 
-
-  // Are the "useCallbacks" really necessary here for the callback functions? 
+  // Are the "useCallbacks" really necessary here for the callback functions?
 
   const onSubmit = useCallback(
     (e?: React.FormEvent) => {
@@ -95,7 +94,7 @@ export default function SearchController() {
     //TODO: call hook to add course
     console.log("in controller and adding course to favorite..");
     return;
-  }
+  };
 
   return (
     <SearchView

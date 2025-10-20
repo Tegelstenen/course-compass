@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../state/store";
 
 export function useUser() {
-  return useSelector((state: RootState) => state.user)
+  return useSelector((state: RootState) => state.user);
 }
 
 // exports the full user data

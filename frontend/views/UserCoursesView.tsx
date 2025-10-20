@@ -38,7 +38,7 @@ export default function UserCoursesView({
               courseCode={course.courseCode}
               rating={course.rating ?? 0}
               ects={7.5} // When db configured object will contain ects / credits as well
-              isUserFavorite={course.isUserFavorite} 
+              isUserFavorite={course.isUserFavorite}
               onSeeReviews={() => onSeeReviews(course.courseCode)}
               onAddFavorite={() => onAddFavorite(course.courseCode)}
             />

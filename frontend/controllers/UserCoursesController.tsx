@@ -12,7 +12,9 @@ import UserCoursesView from "@/views/UserCoursesView";
 export default function UserpageController() {
   const { isLoading } = useSessionData();
   const userData = useUser(); // userData instead of userFavorites to check user state as well
-  const [userFavoriteCourses, setUserFavoriteCourses] = useState<CourseWithUserInfo[]>([]); // the full course objects sent down to the view
+  const [userFavoriteCourses, setUserFavoriteCourses] = useState<
+    CourseWithUserInfo[]
+  >([]); // the full course objects sent down to the view
   const [isLoadingCourse, setIsLoadingCourse] = useState(false);
 
   const router = useRouter();
@@ -25,7 +27,7 @@ export default function UserpageController() {
     //TODO: Add hook to post updates to database
     console.log("In usercoursescontroller and adding to favorites");
     return;
-  }
+  };
 
   // Maps the course codes in to full Course objects
   useEffect(() => {
@@ -33,10 +35,11 @@ export default function UserpageController() {
     async function fetchCourses() {
       setIsLoadingCourse(true);
       const courses = await Promise.all(
-        userData.userFavorites.map(async (courseCode) => {
+        userData.userFavorites.map(
+          async (courseCode) => {
             const course: Course = await getFullCourseInfo(courseCode);
-            return ({...course, isUserFavorite: true})
-        }, // perhaps rename this property to be ID instead of favoriteCourse?
+            return { ...course, isUserFavorite: true };
+          }, // perhaps rename this property to be ID instead of favoriteCourse?
         ),
       );
       setUserFavoriteCourses(courses);
@@ -51,7 +54,7 @@ export default function UserpageController() {
   } else {
     return (
       <UserCoursesView
-        userFavoriteCourses={userFavoriteCourses} // array of CourseWithUserInfo object 
+        userFavoriteCourses={userFavoriteCourses} // array of CourseWithUserInfo object
         isLoadingCourse={isLoadingCourse}
         onSeeReviews={onSeeReviews}
         onAddFavorite={onAddFavorite}
