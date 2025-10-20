@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type ContactViewProps = {
-    onSubmit: (
-        values: { name: string; email: string; message: string },
-        formikHelpers: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
-      ) => Promise<void>;
-    };
+  onSubmit: (
+    values: { name: string; email: string; message: string },
+    formikHelpers: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    },
+  ) => Promise<void>;
+};
 
 export default function ContactView({ onSubmit }: ContactViewProps) {
   return (

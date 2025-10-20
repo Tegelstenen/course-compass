@@ -5,6 +5,7 @@ export interface Course {
   content: string;
   goals: string;
   department: string;
+  isUserFavorite: boolean;
   rating?: number;
   credits?: number;
 }

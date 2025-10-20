@@ -1,3 +1,4 @@
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import { Separator } from "@/components/ui/separator";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Button } from "./ui/button";
@@ -8,22 +9,41 @@ export type CourseItemProps = {
   rating: number;
   // semester: string;
   ects: number;
+  isUserFavorite: boolean;
   onSeeReviews: () => void;
+  onAddFavorite: () => void;
 };
 
 export function CourseItem({
   courseName = "Calculus in Several Variables",
   courseCode = "SF1626",
   rating = 4,
-  // semester = "P1",
+  // semester (need to be implemented)
   ects = 7.5,
+  isUserFavorite,
   onSeeReviews,
+  onAddFavorite,
 }: CourseItemProps) {
+  const heartButtonCB = () => {
+    console.log("clicked");
+  };
+
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
-      <div className="space-y-1">
-        <h4 className="text-sm leading-none font-medium">{courseName}</h4>
-        <p className="text-muted-foreground text-sm">{courseCode}</p>
+      <div className="flex justify-between">
+        <div className="space-y-1">
+          <h4 className="text-sm leading-none font-medium">{courseName}</h4>
+          <p className="text-muted-foreground text-sm">{courseCode}</p>
+        </div>
+        <div>
+          <Button variant={"ghost"} onClick={onAddFavorite}>
+            {isUserFavorite ? (
+              <IoMdHeart size={25} />
+            ) : (
+              <IoMdHeartEmpty size={25} />
+            )}
+          </Button>
+        </div>
       </div>
       <Separator className="my-4" />
       <div className="flex h-5 items-center space-x-4 text-sm">
@@ -39,8 +59,6 @@ export function CourseItem({
             )}
           </Rating>
         </div>
-        {/*<Separator orientation="vertical" />
-        <div>{semester}</div>*/}
         <Separator orientation="vertical" />
         <div>{ects} ECTS</div>
         <Separator orientation="vertical" />

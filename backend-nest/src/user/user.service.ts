@@ -11,7 +11,7 @@ import { DRIZZLE } from "../database/drizzle.module";
 // Since we can't change the schema to have the userFAvorites, we need to define a new type,
 // that includes the userFavorites property.
 export type UserWithFavorites = SelectUser & {
-  userFavorites: SelectUserFavorites[];
+  userFavorites: string[];
 };
 
 @Injectable()
@@ -38,12 +38,13 @@ export class UserService {
     }
   }
 
-  async getUserFavorites(userId: string): Promise<SelectUserFavorites[]> {
+  // This junction table could probably be removed in the future and just keep an array of course code strings in "user" table
+  async getUserFavorites(userId: string): Promise<string[]> {
     const userFavorites = await this.db
       .select()
       .from(schema.user_favorites)
       .where(eq(schema.user_favorites.userId, userId));
-    return userFavorites;
+    return userFavorites.map((f) => f.favoriteCourse); // returns just the course codes
   }
 
   async getUser(id: string): Promise<UserWithFavorites | undefined> {
@@ -59,7 +60,8 @@ export class UserService {
     }
     const userFavorites = await this.getUserFavorites(id);
 
-    // Appends the user object with the user favorites, fetched from the separate junction table (above)
+    // User favorites are fetched from a junction table that could probably be removed and re-worked into a new column in user table.
+    // Also changed to now only return the course codes instead of an object
     return {
       ...user,
       userFavorites: userFavorites,

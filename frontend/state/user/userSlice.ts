@@ -5,7 +5,7 @@ import { clearSession, getSession } from "../session/sessionSlice";
 export interface UserState {
   name: string;
   email: string;
-  userFavorites: SelectUserFavorites[];
+  userFavorites: string[];
   profilePicture: string | null;
 }
 

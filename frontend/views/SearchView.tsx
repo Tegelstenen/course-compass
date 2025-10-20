@@ -25,6 +25,7 @@ type SearchViewProps = {
   filters: Record<string, string | string[]>;
   onFiltersChange: (filters: Record<string, string | string[]>) => void;
   onSeeReviews: (courseCode: string) => void;
+  onAddFavorite: (courseCode: string) => void;
 };
 
 // Necessary for static arrays? Can't we just use the map index?
@@ -40,6 +41,7 @@ export default function SearchView({
   filters,
   onFiltersChange,
   onSeeReviews,
+  onAddFavorite,
 }: SearchViewProps) {
   return (
     <div>
@@ -149,7 +151,9 @@ export default function SearchView({
                   rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}
                   // semester={"P1"}
                   ects={7.5}
+                  isUserFavorite={false}
                   onSeeReviews={() => onSeeReviews(course.course_code)}
+                  onAddFavorite={() => onAddFavorite(course.course_code)}
                 />
               </li>
             ))}

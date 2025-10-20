@@ -10,15 +10,18 @@ interface UserCoursesViewProps {
   userFavorites: Course[];
   isLoadingCourse: boolean;
   onSeeReviews: (courseCode: string) => void;
+  onAddFavorite: (courseCode: string) => void;
 }
 
-export default function UserCoursesView(props: UserCoursesViewProps) {
+export default function UserCoursesView({
+  userData,
+  userFavorites,
+  isLoadingCourse,
+  onSeeReviews,
+  onAddFavorite,
+}: UserCoursesViewProps) {
   // Necessary for static arrays? Can't we just use the map index?
   const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
-
-  const onSeeReviews = (code: string) => {
-    props.onSeeReviews(code); // handle navigation logic in controller
-  };
 
   return (
     <div className="flex flex-col items-center m-10 w-full max-w-4xl">
@@ -26,10 +29,10 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
         Saved Courses
       </h1>
       <div className="flex flex-col w-full gap-6">
-        {props.isLoadingCourse ? ( // skeleton items if loading
+        {isLoadingCourse ? ( // skeleton items if loading
           skeletonKeys.map((key) => <CourseItemSkeleton key={key} />)
-        ) : props.userFavorites.length ? ( // else map userFavorites
-          props.userFavorites.map((course, i) => (
+        ) : userFavorites.length ? ( // else map userFavorites
+          userFavorites.map((course, i) => (
             <CourseItem
               key={`${course.course_code}${i}`}
               // Underlines here are caused by mismatch of types.
@@ -38,7 +41,9 @@ export default function UserCoursesView(props: UserCoursesViewProps) {
               courseCode={course.courseCode}
               rating={course.rating ?? 0}
               ects={7.5} // When db configured object will contain ects / credits as well
+              isUserFavorite={false} //TODO: fill state
               onSeeReviews={() => onSeeReviews(course.courseCode)}
+              onAddFavorite={() => onAddFavorite(course.courseCode)}
             />
           ))
         ) : (

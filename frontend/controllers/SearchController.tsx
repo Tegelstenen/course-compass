@@ -17,6 +17,7 @@ export default function SearchController() {
   const { query, filters, results, isLoading, error } = useSelector(
     (s: RootState) => s.search,
   );
+  const userFavorites = useSelector(s: RootState) => s.user;
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
   const router = useRouter();
   const [localQuery, setLocalQuery] = useState(
@@ -41,6 +42,9 @@ export default function SearchController() {
       }
     };
   }, [localQuery, query, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+
+  // Are the "useCallbacks" really necessary here for the callback functions? 
 
   const onSubmit = useCallback(
     (e?: React.FormEvent) => {
@@ -75,6 +79,12 @@ export default function SearchController() {
     [router],
   );
 
+  const onAddFavorite = (code: string) => {
+    //TODO: call hook to add course
+    console.log("in controller and adding course to favorite..");
+    return;
+  }
+
   return (
     <SearchView
       localQuery={localQuery}
@@ -82,10 +92,11 @@ export default function SearchController() {
       onSubmit={onSubmit}
       isLoading={isLoading}
       error={error}
-      results={results} // Needs to be of type course
+      results={results} // Needs to be of type Course
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}
+      onAddFavorite={onAddFavorite}
     />
   );
 }
