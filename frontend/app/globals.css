@@ -66,6 +66,8 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  --chart-axis: oklch(0.56 0 0);
+  --primary-button: #778c9c;
 }
 
 .dark {
@@ -90,12 +92,15 @@
   --destructive: #ef4444; /* red-500 */
   --border: #1f2937; /* slate-800 border */
   --input: #1f2937;
+  --primary-button: #5b86a5;
+  --primary-button-hover: #4d7699;
   --ring: #3b82f6; /* blue-500 */
   --chart-1: #60a5fa; /* blue-400 */
   --chart-2: #34d399; /* emerald-400 */
   --chart-3: #fbbf24; /* amber-400 */
   --chart-4: #a78bfa; /* violet-400 */
   --chart-5: #f472b6; /* pink-400 */
+  --chart-axis: oklch(0.85 0 0); /* light gray */
 }
 
 @layer base {

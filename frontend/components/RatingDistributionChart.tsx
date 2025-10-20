@@ -22,9 +22,9 @@ export default function RatingDistributionChart({
 
     const rootStyles = getComputedStyle(document.documentElement);
     const primaryColor =
-      rootStyles.getPropertyValue("--primary").trim() || "#456882";
+      rootStyles.getPropertyValue("--chart-1").trim() || "#60a5fa";
     const axisColor =
-      rootStyles.getPropertyValue("--foreground").trim() || "#111";
+      rootStyles.getPropertyValue("--chart-axis").trim() || "#cbd5e1";
 
     // Dimensions
     const width = 300;
