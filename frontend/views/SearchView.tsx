@@ -15,7 +15,6 @@ import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import type { CourseWithUserInfo } from "@/models/CourseModel";
 
-
 type SearchViewProps = {
   localQuery: string;
   setLocalQuery: (q: string) => void;
