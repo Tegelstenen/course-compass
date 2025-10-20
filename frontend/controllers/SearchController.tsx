@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useUser } from "@/hooks/userHooks";
+import { addUserFavorite } from "@/lib/user";
 import { executeSearch } from "@/state/search/executeSearchThunk";
 import {
   filtersChanged,
@@ -90,10 +91,8 @@ export default function SearchController() {
     [router],
   );
 
-  const onAddFavorite = (code: string) => {
-    //TODO: call hook to add course
-    console.log("in controller and adding course to favorite..");
-    return;
+  const onAddFavorite = (courseCode: string) => {
+    addUserFavorite(courseCode);
   };
 
   return (

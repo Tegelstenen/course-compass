@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { CourseService } from "src/course/course.service";
 import * as schema from "../../../types/database/schema";
@@ -70,16 +70,40 @@ export class UserService {
     } as UserWithFavorites;
   }
 
-  async addUserFavorite(userId: string, courseCode: string) {
-    await this.courseService.courseCodeExists(courseCode); // throws error from course.service if invalid
+  async toggleUserFavorite(userId: string, courseCode: string) {
+    // Check if course code exists, throws error from course.service
+    await this.courseService.courseCodeExists(courseCode); 
 
-    return await this.db
-      .insert(schema.user_favorites) //NOTE: This needs to be update to have the user table instead of junction after update
-      .values({
-        userId: userId,
-        favoriteCourse: courseCode,
-        createdAt: new Date(),
-      });
+    const courseInFavorites = await this.db
+      .select()
+      .from(schema.user_favorites)
+      .where(
+        and(
+          eq(schema.user_favorites.userId, userId),
+          eq(schema.user_favorites.favoriteCourse, courseCode),
+      ))
+      .limit(1);
+    
+    // if course in favorites, remove the course
+    if (courseInFavorites.length > 0) {
+      await this.db 
+        .delete(schema.user_favorites)
+        .where(
+          and(
+          eq(schema.user_favorites.userId, userId),
+          eq(schema.user_favorites.favoriteCourse, courseCode),
+        ));
+      return { action: "removed" };
+    } else {
+      await this.db
+        .insert(schema.user_favorites) //NOTE: This needs to be update to have the user table instead of junction after update
+        .values({
+          userId: userId,
+          favoriteCourse: courseCode,
+          createdAt: new Date(),
+        });
+      return { action: "added" }
+    }
   }
 
   async updateProfilePicture(userId: string, profilePictureUrl: string) {

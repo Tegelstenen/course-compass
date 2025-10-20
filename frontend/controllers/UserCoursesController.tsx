@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { useUser } from "@/hooks/userHooks";
 import { getFullCourseInfo } from "@/lib/courses";
+import { addUserFavorite } from "@/lib/user";
 import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
 import SuspenseView from "@/views/SuspenseView";
 import UserCoursesView from "@/views/UserCoursesView";
@@ -24,9 +25,7 @@ export default function UserpageController() {
   };
 
   const onAddFavorite = (courseCode: string) => {
-    //TODO: Add hook to post updates to database
-    console.log("In usercoursescontroller and adding to favorites");
-    return;
+    addUserFavorite(courseCode);
   };
 
   // Maps the course codes in to full Course objects
