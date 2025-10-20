@@ -42,6 +42,11 @@ export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
     : null;
   const recommendLabel = `${recommendPct ? `${recommendPct.toFixed(0)}%` : "__"} would recommend`;
 
+  // Function to strip HTML tags from text
+  const stripHtmlTags = (html: string): string => {
+    return html.replace(/<[^>]*>/g, " ");
+  };
+
   return (
     <Card className="w-full p-4 md:p-6 grid gap-4 md:grid-cols-2 md:gap-x-40 md:gap-y-4">
       {/* Left */}
@@ -84,7 +89,9 @@ export default function CourseHeader(props: Readonly<CourseHeaderProps>) {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Course Syllabus</DialogTitle>
-                <DialogDescription>{props.syllabus}</DialogDescription>
+                <DialogDescription>
+                  {stripHtmlTags(props.syllabus)}
+                </DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>

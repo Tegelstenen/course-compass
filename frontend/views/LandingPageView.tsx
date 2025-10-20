@@ -55,7 +55,7 @@ const childVariants: Variants = {
 const titleText =
   "Explore, find and express your thoughts with Course Compass!";
 const subTitleText =
-  "What every KTH student has though of at least once, and it is finally here! A forum for reviewing and exploring all KTH courses! ";
+  "What every KTH student has thought of at least once, and it is finally here! A forum for reviewing and exploring all KTH courses! ";
 
 export default function LandingPageView(props: LandingPageViewProps) {
   const handleClick = () => {
