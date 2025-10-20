@@ -58,7 +58,6 @@ export class UserService {
       return undefined;
     }
     const userFavorites = await this.getUserFavorites(id);
-    console.log("User favs:", userFavorites);
 
     // Appends the user object with the user favorites, fetched from the separate junction table (above)
     return {
