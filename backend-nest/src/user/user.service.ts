@@ -7,6 +7,7 @@ import {
   SelectUserFavorites,
 } from "../../../types/database/schema";
 import { DRIZZLE } from "../database/drizzle.module";
+import { CourseService } from "src/course/course.service";
 
 // Since we can't change the schema to have the userFAvorites, we need to define a new type,
 // that includes the userFavorites property.
@@ -18,6 +19,7 @@ export type UserWithFavorites = SelectUser & {
 export class UserService {
   constructor(
     @Inject(DRIZZLE) private readonly db: NeonHttpDatabase<typeof schema>,
+    private readonly courseService: CourseService,
   ) {}
 
   async createNewUser(id: string, email: string, name: string): Promise<void> {
@@ -66,6 +68,18 @@ export class UserService {
       ...user,
       userFavorites: userFavorites,
     } as UserWithFavorites;
+  }
+
+  async addUserFavorite(userId: string, courseCode: string) {
+    await this.courseService.courseCodeExists(courseCode); // throws error from course.service if invalid
+    
+    return await this.db 
+      .insert(schema.user_favorites) //NOTE: This needs to be update to have the user table instead of junction after update
+      .values({
+        userId: userId, 
+        favoriteCourse: courseCode, 
+        createdAt: new Date()
+      });
   }
 
   async updateProfilePicture(userId: string, profilePictureUrl: string) {
