@@ -105,7 +105,10 @@ export class IngestService {
         const data = await response.json();
         const credits = data.credits;
 
-        courseCreditsPairs.push({ courseCode, credits: parseFloat(credits) });
+        courseCreditsPairs.push({
+          courseCode,
+          credits: Number.parseFloat(credits),
+        });
       } catch (error) {
         this.logger.error(
           `Failed to fetch credits for course ${courseCode}:`,

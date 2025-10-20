@@ -14,14 +14,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { cn } from "@/lib/utils";
 import type { OauthProvider } from "../../types/auth/auth.types";
 
 type AuthViewProps = {
   onSubmit: (provider: OauthProvider) => void;
+  isLoading: boolean;
+  providerClicked: OauthProvider | null;
 };
 
-export default function AuthView({ onSubmit }: AuthViewProps) {
+export default function AuthView({
+  onSubmit,
+  isLoading,
+  providerClicked,
+}: AuthViewProps) {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -38,49 +45,74 @@ export default function AuthView({ onSubmit }: AuthViewProps) {
                 <div className="grid gap-6">
                   <div className="flex flex-col gap-4">
                     <Button
+                      disabled={isLoading}
                       variant="outline"
                       type="button"
                       className="w-full"
                       onClick={() => onSubmit("apple")}
                     >
                       <AppleIcon />
-                      Login with Apple
+                      {isLoading && providerClicked === "apple" ? (
+                        <Spinner variant="ring" />
+                      ) : (
+                        "Login with Apple"
+                      )}
                     </Button>
                     <Button
+                      disabled={isLoading}
                       variant="outline"
                       type="button"
                       className="w-full"
                       onClick={() => onSubmit("google")}
                     >
                       <GoogleIcon />
-                      Login with Google
+                      {isLoading && providerClicked === "google" ? (
+                        <Spinner variant="ring" />
+                      ) : (
+                        "Login with Google"
+                      )}
                     </Button>
                     <Button
+                      disabled={isLoading}
                       variant="outline"
                       type="button"
                       className="w-full"
                       onClick={() => onSubmit("facebook")}
                     >
                       <FacebookIcon />
-                      Login with Facebook
+                      {isLoading && providerClicked === "facebook" ? (
+                        <Spinner variant="ring" />
+                      ) : (
+                        "Login with Facebook"
+                      )}
                     </Button>
                     <Button
+                      disabled={isLoading}
                       variant="outline"
                       type="button"
                       className="w-full"
                       onClick={() => onSubmit("github")}
                     >
                       <GithubIcon />
-                      Login with Github
+                      {isLoading && providerClicked === "github" ? (
+                        <Spinner variant="ring" />
+                      ) : (
+                        "Login with Github"
+                      )}
                     </Button>
                     <Button
+                      disabled={isLoading}
                       variant="outline"
                       type="button"
                       className="w-full"
                       onClick={() => onSubmit("microsoft")}
                     >
                       <MicrosoftIcon />
-                      Login with Microsoft
+                      {isLoading && providerClicked === "microsoft" ? (
+                        <Spinner variant="ring" />
+                      ) : (
+                        "Login with Microsoft"
+                      )}
                     </Button>
                   </div>
                 </div>

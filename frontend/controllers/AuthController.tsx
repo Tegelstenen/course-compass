@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
 import type { OauthProvider } from "../../types/auth/auth.types";
@@ -16,23 +16,44 @@ function AuthController() {
     initST();
   }, []);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [providerClicked, setProviderClicked] = useState<OauthProvider | null>(
+    null,
+  );
+
   async function handleSubmit(provider: OauthProvider) {
-    // Build callback like /auth/callback/google, /auth/callback/github, etc.
-    const frontendRedirectURI = `${location.origin}/auth/callback/${provider}`;
-    // Fix later, only implement google for now
-    if (provider === "google") {
-      const url =
-        await ThirdParty.getAuthorisationURLWithQueryParamsAndSetState({
-          thirdPartyId: provider,
-          frontendRedirectURI,
-        });
-      router.push(url);
-    } else {
-      toast.error(`${provider} is not supported yet`);
+    setIsLoading(true);
+    setProviderClicked(provider);
+    try {
+      // Build callback like /auth/callback/google, /auth/callback/github, etc.
+      const frontendRedirectURI = `${location.origin}/auth/callback/${provider}`;
+      // Fix later, only implement google for now
+      if (provider === "google") {
+        const url =
+          await ThirdParty.getAuthorisationURLWithQueryParamsAndSetState({
+            thirdPartyId: provider,
+            frontendRedirectURI,
+          });
+        router.push(url);
+      } else {
+        toast.error(`${provider} is not supported yet`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to sign in");
+    } finally {
+      setIsLoading(false);
+      setProviderClicked(null);
     }
   }
 
-  return <AuthView onSubmit={handleSubmit} />;
+  return (
+    <AuthView
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+      providerClicked={providerClicked}
+    />
+  );
 }
 
 export default AuthController;

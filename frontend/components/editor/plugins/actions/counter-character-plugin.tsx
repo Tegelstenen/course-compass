@@ -37,7 +37,8 @@ interface CounterCharacterPluginProps {
 const strlen = (text: string, charset: "UTF-8" | "UTF-16") => {
   if (charset === "UTF-8") {
     return utf8Length(text);
-  } else if (charset === "UTF-16") {
+  }
+  if (charset === "UTF-16") {
     return text.length;
   }
 };

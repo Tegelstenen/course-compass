@@ -141,22 +141,21 @@ const addReview = async (
       new RegExp(`\\b${escapeRegex(String(badWord))}\\b`, "i").test(plainText),
     );
   if (profoundMatches.length > 0) {
-    toast(`Please refrain from using profane language`, {
+    toast("Please refrain from using profane language", {
       description: `Dissaproved words: ${profoundMatches.join(", ")}`,
     });
     return false;
-  } else {
-    try {
-      await createReview(courseCode, userId, reviewForm);
-      toast.success("Review added successfully!");
-      return true;
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add review", {
-        description: "Try again later",
-      });
-      return false;
-    }
+  }
+  try {
+    await createReview(courseCode, userId, reviewForm);
+    toast.success("Review added successfully!");
+    return true;
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to add review", {
+      description: "Try again later",
+    });
+    return false;
   }
 };
 
@@ -326,25 +325,24 @@ export default function CourseController() {
 
   if (!params.courseCode || isChecking || !courseHeader || !posts) {
     return <SuspenseView />;
-  } else {
-    return (
-      <CourseView
-        courseCode={courseHeader.courseCode}
-        courseName={courseHeader.courseName}
-        credits={courseHeader.credits}
-        syllabus={courseHeader.syllabus}
-        percentageWouldRecommend={getPercentageWouldRecommend(posts)}
-        easyScoreDistribution={getEasyScoreDistribution(posts)}
-        usefulScoreDistribution={getUsefulScoreDistribution(posts)}
-        interestingScoreDistribution={getInterestingScoreDistribution(posts)}
-        ratingDistribution={getRatingDistribution(posts)}
-        courseRating={getAverageRating(posts)}
-        userId={userId}
-        onAddReview={handleAddReview}
-        posts={posts}
-        onLikePost={handleLikePost}
-        onDislikePost={handleDislikePost}
-      />
-    );
   }
+  return (
+    <CourseView
+      courseCode={courseHeader.courseCode}
+      courseName={courseHeader.courseName}
+      credits={courseHeader.credits}
+      syllabus={courseHeader.syllabus}
+      percentageWouldRecommend={getPercentageWouldRecommend(posts)}
+      easyScoreDistribution={getEasyScoreDistribution(posts)}
+      usefulScoreDistribution={getUsefulScoreDistribution(posts)}
+      interestingScoreDistribution={getInterestingScoreDistribution(posts)}
+      ratingDistribution={getRatingDistribution(posts)}
+      courseRating={getAverageRating(posts)}
+      userId={userId}
+      onAddReview={handleAddReview}
+      posts={posts}
+      onLikePost={handleLikePost}
+      onDislikePost={handleDislikePost}
+    />
+  );
 }

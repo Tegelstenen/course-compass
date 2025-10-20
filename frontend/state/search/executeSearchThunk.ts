@@ -49,13 +49,33 @@ export function executeSearch() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const raw = (await res.json()) as {
-        results: Course[];
+        results: Array<{
+          _id?: string;
+          course_code: string;
+          course_name: string;
+          content: string;
+          goals: string;
+          department: string;
+          rating?: number;
+        }>;
         total: number;
       };
 
+      // Transform the backend data to match the Course interface
+      const transformedResults: Course[] = raw.results.map((result) => ({
+        _id: result._id || "",
+        courseCode: result.course_code,
+        name: result.course_name,
+        content: result.content,
+        goals: result.goals,
+        department: result.department,
+        rating: result.rating,
+        credits: null, // Will be fetched separately
+      }));
+
       dispatch(
         searchSucceeded({
-          results: raw.results,
+          results: transformedResults,
           total: raw.total,
           page: 1,
           pageSize, // unchanged, but not used yet

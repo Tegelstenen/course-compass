@@ -17,7 +17,7 @@ import { UserService } from "../user/user.service";
         const APP_NAME = configService.get<string>("APP_NAME", "CourseCompass");
         const API_DOMAIN = configService.get<string>(
           "API_DOMAIN",
-          `http://localhost:${configService.get<string>("PORT")}`,
+          "http://localhost:8080",
         );
         const WEBSITE_DOMAIN = configService.get<string>("WEBSITE_DOMAIN");
         const GOOGLE_CLIENT_ID = configService.get<string>("GOOGLE_CLIENT_ID");

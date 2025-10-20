@@ -6,11 +6,11 @@ import UserView from "@/views/UserView";
 
 export default function UserpageController() {
   const userData = useUserData();
+  const userId = useSessionData().userId;
   const { isLoading } = useSessionData();
 
   if (isLoading) {
     return <div>Loading...</div>;
-  } else {
-    return <UserView userData={userData} />;
   }
+  return <UserView userData={userData} userId={userId} />;
 }

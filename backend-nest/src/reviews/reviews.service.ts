@@ -180,32 +180,30 @@ export class ReviewsService {
         const review = await this.getReview(reviewId);
         if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
         return { action: "removed", voteType: null };
-      } else {
-        // if different vote type, update to new vote type
-        await this.db
-          .update(schema.reviewLikes)
-          .set({ voteType })
-          .where(
-            and(
-              eq(schema.reviewLikes.reviewId, reviewId),
-              eq(schema.reviewLikes.userId, userId),
-            ),
-          );
-        const review = await this.getReview(reviewId);
-        if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
-        return { action: "updated", voteType };
       }
-    } else {
-      // if no existing vote, create new one
-      await this.db.insert(schema.reviewLikes).values({
-        userId,
-        reviewId,
-        voteType,
-      });
+      // if different vote type, update to new vote type
+      await this.db
+        .update(schema.reviewLikes)
+        .set({ voteType })
+        .where(
+          and(
+            eq(schema.reviewLikes.reviewId, reviewId),
+            eq(schema.reviewLikes.userId, userId),
+          ),
+        );
       const review = await this.getReview(reviewId);
       if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
-      return { action: "added", voteType };
+      return { action: "updated", voteType };
     }
+    // if no existing vote, create new one
+    await this.db.insert(schema.reviewLikes).values({
+      userId,
+      reviewId,
+      voteType,
+    });
+    const review = await this.getReview(reviewId);
+    if (review) this.reviewsGateway.emitCourseChanged(review.courseCode);
+    return { action: "added", voteType };
   }
 
   private async getReview(reviewId: string) {
