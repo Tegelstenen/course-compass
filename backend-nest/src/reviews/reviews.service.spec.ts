@@ -1,7 +1,7 @@
-import { NotFoundException } from "@nestjs/common";
-import { Test, type TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { DRIZZLE } from "../database/drizzle.module";
 import { ReviewsService } from "./reviews.service";
+import { ReviewsGateway } from './reviews.gateway';
 
 describe("ReviewsService", () => {
   let reviewsService: ReviewsService;
@@ -46,6 +46,10 @@ describe("ReviewsService", () => {
         {
           provide: DRIZZLE,
           useValue: mockDb,
+        },
+        {
+          provide: ReviewsGateway, 
+          useValue: { emitCourseChanged: jest.fn() }
         },
       ],
     }).compile();
@@ -118,9 +122,11 @@ describe("ReviewsService", () => {
     });
   });
 
+  // Toggle-tests
   describe("toggleVote", () => {
     it("should add new vote if no existing vote", async () => {
-      mockDb.limit.mockResolvedValueOnce([]);
+      mockDb.limit.mockResolvedValueOnce([])
+        .mockResolvedValueOnce([{ courseCode: "SF1625" }]); // second mockResolve for the 'getRewvies' nested call
       mockDb.values.mockResolvedValue(undefined);
 
       const result = await reviewsService.toggleVote(
@@ -138,7 +144,8 @@ describe("ReviewsService", () => {
         userId: "user-456",
         reviewId: "review-123",
       };
-      mockDb.limit.mockResolvedValueOnce([existingVote]);
+      mockDb.limit.mockResolvedValueOnce([existingVote])
+        .mockResolvedValueOnce([{ courseCode: "SF1625" }]);
 
       const result = await reviewsService.toggleVote(
         "review-123",
@@ -155,7 +162,8 @@ describe("ReviewsService", () => {
         userId: "user-456",
         reviewId: "review-123",
       };
-      mockDb.limit.mockResolvedValueOnce([existingVote]);
+      mockDb.limit.mockResolvedValueOnce([existingVote])
+        .mockResolvedValueOnce([{ courseCode: "SF1625" }]);
 
       const result = await reviewsService.toggleVote(
         "review-123",
