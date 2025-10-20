@@ -57,7 +57,7 @@ export default function SearchView({
           <Button
             variant="outline"
             className="h-10 w-10 p-0"
-            onClick={() => console.log(filters)}
+            //onClick={() => console.log(filters)}
           >
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>

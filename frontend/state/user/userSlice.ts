@@ -28,7 +28,10 @@ const userSlice = createSlice({
     },
     toggleFavoriteSuccess: (
       state,
-      action: PayloadAction<{ courseCode: string; action: "added" | "removed" }>,
+      action: PayloadAction<{
+        courseCode: string;
+        action: "added" | "removed";
+      }>,
     ) => {
       const { courseCode, action: toggleAction } = action.payload;
 
@@ -71,5 +74,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, toggleFavoriteSuccess, setProfilePicture, clearUser } = userSlice.actions;
+export const { setUser, toggleFavoriteSuccess, setProfilePicture, clearUser } =
+  userSlice.actions;
 export default userSlice.reducer;

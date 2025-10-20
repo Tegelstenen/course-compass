@@ -96,23 +96,21 @@ export default function SearchController() {
     try {
       const res = await toggleUserFavorite(courseCode);
 
-      console.log(res.action);
-
       // Update Redux
       dispatch(
         toggleFavoriteSuccess({
           courseCode,
           action: res.action,
-        })
+        }),
       );
 
-      // Update local state immediately
+      // Update local state immediately for fast rUI updates
       setResultsFull((prev) =>
         prev.map((course) =>
           course.course_code === courseCode
             ? { ...course, isUserFavorite: res.action === "added" }
-            : course
-        )
+            : course,
+        ),
       );
     } catch (err) {
       console.error("Failed to toggle favorite:", err);

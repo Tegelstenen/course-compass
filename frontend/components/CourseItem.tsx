@@ -24,7 +24,6 @@ export function CourseItem({
   onSeeReviews,
   onToggleFavorite,
 }: CourseItemProps) {
-  console.log(isUserFavorite, "for", courseCode);
   return (
     <div className="outline-solid outline-1 outline-muted-foreground/10 rounded-md p-4">
       <div className="flex justify-between">

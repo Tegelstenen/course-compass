@@ -1,5 +1,6 @@
-
-export async function toggleUserFavorite(courseCode: string): Promise<{ action: "added" | "removed" }> {
+export async function toggleUserFavorite(
+  courseCode: string,
+): Promise<{ action: "added" | "removed" }> {
   const backend = process.env.NEXT_PUBLIC_BACKEND_DOMAIN;
   if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_DOMAIN is not set");
 
@@ -14,6 +15,5 @@ export async function toggleUserFavorite(courseCode: string): Promise<{ action: 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   const data = await res.json();
-  console.log("User favorite was:", data.action);
   return data;
 }

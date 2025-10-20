@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch} from "react-redux";
-import type { Dispatch } from "@/state/store";
+import { useDispatch } from "react-redux";
 import { useSessionData } from "@/hooks/sessionHooks";
 import { useUser } from "@/hooks/userHooks";
 import { getFullCourseInfo } from "@/lib/courses";
 import { toggleUserFavorite } from "@/lib/user";
 import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
+import type { Dispatch } from "@/state/store";
+import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 import SuspenseView from "@/views/SuspenseView";
 import UserCoursesView from "@/views/UserCoursesView";
-import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 
 export default function UserpageController() {
   const { isLoading } = useSessionData();
@@ -32,11 +32,12 @@ export default function UserpageController() {
     try {
       const res = await toggleUserFavorite(courseCode);
 
-      dispatch(toggleFavoriteSuccess({
-            courseCode: courseCode,
-            action: res.action, // will be "added" or "removed"
-      }));
-      console.log(res);
+      dispatch(
+        toggleFavoriteSuccess({
+          courseCode: courseCode,
+          action: res.action, // will be "added" or "removed"
+        }),
+      );
 
       if (res.action === "added") {
         const course = await getFullCourseInfo(courseCode);
@@ -51,7 +52,7 @@ export default function UserpageController() {
         });
       } else if (res.action === "removed") {
         setUserFavoriteCourses((prev) =>
-          prev.filter((course) => course.course_code !== courseCode)
+          prev.filter((course) => course.course_code !== courseCode),
         );
       }
     } catch (err) {

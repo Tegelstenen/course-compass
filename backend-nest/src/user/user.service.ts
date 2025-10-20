@@ -84,8 +84,6 @@ export class UserService {
         ),
       )
       .limit(1);
-    
-    console.log(courseInFavorites.length);
 
     // if course in favorites, remove the course
     if (courseInFavorites.length > 0) {

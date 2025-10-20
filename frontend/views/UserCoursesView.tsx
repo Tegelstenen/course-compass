@@ -20,7 +20,6 @@ export default function UserCoursesView({
   // Necessary for static arrays? Can't we just use the map index?
   const skeletonKeys = Array.from({ length: 5 }, () => crypto.randomUUID());
 
-
   return (
     <div className="flex flex-col items-center m-10 w-full max-w-4xl">
       <h1 className="text-secondary font-extrabold text-4xl self-start mb-6">
