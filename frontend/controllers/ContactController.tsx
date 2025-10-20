@@ -7,7 +7,13 @@ import ContactView from "@/views/ContactView";
 export default function ContactController() {
   const handleSubmit = async (
     values: { name: string; email: string; message: string },
-    { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
+    {
+      setSubmitting,
+      resetForm,
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    },
   ) => {
     try {
       await sendFeedback(values);

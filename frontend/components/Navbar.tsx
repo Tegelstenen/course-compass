@@ -89,6 +89,7 @@ export default function Navbar() {
             </Button>
           </Link>
         </li>
+        {/*
         <li>
           <Link href="/reviews">
             <Button variant="nav" className="w-full justify-start">
@@ -101,6 +102,7 @@ export default function Navbar() {
             </Button>
           </Link>
         </li>
+        */}
       </ul>
 
       {/* The menu just above the profile card */}

@@ -59,7 +59,6 @@ const subTitleText =
 
 export default function LandingPageView(props: LandingPageViewProps) {
   const handleClick = () => {
-    console.log("clicked!");
     props.onSubmit();
   };
   const titleWords = titleText.split(" ");

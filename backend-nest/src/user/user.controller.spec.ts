@@ -1,7 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { SessionContainer } from "supertokens-node/recipe/session";
+import { Test, type TestingModule } from "@nestjs/testing";
+import type { SessionContainer } from "supertokens-node/recipe/session";
 import { UserController } from "./user.controller";
-import { UserService, UserWithFavorites } from "./user.service";
+import { UserService, type UserWithFavorites } from "./user.service";
 
 describe("UserController", () => {
   let userController: UserController;

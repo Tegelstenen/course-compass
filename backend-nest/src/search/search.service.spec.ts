@@ -164,7 +164,7 @@ describe("SearchService", () => {
       mockDb.execute.mockResolvedValue(mockDbRatingResponse);
 
       const result = await service.searchCourses("math", 10, { minRating: 4 });
-      expect(result.every(r => r.rating! >= 4)).toBe(true);
+      expect(result.every((r) => r.rating! >= 4)).toBe(true);
     });
 
     it("should handle Elasticsearch errors", async () => {
@@ -195,7 +195,7 @@ describe("SearchService", () => {
       department: "SF (SCI/Matematik) ",
       goals: "Learn linear algebra and geometry concepts",
       content: "Vectors, matrices, linear transformations",
-      rating: 4
+      rating: 4,
     };
 
     it("should return course data when course exists", async () => {

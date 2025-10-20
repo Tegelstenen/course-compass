@@ -9,6 +9,12 @@ export interface Course {
   credits?: number;
 }
 
+// New type that is based on Course, but contains user data as well
+// (for now just if the course is part of userFavorites or not)
+export interface CourseWithUserInfo extends Course {
+  isUserFavorite: boolean;
+}
+
 export interface SearchParams {
   // ensure this matches the backend in the future
   query: string;

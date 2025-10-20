@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useUser } from "@/hooks/userHooks";
+import { toggleUserFavorite } from "@/lib/user";
 import { executeSearch } from "@/state/search/executeSearchThunk";
 import {
   filtersChanged,
@@ -10,18 +12,22 @@ import {
   queryChanged,
 } from "@/state/search/searchSlice";
 import type { Dispatch, RootState } from "@/state/store";
+import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 import SearchView from "@/views/SearchView";
+import type { Course } from "../models/CourseModel";
 
 export default function SearchController() {
   // Access state
   const { query, filters, results, isLoading, error } = useSelector(
     (s: RootState) => s.search,
   );
+  const { userFavorites } = useUser(); // useUser hook to fetch from Redux
   const dispatch = useDispatch<Dispatch>(); // connect between redux and the component
   const router = useRouter();
   const [localQuery, setLocalQuery] = useState(
     query || "interaction programming",
   ); // redux synced
+  const [resultsFull, setResultsFull] = useState<Course[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
@@ -41,6 +47,17 @@ export default function SearchController() {
       }
     };
   }, [localQuery, query, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Adds 'isUserFavorites' to the result course object
+  useEffect(() => {
+    const resultsWithFavorites = results.map((result) => ({
+      ...result,
+      isUserFavorite: userFavorites.includes(result.course_code),
+    }));
+    setResultsFull(resultsWithFavorites);
+  }, [results, userFavorites]);
+
+  // Are the "useCallbacks" really necessary here for the callback functions?
 
   const onSubmit = useCallback(
     (e?: React.FormEvent) => {
@@ -75,6 +92,31 @@ export default function SearchController() {
     [router],
   );
 
+  async function onToggleFavorite(courseCode: string) {
+    try {
+      const res = await toggleUserFavorite(courseCode);
+
+      // Update Redux
+      dispatch(
+        toggleFavoriteSuccess({
+          courseCode,
+          action: res.action,
+        }),
+      );
+
+      // Update local state immediately for fast rUI updates
+      setResultsFull((prev) =>
+        prev.map((course) =>
+          course.course_code === courseCode
+            ? { ...course, isUserFavorite: res.action === "added" }
+            : course,
+        ),
+      );
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  }
+
   return (
     <SearchView
       localQuery={localQuery}
@@ -82,10 +124,11 @@ export default function SearchController() {
       onSubmit={onSubmit}
       isLoading={isLoading}
       error={error}
-      results={results} // Needs to be of type course
+      results={resultsFull} // Needs to be of type Course
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}
+      onToggleFavorite={onToggleFavorite}
     />
   );
 }

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import type { Course } from "@/models/CourseModel";
+import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
 
 type SearchViewProps = {
   localQuery: string;
@@ -21,10 +21,11 @@ type SearchViewProps = {
   onSubmit: (e?: React.FormEvent) => void;
   isLoading: boolean;
   error: string | undefined;
-  results: Course[];
+  results: CourseWithUserInfo[];
   filters: Record<string, string | string[]>;
   onFiltersChange: (filters: Record<string, string | string[]>) => void;
   onSeeReviews: (courseCode: string) => void;
+  onToggleFavorite: (courseCode: string) => void;
 };
 
 // Necessary for static arrays? Can't we just use the map index?
@@ -40,6 +41,7 @@ export default function SearchView({
   filters,
   onFiltersChange,
   onSeeReviews,
+  onToggleFavorite,
 }: SearchViewProps) {
   return (
     <div>
@@ -55,7 +57,7 @@ export default function SearchView({
           <Button
             variant="outline"
             className="h-10 w-10 p-0"
-            onClick={() => console.log(filters)}
+            //onClick={() => console.log(filters)}
           >
             {isLoading ? <Spinner variant="ring" /> : <SearchIcon />}
           </Button>
@@ -149,7 +151,9 @@ export default function SearchView({
                   rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}
                   // semester={"P1"}
                   ects={7.5}
+                  isUserFavorite={course.isUserFavorite}
                   onSeeReviews={() => onSeeReviews(course.course_code)}
+                  onToggleFavorite={() => onToggleFavorite(course.course_code)}
                 />
               </li>
             ))}

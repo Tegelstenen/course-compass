@@ -50,7 +50,7 @@ export async function getCourseInfo(
 }
 
 // This one uses the get course from 'course.controller', which stitches the
-// object to be of type 'Course' (from course_models).
+// object to be of type 'Course' (from course_models), without isUserFavorite.
 // This is the one to keep, and the first one we should replace with this.
 export async function getFullCourseInfo(courseCode: string): Promise<Course> {
   const backend = process.env.NEXT_PUBLIC_BACKEND_DOMAIN;
