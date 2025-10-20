@@ -14,7 +14,7 @@ import {
 import type { Dispatch, RootState } from "@/state/store";
 import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 import SearchView from "@/views/SearchView";
-import type { Course } from "../models/CourseModel";
+import type { CourseWithUserInfo } from "../models/CourseModel";
 
 export default function SearchController() {
   // Access state
@@ -27,7 +27,7 @@ export default function SearchController() {
   const [localQuery, setLocalQuery] = useState(
     query || "interaction programming",
   ); // redux synced
-  const [resultsFull, setResultsFull] = useState<Course[]>([]);
+  const [resultsFull, setResultsFull] = useState<CourseWithUserInfo[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export default function SearchController() {
       onSubmit={onSubmit}
       isLoading={isLoading}
       error={error}
-      results={resultsFull} // Needs to be of type Course
+      results={resultsFull} // Needs to be of type CourseWithUserInfo
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}

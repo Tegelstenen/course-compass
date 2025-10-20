@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
+import type { CourseWithUserInfo } from "@/models/CourseModel";
 
 type SearchViewProps = {
   localQuery: string;
