@@ -33,6 +33,7 @@
     "@nestjs/websockets": "^11.1.6",
     "@scaleway/random-name": "^5.1.2",
     "@types/pg": "^8.15.5",
+    "@nestjs/config": "^4.0.2",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.5",
     "fast-xml-parser": "^5.2.5",
