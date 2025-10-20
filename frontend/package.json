@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "test": "echo 'No tests set up in frontend'",
     "lint": "biome check",
@@ -36,6 +36,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@reduxjs/toolkit": "^2.9.0",
+    "@tailwindcss/postcss": "^4.1.15",
     "@vercel/blob": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -65,14 +66,14 @@
     "supertokens-auth-react": "^0.50.0",
     "supertokens-web-js": "^0.16.0",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.15",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.5",
+    "tw-animate-css": "^1.3.8",
     "uuid": "^8.3.2",
-    "yarn": "^1.22.22",
-    "zod": "^4.1.8"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
-    "@tailwindcss/postcss": "^4",
     "@types/d3": "^7.4.3",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -80,9 +81,6 @@
     "@types/react-redux": "^7.1.34",
     "drizzle-kit": "^0.12.8",
     "lefthook": "^1.13.0",
-    "tailwindcss": "^4",
-    "tsx": "^4.20.5",
-    "tw-animate-css": "^1.3.8",
     "typescript": "^5"
   }
 }

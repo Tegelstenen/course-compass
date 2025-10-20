@@ -1,12 +1,12 @@
 export interface Course {
   _id: string;
-  course_code: string;
-  course_name: string;
+  courseCode: string;
+  name: string;
   content: string;
   goals: string;
   department: string;
   rating?: number;
-  credits?: number;
+  credits: number | null;
 }
 
 // New type that is based on Course, but contains user data as well

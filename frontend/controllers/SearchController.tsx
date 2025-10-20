@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useUser } from "@/hooks/userHooks";
+import { getCourseCredits } from "@/lib/courses";
 import { toggleUserFavorite } from "@/lib/user";
 import { executeSearch } from "@/state/search/executeSearchThunk";
 import {
@@ -14,7 +15,7 @@ import {
 import type { Dispatch, RootState } from "@/state/store";
 import { toggleFavoriteSuccess } from "@/state/user/userSlice";
 import SearchView from "@/views/SearchView";
-import type { Course } from "../models/CourseModel";
+import type { CourseWithUserInfo } from "../models/CourseModel";
 
 export default function SearchController() {
   // Access state
@@ -27,7 +28,7 @@ export default function SearchController() {
   const [localQuery, setLocalQuery] = useState(
     query || "interaction programming",
   ); // redux synced
-  const [resultsFull, setResultsFull] = useState<Course[]>([]);
+  const [resultsFull, setResultsFull] = useState<CourseWithUserInfo[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null); // useRef is used to store the timeout id
 
   useEffect(() => {
@@ -48,13 +49,37 @@ export default function SearchController() {
     };
   }, [localQuery, query, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Adds 'isUserFavorites' to the result course object
+  // Adds 'isUserFavorites' and 'credits' to the result course object
   useEffect(() => {
-    const resultsWithFavorites = results.map((result) => ({
-      ...result,
-      isUserFavorite: userFavorites.includes(result.course_code),
-    }));
-    setResultsFull(resultsWithFavorites);
+    const fetchResultsWithUserInfo = async () => {
+      const resultsWithFavorites = results.map((result) => ({
+        ...result,
+        isUserFavorite: userFavorites.includes(result.courseCode),
+      }));
+
+      // Fetch credits for each course
+      const resultsWithCredits = await Promise.all(
+        resultsWithFavorites.map(async (result) => {
+          try {
+            const credits = await getCourseCredits(result.courseCode);
+            return {
+              ...result,
+              credits: credits,
+            };
+          } catch (error) {
+            console.error(
+              `Failed to fetch credits for ${result.courseCode}:`,
+              error,
+            );
+            return result;
+          }
+        }),
+      );
+
+      setResultsFull(resultsWithCredits);
+    };
+
+    fetchResultsWithUserInfo();
   }, [results, userFavorites]);
 
   // Are the "useCallbacks" really necessary here for the callback functions?
@@ -107,7 +132,7 @@ export default function SearchController() {
       // Update local state immediately for fast rUI updates
       setResultsFull((prev) =>
         prev.map((course) =>
-          course.course_code === courseCode
+          course.courseCode === courseCode
             ? { ...course, isUserFavorite: res.action === "added" }
             : course,
         ),
@@ -124,7 +149,7 @@ export default function SearchController() {
       onSubmit={onSubmit}
       isLoading={isLoading}
       error={error}
-      results={resultsFull} // Needs to be of type Course
+      results={resultsFull}
       filters={filters}
       onFiltersChange={_onFiltersChange}
       onSeeReviews={onSeeReviews}

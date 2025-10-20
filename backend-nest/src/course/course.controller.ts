@@ -21,18 +21,17 @@ export class CourseController {
       throw new NotFoundException(
         `Course with code ${courseCode} not found in database.`,
       );
-    } else {
-      // We re-construct the object here to follow standards
-      // But technically not needed, we could use schema names directly as well
-      return {
-        courseCode: course.code,
-        department: course.department,
-        name: course.name,
-        currentStatus: course.state, // renaming here to status to avoid conflicting naming with "state"
-        lastExaminationSemester: course.lastExaminationSemester,
-        updatedAt: course.updatedAt,
-      };
     }
+    // We re-construct the object here to follow standards
+    // But technically not needed, we could use schema names directly as well
+    return {
+      courseCode: course.code,
+      department: course.department,
+      name: course.name,
+      currentStatus: course.state, // renaming here to status to avoid conflicting naming with "state"
+      lastExaminationSemester: course.lastExaminationSemester,
+      updatedAt: course.updatedAt,
+    };
   }
 
   @Get("/neon/courseCodeExists/:course_code")
@@ -60,20 +59,19 @@ export class CourseController {
       throw new NotFoundException(
         `Course with code ${courseCode} not found in database.`,
       );
-    } else {
-      return {
-        // good practice to have the mapping here as well
-        // In the furure, needs to be fixed along with "Course type" in models, and the assigning of
-        // properties in search.controller object return to map to the same type (Course).
-        _id: courseDocument._id,
-        courseCode: courseDocument.course_code,
-        department: courseDocument.department,
-        name: courseDocument.course_name,
-        goals: courseDocument.goals,
-        content: courseDocument.content,
-        rating: courseDocument.rating,
-        // credits: eventually after indexed
-      };
     }
+    return {
+      // good practice to have the mapping here as well
+      // In the furure, needs to be fixed along with "Course type" in models, and the assigning of
+      // properties in search.controller object return to map to the same type (Course).
+      _id: courseDocument._id,
+      courseCode: courseDocument.course_code,
+      department: courseDocument.department,
+      name: courseDocument.course_name,
+      goals: courseDocument.goals,
+      content: courseDocument.content,
+      rating: courseDocument.rating,
+      // credits: eventually after indexed
+    };
   }
 }

@@ -96,16 +96,15 @@ export class UserService {
           ),
         );
       return { action: "removed" };
-    } else {
-      await this.db
-        .insert(schema.user_favorites) //NOTE: This needs to be update to have the user table instead of junction after update
-        .values({
-          userId: userId,
-          favoriteCourse: courseCode,
-          createdAt: new Date(),
-        });
-      return { action: "added" };
     }
+    await this.db
+      .insert(schema.user_favorites) //NOTE: This needs to be update to have the user table instead of junction after update
+      .values({
+        userId: userId,
+        favoriteCourse: courseCode,
+        createdAt: new Date(),
+      });
+    return { action: "added" };
   }
 
   async updateProfilePicture(userId: string, profilePictureUrl: string) {

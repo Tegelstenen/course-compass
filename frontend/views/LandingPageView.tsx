@@ -75,7 +75,7 @@ export default function LandingPageView(props: LandingPageViewProps) {
       }}
     >
       {/* Fades from transparent (left) over the image, to the background color (right) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent" />
 
       <div className="relative z-10 w-3/4 2xl:w-1/3 break-words">
         <motion.h1
@@ -137,7 +137,7 @@ export default function LandingPageView(props: LandingPageViewProps) {
             whileTap={{ scale: 0.95 }}
             className="relative inline-block px-8 py-4 font-bold text-white rounded-lg overflow-hidden cursor-pointer"
           >
-            <span className="absolute inset-0 bg-gradient-to-l from-primary to-secondary bg-[length:125%_100%] bg-[100%_10%] transition-all duration-500 ease-out hover:bg-[length:200%_100%] hover:bg-[0%_0%]"></span>
+            <span className="absolute inset-0 bg-gradient-to-l from-primary to-secondary bg-[length:125%_100%] bg-[100%_10%] transition-all duration-500 ease-out hover:bg-[length:200%_100%] hover:bg-[0%_0%]" />
             <span className="relative z-10 flex items-center gap-2">
               Get started
               <ArrowRightIcon />

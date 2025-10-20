@@ -10,17 +10,25 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // CORS must include SuperTokens’ headers and allow credentials
+  // CORS must include SuperTokens' headers and allow credentials
+  const websiteDomain = configService.get<string>("WEBSITE_DOMAIN");
+  const origins = [
+    websiteDomain ?? "http://localhost:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://coursecompass.azurewebsites.net", // Production frontend domain
+  ].filter((value, index, self) => value && self.indexOf(value) === index);
+
   app.enableCors({
-    origin: [
-      configService.get<string>("WEBSITE_DOMAIN") ?? "http://localhost:3000",
-    ],
+    origin: origins,
     allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     credentials: true,
   });
 
   app.useGlobalFilters(new SuperTokensExceptionFilter());
 
-  await app.listen(configService.get<number>("PORT") ?? 3000);
+  const port = configService.get<number>("PORT") ?? 8080;
+  await app.listen(port, "0.0.0.0");
 }
 bootstrap();

@@ -44,12 +44,11 @@ export default function HomeController() {
 
   if (isLoggingIn) {
     return <AuthController />;
-  } else {
-    return (
-      <div>
-        <Topbar />
-        <LandingPageView onSubmit={onSubmit} />
-      </div>
-    );
   }
+  return (
+    <div>
+      <Topbar />
+      <LandingPageView onSubmit={onSubmit} />
+    </div>
+  );
 }

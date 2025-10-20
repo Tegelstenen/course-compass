@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { DiCompass } from "react-icons/di";
 import { MdContactSupport, MdOutlineContactSupport } from "react-icons/md";
 import {
@@ -11,8 +12,6 @@ import {
   RiHeartLine,
   RiSearch2Fill,
   RiSearch2Line,
-  RiStarFill,
-  RiStarLine,
 } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -26,13 +25,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/state/session/sessionSlice";
+import { getSession, logout } from "@/state/session/sessionSlice";
 import type { Dispatch, RootState } from "@/state/store";
 
 export default function Navbar() {
   const pathname = usePathname();
   const dispatch = useDispatch<Dispatch>();
   const user = useSelector((s: RootState) => s.user);
+
+  // Check session on mount to handle page refresh
+  useEffect(() => {
+    dispatch(getSession());
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());

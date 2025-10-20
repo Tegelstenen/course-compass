@@ -35,15 +35,14 @@ export class UserController {
       throw new NotFoundException(
         `User with ID ${userId} not found in database.`,
       );
-    } else {
-      return {
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        userFavorites: user.userFavorites,
-        profilePicture: user.profilePicture || null,
-      };
     }
+    return {
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      userFavorites: user.userFavorites,
+      profilePicture: user.profilePicture || null,
+    };
   }
 
   // Get user favorite courses

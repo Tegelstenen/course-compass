@@ -34,8 +34,10 @@ RUN npm install supertokens-node --prefix ./frontend --no-save
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-
 # Build the frontend
+# Add these lines before the CMD instruction
+ENV NEXT_PUBLIC_BACKEND_DOMAIN=https://backend-eyesdze7adehhebr.norwayeast-01.azurewebsites.net
+ENV NEXT_PUBLIC_WEBSITE_DOMAIN=https://coursecompass.azurewebsites.net
 WORKDIR /app/frontend
 RUN npm run build
 
@@ -56,15 +58,18 @@ COPY --from=builder /app/frontend/public ./public
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
+
+# Copy public assets to the correct location for standalone mode
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 
 USER nextjs
 
 EXPOSE 3000
 
 ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
-ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+CMD ["node", "frontend/server.js"]

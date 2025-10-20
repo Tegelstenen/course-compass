@@ -50,13 +50,13 @@ function truncateHtmlAtWord(html: string, max: number) {
         result += text;
         currentLength += text.length;
         return true;
-      } else {
-        const remaining = truncateAt - currentLength;
-        result += text.slice(0, remaining);
-        currentLength = truncateAt;
-        return false;
       }
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const remaining = truncateAt - currentLength;
+      result += text.slice(0, remaining);
+      currentLength = truncateAt;
+      return false;
+    }
+    if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node as Element;
       const tagName = element.tagName.toLowerCase();
       result += `<${tagName}`;

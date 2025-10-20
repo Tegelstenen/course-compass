@@ -5,6 +5,7 @@ import type { UserState } from "@/state/user/userSlice";
 
 interface UserViewProps {
   userData: UserState;
+  userId: string;
 }
 
 export default function UserView(props: UserViewProps) {
@@ -21,15 +22,18 @@ export default function UserView(props: UserViewProps) {
         <div>
           {props.userData.userFavorites.map((favorite) => (
             <TempCourseObject
-              key={favorite.favoriteCourse}
-              userFavorite={favorite}
+              key={favorite.toString()}
+              userFavorite={{
+                userId: props.userId,
+                createdAt: new Date(),
+                favoriteCourse: favorite,
+              }}
             />
           ))}
         </div>
       );
-    } else {
-      return <div> User has not favorite courses</div>;
     }
+    return <div> User has not favorite courses</div>;
   };
   return (
     <div>

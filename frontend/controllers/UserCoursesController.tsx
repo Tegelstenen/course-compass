@@ -44,7 +44,7 @@ export default function UserpageController() {
         setUserFavoriteCourses((prev) => {
           // If the course is already in the array, return a copy of the *existing* array
           // to ensure a new reference is always returned, even if no content changed.
-          if (prev.some((c) => c.course_code === courseCode)) {
+          if (prev.some((c) => c.courseCode === courseCode)) {
             return [...prev]; // FIX: Return a new array reference (shallow copy)
           }
           // Otherwise, add the new course
@@ -52,7 +52,7 @@ export default function UserpageController() {
         });
       } else if (res.action === "removed") {
         setUserFavoriteCourses((prev) =>
-          prev.filter((course) => course.course_code !== courseCode),
+          prev.filter((course) => course.courseCode !== courseCode),
         );
       }
     } catch (err) {
@@ -82,14 +82,13 @@ export default function UserpageController() {
   // Returns suspense view but could be improved to always render skeleton on all updates
   if (!userData || isLoading || !userFavoriteCourses) {
     return <SuspenseView />;
-  } else {
-    return (
-      <UserCoursesView
-        userFavoriteCourses={userFavoriteCourses} // array of CourseWithUserInfo object
-        isLoadingCourse={isLoadingCourse}
-        onSeeReviews={onSeeReviews}
-        onToggleFavorite={onToggleFavorite}
-      />
-    );
   }
+  return (
+    <UserCoursesView
+      userFavoriteCourses={userFavoriteCourses} // array of CourseWithUserInfo object
+      isLoadingCourse={isLoadingCourse}
+      onSeeReviews={onSeeReviews}
+      onToggleFavorite={onToggleFavorite}
+    />
+  );
 }

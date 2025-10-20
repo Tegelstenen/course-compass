@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import type { Course, CourseWithUserInfo } from "@/models/CourseModel";
+import type { CourseWithUserInfo } from "@/models/CourseModel";
 
 type SearchViewProps = {
   localQuery: string;
@@ -45,7 +45,7 @@ export default function SearchView({
 }: SearchViewProps) {
   return (
     <div>
-      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8"></p>
+      <p className="flex-1 p-6 ml-12 text-2xl font-bold mb-8" />
       <div className="centered flex flex-col items-center gap-12 pb-12">
         <form onSubmit={onSubmit} className="flex items-center gap-4">
           <input
@@ -146,14 +146,14 @@ export default function SearchView({
             {results.map((course) => (
               <li key={course._id}>
                 <CourseItem
-                  courseName={course.course_name}
-                  courseCode={course.course_code}
+                  courseName={course.name}
+                  courseCode={course.courseCode}
                   rating={Math.max(0, Math.min(5, Number(course.rating ?? 0)))}
                   // semester={"P1"}
-                  ects={7.5}
+                  ects={course.credits}
                   isUserFavorite={course.isUserFavorite}
-                  onSeeReviews={() => onSeeReviews(course.course_code)}
-                  onToggleFavorite={() => onToggleFavorite(course.course_code)}
+                  onSeeReviews={() => onSeeReviews(course.courseCode)}
+                  onToggleFavorite={() => onToggleFavorite(course.courseCode)}
                 />
               </li>
             ))}

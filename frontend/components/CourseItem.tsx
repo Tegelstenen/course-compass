@@ -8,7 +8,7 @@ export type CourseItemProps = {
   courseCode: string;
   rating: number;
   // semester: string;
-  ects: number;
+  ects: number | null;
   isUserFavorite: boolean;
   onSeeReviews: () => void;
   onToggleFavorite: () => void;
@@ -60,7 +60,7 @@ export function CourseItem({
           </Rating>
         </div>
         <Separator orientation="vertical" />
-        <div>{ects} ECTS</div>
+        <div>{ects ? `${ects} ECTS` : "No ECTS available"}</div>
         <Separator orientation="vertical" />
         <div className="flex space-x-2 ml-auto">
           <Button
