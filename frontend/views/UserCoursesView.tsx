@@ -31,7 +31,7 @@ export default function UserCoursesView({
         ) : userFavoriteCourses.length ? ( // else map userFavorites
           userFavoriteCourses.map((course, i) => (
             <CourseItem
-              key={course.course_code}
+              key={course._id}
               // Underlines here are caused by mismatch of types.
               // Larger structural problem, exists a seperate ticket for solving this.
               courseName={course.name}
