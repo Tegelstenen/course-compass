@@ -3,22 +3,23 @@
 import { redirect, useParams, useRouter } from "next/navigation";
 import profoundWords from "profane-words";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import type { CourseHeaderProps } from "@/components/CourseHeader";
 import type { PostProps } from "@/components/Post";
 import type { ReviewFormData } from "@/components/review";
 import { useSessionData } from "@/hooks/sessionHooks";
+import { getReviewsSocket } from "@/lib/realtime";
+import { fetchCourseInfo } from "@/state/course/courseThunk";
 import {
-  checkIfCourseCodeExists,
-  getCourseCredits,
-  getCourseInfo,
-} from "@/lib/courses";
-import {
-  createReview,
-  dislikeReview,
-  findAllReviews,
-  likeReview,
-} from "@/lib/reviews";
+  dislikeCourseReview,
+  fetchCourseReviews,
+  likeCourseReview,
+  submitReview,
+} from "@/state/reviews/reviewThunk";
+import type { Dispatch, RootState } from "@/state/store";
+import CourseView from "@/views/CourseView";
+import SuspenseView from "@/views/SuspenseView";
 
 type Review = {
   id: string;
@@ -35,10 +36,6 @@ type Review = {
   dislikeCount: number;
   userVote: string | null;
 };
-
-import { getReviewsSocket } from "@/lib/realtime";
-import CourseView from "@/views/CourseView";
-import SuspenseView from "@/views/SuspenseView";
 
 const getAverageRating = (posts: PostProps[]) => {
   const totalScores = posts.reduce(
@@ -110,220 +107,124 @@ const getPercentageWouldRecommend = (posts: PostProps[]) => {
   );
 };
 
-const likePost = async (postId: string, userId: string) => {
-  try {
-    await likeReview(postId, userId);
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to like review");
-  }
-};
-
-const dislikePost = async (postId: string, userId: string) => {
-  try {
-    await dislikeReview(postId, userId);
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to dislike review");
-  }
-};
-
-const addReview = async (
-  courseCode: string,
-  userId: string,
-  reviewForm: ReviewFormData,
-): Promise<boolean> => {
-  const plainText = reviewForm.content.replace(/<[^>]*>/g, " ");
-  const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const profoundMatches = profoundWords
-    .filter(Boolean)
-    .filter((badWord) =>
-      new RegExp(`\\b${escapeRegex(String(badWord))}\\b`, "i").test(plainText),
-    );
-  if (profoundMatches.length > 0) {
-    toast("Please refrain from using profane language", {
-      description: `Dissaproved words: ${profoundMatches.join(", ")}`,
-    });
-    return false;
-  }
-  try {
-    await createReview(courseCode, userId, reviewForm);
-    toast.success("Review added successfully!");
-    return true;
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to add review", {
-      description: "Try again later",
-    });
-    return false;
-  }
-};
-
-const getCourseHeader = async (
-  courseCode: string,
-  userId: string,
-  posts: PostProps[],
-) => {
-  try {
-    const courseInfo = await getCourseInfo(courseCode);
-    const credits = await getCourseCredits(courseCode);
-    return {
-      courseCode: courseInfo.course_code,
-      courseName: courseInfo.course_name,
-      credits: credits || null,
-      syllabus: `${courseInfo.content} \n\n ${courseInfo.goals}`,
-      courseRating: getAverageRating(posts),
-      ratingDistribution: getRatingDistribution(posts),
-      easyScoreDistribution: getEasyScoreDistribution(posts),
-      usefulScoreDistribution: getUsefulScoreDistribution(posts),
-      interestingScoreDistribution: getInterestingScoreDistribution(posts),
-      percentageWouldRecommend: getPercentageWouldRecommend(posts),
-      userId,
-      onAddReview: addReview,
-    };
-  } catch (e) {
-    console.error("Failed to load course info", e);
-
-    if (e instanceof Error && e.message.includes("not found")) {
-      toast.error(`Course ${courseCode} not found`);
-    } else {
-      toast.error("Failed to load course information");
-    }
-
-    redirect("/search");
-  }
-};
-
-const getCoursePosts = async (courseCode: string, userId?: string) => {
-  const posts = (await findAllReviews(courseCode, userId)) as Review[];
-  return posts?.map((post) => ({
-    postId: post.id,
-    wouldRecommend: post.wouldRecommend,
-    content: post.content,
-    easyScore: post.easyScore,
-    usefulScore: post.usefulScore,
-    interestingScore: post.interestingScore,
-    likeCount: post.likeCount || 0,
-    dislikeCount: post.dislikeCount || 0,
-    userVote: post.userVote || null,
-  })) as (PostProps & { postId: string })[];
-};
-
-const getPageData = async (courseCode: string, userId: string) => {
-  const exists = await checkIfCourseCodeExists(courseCode);
-  const posts = await getCoursePosts(courseCode, userId);
-  const courseHeader = await getCourseHeader(courseCode, userId, posts);
-  return { exists, courseHeader, posts };
-};
-
 export default function CourseController() {
   const params = useParams<{ courseCode: string }>();
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
+  const dispatch = useDispatch<Dispatch>();
   const { userId } = useSessionData();
-  const [courseHeader, setCourseHeader] = useState<CourseHeaderProps | null>(
-    null,
-  );
-  const [posts, setPosts] = useState<(PostProps & { postId: string })[] | null>(
-    null,
-  );
+  const [isChecking, setIsChecking] = useState(true);
 
-  if (!params?.courseCode) {
-    router.push("/search");
-  }
+  // Select from Redux
+  const courseInfo = useSelector((s: RootState) => s.course.courseInfo);
+  const reviews = useSelector((s: RootState) => s.reviews.reviews);
+  const reviewsLoading = useSelector((s: RootState) => s.reviews.loading);
+  const courseError = useSelector((s: RootState) => s.course.error);
 
-  const handleAddReview = async (
-    courseCode: string,
-    userId: string,
-    reviewForm: ReviewFormData,
-  ): Promise<boolean> => {
-    try {
-      const created = await addReview(courseCode, userId, reviewForm);
-      if (!created) return false;
-
-      return true;
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add review", {
-        description: "Try again later",
-      });
-      return false;
-    }
-  };
-
-  const handleLikePost = async (postId: string) => {
-    if (!userId) return;
-    await likePost(postId, userId);
-
-    // Refresh posts to get updated like counts
-    const updatedPosts = await getCoursePosts(params.courseCode, userId);
-    setPosts(updatedPosts);
-  };
-
-  const handleDislikePost = async (postId: string) => {
-    if (!userId) return;
-    await dislikePost(postId, userId);
-
-    // Refresh posts to get updated like counts
-    const updatedPosts = await getCoursePosts(params.courseCode, userId);
-    setPosts(updatedPosts);
-  };
-
-  // Execution
+  // Validate route param
   useEffect(() => {
-    if (!params?.courseCode) {
-      router.push("/search");
-      return;
-    }
+    if (!params?.courseCode) router.push("/search");
+  }, [params?.courseCode, router]);
 
+  // Initial fetch
+  useEffect(() => {
+    if (!params?.courseCode) return;
     setIsChecking(true);
-    getPageData(params.courseCode, userId)
-      .then(({ exists, courseHeader, posts }) => {
-        if (!exists) {
-          toast("Course not found");
-          router.push("/search");
-        }
-        setCourseHeader(courseHeader);
-        setPosts(posts);
-      })
-      .catch((e) => {
-        console.error("Failed to load course codes", e);
-        toast("Failed to load course codes");
-        router.push("/search");
-      })
-      .finally(() => setIsChecking(false));
-  }, [params.courseCode, router, userId]);
+    dispatch(fetchCourseInfo(params.courseCode));
+    dispatch(fetchCourseReviews({ courseCode: params.courseCode, userId }));
+    setIsChecking(false);
+  }, [params.courseCode, userId, dispatch]);
 
-  // updates via websockets
+  // Websocket: Live update on review changes
   useEffect(() => {
     if (!params.courseCode || !userId) return;
-
     const socket = getReviewsSocket();
     const doJoin = () =>
       socket.emit("joinCourse", { courseCode: params.courseCode });
     if (socket.connected) doJoin();
     else socket.once("connect", doJoin);
-
     const handler = async () => {
-      const updatedPosts = await getCoursePosts(params.courseCode, userId);
-      setPosts(updatedPosts);
-      const updatedHeader = await getCourseHeader(
-        params.courseCode,
-        userId,
-        updatedPosts,
-      );
-      setCourseHeader(updatedHeader);
+      dispatch(fetchCourseReviews({ courseCode: params.courseCode, userId }));
     };
-
     socket.on("reviews.changed", handler);
-
     return () => {
       socket.off("reviews.changed", handler);
       socket.off("connect", doJoin);
     };
-  }, [params.courseCode, userId]);
+  }, [params.courseCode, userId, dispatch]);
 
-  if (!params.courseCode || isChecking || !courseHeader || !posts) {
+  // Add Review Handler
+  const handleAddReview = async (
+    courseCode: string,
+    userId: string,
+    reviewForm: ReviewFormData,
+  ): Promise<boolean> => {
+    const plainText = reviewForm.content.replace(/<[^>]*>/g, " ");
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const profoundMatches = profoundWords
+      .filter(Boolean)
+      .filter((badWord) =>
+        new RegExp(`\\b${escapeRegex(String(badWord))}\\b`, "i").test(
+          plainText,
+        ),
+      );
+    if (profoundMatches.length > 0) {
+      toast("Please refrain from using profane language", {
+        description: `Dissaproved words: ${profoundMatches.join(", ")}`,
+      });
+      return false;
+    }
+    try {
+      await dispatch(submitReview({ courseCode, userId, reviewForm })).unwrap();
+      toast.success("Review added successfully!");
+      // Refresh reviews
+      dispatch(fetchCourseReviews({ courseCode, userId }));
+      return true;
+    } catch {
+      toast.error("Failed to add review", { description: "Try again later" });
+      return false;
+    }
+  };
+
+  // Like/Dislike Handlers
+  const handleLikePost = async (postId: string) => {
+    if (!userId) return;
+    await dispatch(likeCourseReview({ reviewId: postId, userId })).unwrap();
+    dispatch(fetchCourseReviews({ courseCode: params.courseCode, userId }));
+  };
+  const handleDislikePost = async (postId: string) => {
+    if (!userId) return;
+    await dispatch(dislikeCourseReview({ reviewId: postId, userId })).unwrap();
+    dispatch(fetchCourseReviews({ courseCode: params.courseCode, userId }));
+  };
+
+  // Compose CourseHeaderProps (from pure utils + Redux state)
+  let courseHeader: CourseHeaderProps | null = null;
+  if (courseInfo && reviews && reviews.length >= 0) {
+    const posts = reviews as PostProps[];
+
+    // Using type assertion with proper fallback for courseInfo
+    courseHeader = {
+      courseCode: (courseInfo as any).course_code ?? "",
+      courseName: (courseInfo as any).course_name ?? "",
+      credits: (courseInfo as any).credits ?? null,
+      syllabus: `${(courseInfo as any).content || ""} \n\n ${(courseInfo as any).goals || ""}`,
+      courseRating: posts.length > 0 ? getAverageRating(posts) : null,
+      ratingDistribution: getRatingDistribution(posts),
+      easyScoreDistribution: getEasyScoreDistribution(posts),
+      usefulScoreDistribution: getUsefulScoreDistribution(posts),
+      interestingScoreDistribution: getInterestingScoreDistribution(posts),
+      percentageWouldRecommend: posts.length
+        ? getPercentageWouldRecommend(posts)
+        : null,
+      userId: userId,
+      onAddReview: handleAddReview,
+    };
+  }
+  const posts: (PostProps & { postId: string })[] = Array.isArray(reviews)
+    ? reviews.map((review) => ({ ...review, postId: review.id }))
+    : [];
+
+  if (!params.courseCode || isChecking || reviewsLoading || !courseHeader) {
     return <SuspenseView />;
   }
   return (
@@ -332,14 +233,14 @@ export default function CourseController() {
       courseName={courseHeader.courseName}
       credits={courseHeader.credits}
       syllabus={courseHeader.syllabus}
-      percentageWouldRecommend={getPercentageWouldRecommend(posts)}
-      easyScoreDistribution={getEasyScoreDistribution(posts)}
-      usefulScoreDistribution={getUsefulScoreDistribution(posts)}
-      interestingScoreDistribution={getInterestingScoreDistribution(posts)}
-      ratingDistribution={getRatingDistribution(posts)}
-      courseRating={getAverageRating(posts)}
+      percentageWouldRecommend={courseHeader.percentageWouldRecommend}
+      easyScoreDistribution={courseHeader.easyScoreDistribution}
+      usefulScoreDistribution={courseHeader.usefulScoreDistribution}
+      interestingScoreDistribution={courseHeader.interestingScoreDistribution}
+      ratingDistribution={courseHeader.ratingDistribution}
+      courseRating={courseHeader.courseRating}
       userId={userId}
-      onAddReview={handleAddReview}
+      onAddReview={courseHeader.onAddReview}
       posts={posts}
       onLikePost={handleLikePost}
       onDislikePost={handleDislikePost}

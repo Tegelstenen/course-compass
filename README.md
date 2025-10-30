@@ -114,7 +114,7 @@ curl -X POST "http://localhost:8080/ingest/courses"
 
 This process may take some time. You can monitor the logs from the backend server for progress.
 
-### 8. Build Docker Image (should not be here, only for deploying. Add to CI/CD flow later)
+### 8. Build Docker Image (optionally if want to run through containers)
 To build the Docker image, run
 
 ```bash
