@@ -1,9 +1,11 @@
 "use client";
 
+import type { ThunkDispatch } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import Session from "supertokens-auth-react/recipe/session";
-import type { Dispatch, RootState } from "@/state/store";
+import type { RootState } from "@/state/store";
 import { setProfilePicture } from "@/state/user/userSlice";
 import {
   deleteAccount,
@@ -14,7 +16,7 @@ import ProfileView from "@/views/ProfileView";
 
 export default function ProfileController() {
   const router = useRouter();
-  const dispatch = useDispatch<Dispatch>();
+  const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
   const { name, email, profilePicture } = useSelector(
     (state: RootState) => state.user,
   );
@@ -26,13 +28,21 @@ export default function ProfileController() {
       const localPreview = URL.createObjectURL(file);
       dispatch(setProfilePicture(localPreview));
 
-      try {
-        await dispatch(uploadProfilePicture(file) as any);
-        await dispatch(getUser() as any);
+      // Await the resolved return value of the thunk, which is always {success, error?}
+      const result: {
+        success: boolean;
+        url?: string;
+        error?: string;
+        message?: string;
+      } = await (dispatch as any)(uploadProfilePicture(file));
+      if (!result.success) {
+        toast.error(result.error || result.message || "Image upload failed.");
+        if (profilePicture) dispatch(setProfilePicture(profilePicture));
         URL.revokeObjectURL(localPreview);
-      } catch (error) {
-        console.error("Upload failed:", error);
+        return;
       }
+      await (dispatch as any)(getUser());
+      URL.revokeObjectURL(localPreview);
     }
   };
 

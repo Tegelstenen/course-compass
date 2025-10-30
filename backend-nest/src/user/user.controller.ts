@@ -1,23 +1,25 @@
 // src/app.controller.ts
 
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   NotFoundException,
   Post,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { put } from "@vercel/blob";
 import {
   Session,
   SuperTokensAuthGuard,
   VerifySession,
 } from "supertokens-nestjs";
 import type { SessionContainer } from "supertokens-node/recipe/session";
-import { success } from "zod/index.cjs";
 import { UserService } from "./user.service";
 
 @Controller("user")
@@ -80,23 +82,36 @@ export class UserController {
     return { success: true, action: result.action };
   }
 
-  // Save profile picture URL (uploaded to Vercel Blob from frontend)
+  // Upload and save a new profile picture
   @Post("/profile-picture")
   @VerifySession()
-  async updateProfilePicture(
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadProfilePicture(
     @Session() session: SessionContainer,
-    @Body() body: { url: string },
+    @UploadedFile() file: Express.Multer.File,
   ) {
     const userId = session.getUserId();
-    const { url } = body;
-
-    // Validate URL format
-    if (!url || !url.startsWith("https://")) {
-      throw new Error("Invalid URL provided");
+    // Validation: file presence
+    if (!file) {
+      throw new BadRequestException("No file provided");
+    }
+    // Validation: type
+    if (!file.mimetype.startsWith("image/")) {
+      throw new BadRequestException("File must be an image");
+    }
+    // Validation: 2MB size limit
+    if (file.size > 2 * 1024 * 1024) {
+      throw new BadRequestException("Image must be less than 2MB");
     }
 
-    // Save to database
-    await this.userService.updateProfilePicture(userId, url);
-    return { url };
+    // Upload to Vercel Blob
+    const blob = await put(file.originalname, file.buffer, {
+      access: "public",
+      addRandomSuffix: true,
+    });
+
+    // Save the URL in the database
+    await this.userService.updateProfilePicture(userId, blob.url);
+    return { url: blob.url };
   }
 }
