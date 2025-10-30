@@ -37,22 +37,41 @@ export function uploadProfilePicture(file: File) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/picture-upload", {
+      const res = await fetch(`${API_URL}/user/profile-picture`, {
         method: "POST",
         body: formData,
         credentials: "include",
       });
 
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || `HTTP ${res.status}`);
+        let errorMsg = `HTTP ${res.status}`;
+        try {
+          const error = await res.json();
+          errorMsg = error?.message || error?.error || errorMsg;
+        } catch (jsonErr) {
+          errorMsg = await res.text();
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await res.json();
       dispatch(setProfilePicture(data.url));
+      return { success: true, url: data.url };
     } catch (err) {
-      console.error("Upload failed:", err);
-      throw err;
+      if (err instanceof Error) {
+        // Some known errors
+        if (/file.*type/i.test(err.message)) {
+          return { success: false, error: "Please select an image file." };
+        }
+        if (/file.*size/i.test(err.message)) {
+          return { success: false, error: "Image must be less than 2MB." };
+        }
+        if (/no file/i.test(err.message)) {
+          return { success: false, error: "No file provided." };
+        }
+        return { success: false, error: err.message };
+      }
+      return { success: false, error: "Unknown upload error" };
     }
   };
 }
