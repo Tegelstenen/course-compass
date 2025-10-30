@@ -65,14 +65,26 @@ export class SearchService {
       size: filters?.minRating ? size * 5 : size, // get more results for rating filter
       query: {
         bool: {
-          must: {
-            multi_match: {
-              query,
-              fields: ["course_name^2", "course_code^2", "goals", "content"],
-              fuzziness: "AUTO",
-              type: "best_fields",
+          should: [
+            { prefix: { course_code: query.toUpperCase() } }, // partial match for course code
+            { wildcard: { course_code: `*${query.toUpperCase()}*` } }, // fallback
+            {
+              multi_match: {
+                query,
+                fields: ["course_name^2"],
+                type: "phrase_prefix", // partial words in names
+              },
             },
-          },
+            {
+              multi_match: {
+                query,
+                fields: ["course_name^2", "course_code^2", "goals", "content"],
+                fuzziness: "AUTO",
+                type: "best_fields",
+              },
+            },
+          ],
+          minimum_should_match: 1,
           filter: searchFilters,
         },
       },
